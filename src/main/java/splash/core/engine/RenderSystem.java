@@ -2,6 +2,9 @@ package splash.core.engine;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import splash.core.entities.CollisionBlock;
+import splash.core.entities.Enemy;
+import splash.core.entities.Food;
 import splash.core.entities.GameEntity;
 import splash.core.entities.Player;
 
@@ -16,8 +19,16 @@ public class RenderSystem {
 
     public void render(GameEntity entity) {
         if(entity instanceof Player) {
-            Player player = (Player) entity;
-            player.render(gc);
+            ((Player) entity).render(gc);
+        }
+        else if(entity instanceof Enemy) {
+            ((Enemy) entity).render(gc);
+        }
+        else if(entity instanceof Food) {
+            ((Food) entity).render(gc);
+        }
+        else if(entity instanceof CollisionBlock) {
+            ((CollisionBlock) entity).render(gc);
         }
     }
 

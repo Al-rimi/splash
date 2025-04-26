@@ -1,33 +1,41 @@
 package splash.ui.screens;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import splash.core.engine.GameLoop;
-import splash.core.engine.RenderSystem;
-import splash.core.entities.Player;
-import splash.managers.GameManager;
-import splash.managers.ResourceManager;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.beans.binding.Bindings;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
+import splash.core.engine.CollisionSystem;
+import splash.core.engine.GameLoop;
+import splash.core.engine.RenderSystem;
+import splash.core.entities.*;
+import splash.core.world.DynamicWorld;
+import splash.managers.GameManager;
+import splash.managers.ResourceManager;
 
 public class GameScreen {
-    private final Pane root = new Pane();
     private final Player player;
     private final Canvas gameCanvas = new Canvas(1280, 720);
     private final RenderSystem renderSystem;
     private final GameLoop gameLoop;
+    private final DynamicWorld world = new DynamicWorld();
+    private final CollisionSystem collisionSystem;
+    private final Timeline spawnTimer;
     private HBox hud;
 
     public GameScreen(Player player) {
         this.player = player;
         this.renderSystem = new RenderSystem(gameCanvas);
+        this.collisionSystem = new CollisionSystem(player, world);
         this.gameLoop = new GameLoop() {
             @Override
             protected void update(double deltaTime) {
@@ -35,27 +43,10 @@ public class GameScreen {
                 renderGame();
             }
         };
-    }
-
-    private void updateGame(double deltaTime) {
-        player.update(deltaTime);
-    }
-
-    private void renderGame() {
-        renderSystem.clear();
-        renderSystem.render(player);
-    }
-
-    public Scene createScene() {
-        setupGameElements();
-        setupInputHandling();
-        createHUD();
+        spawnTimer = new Timeline(new KeyFrame(Duration.seconds(3), e -> spawnEntities()));
+        spawnTimer.setCycleCount(Animation.INDEFINITE);
         
-        StackPane rootContainer = new StackPane();
-        rootContainer.getChildren().addAll(gameCanvas, hud);
-        
-        gameLoop.start();
-        return new Scene(rootContainer, 1280, 720);
+        setupWorld();
     }
 
     private void createHUD() {
@@ -96,29 +87,127 @@ public class GameScreen {
         return label;
     }
 
-    private void setupInputHandling() {
-        root.setOnKeyPressed(e -> {
+    private void setupInputHandling(StackPane rootContainer) {
+        // Debugging: Add visual feedback for focus
+        rootContainer.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+        
+        rootContainer.setOnKeyPressed(e -> {
+            System.out.println("Key PRESSED: " + e.getCode());
             switch(e.getCode()) {
-                case W, UP -> player.moveUp(true);
-                case S, DOWN -> player.moveDown(true);
-                case A, LEFT -> player.moveLeft(true);
-                case D, RIGHT -> player.moveRight(true);
-                default -> throw new IllegalArgumentException("Unexpected value: " + e.getCode());
+                case W:
+                case UP:
+                    System.out.println("Moving UP");
+                    player.moveUp(true);
+                    break;
+                case S:
+                case DOWN:
+                    System.out.println("Moving DOWN");
+                    player.moveDown(true);
+                    break;
+                case A:
+                case LEFT:
+                    System.out.println("Moving LEFT");
+                    player.moveLeft(true);
+                    break;
+                case D:
+                case RIGHT:
+                    System.out.println("Moving RIGHT");
+                    player.moveRight(true);
+                    break;
+                default:
+                    System.out.println("Unhandled key: " + e.getCode());
+                    break;
             }
         });
         
-        root.setOnKeyReleased(e -> {
+        rootContainer.setOnKeyReleased(e -> {
+            System.out.println("Key RELEASED: " + e.getCode());
             switch(e.getCode()) {
-                case W, UP -> player.moveUp(false);
-                case S, DOWN -> player.moveDown(false);
-                case A, LEFT -> player.moveLeft(false);
-                case D, RIGHT -> player.moveRight(false);
-                default -> throw new IllegalArgumentException("Unexpected value: " + e.getCode());
+                case W:
+                case UP:
+                    player.moveUp(false);
+                    break;
+                case S:
+                case DOWN:
+                    player.moveDown(false);
+                    break;
+                case A:
+                case LEFT:
+                    player.moveLeft(false);
+                    break;
+                case D:
+                case RIGHT:
+                    player.moveRight(false);
+                    break;
+                default:
+                    System.out.println("Unhandled key: " + e.getCode());
+                    break;
             }
         });
     }
-    
-    private void setupGameElements() {
-        // Initialize game elements
+
+    private void setupWorld() {
+        // Debug initial player position
+        System.out.println("Initial player position: " + player.getX() + ", " + player.getY());
+        
+        // Add collision blocks (debug positions)
+        CollisionBlock block1 = new CollisionBlock(300, 300, 100);
+        CollisionBlock block2 = new CollisionBlock(900, 400, 150); // Moved away from start
+        System.out.println("Block1 bounds: " + block1.getBounds());
+        System.out.println("Block2 bounds: " + block2.getBounds());
+        
+        world.spawnEntity(block1);
+        world.spawnEntity(block2);
+        
+        // Initial enemies
+        world.spawnEntity(new Enemy(player, 200, 200));
+    }
+
+    private void spawnEntities() {
+        // Debug spawns
+        System.out.println("Spawning new entities...");
+        
+        if(Math.random() < 0.7) {
+            Enemy enemy = new Enemy(player, Math.random() * 1280, Math.random() * 720);
+            System.out.println("Spawned enemy at: " + enemy.getX() + ", " + enemy.getY());
+            world.spawnEntity(enemy);
+        }
+        
+        if(Math.random() < 0.5) {
+            Food food = new Food(Math.random() * 1280, Math.random() * 720, (int)(Math.random() * 10) + 5);
+            System.out.println("Spawned food at: " + food.getX() + ", " + food.getY());
+            world.spawnEntity(food);
+        }
+    }
+
+    private void updateGame(double deltaTime) {    
+        player.update(deltaTime);
+        world.getEntities().forEach(e -> e.update(deltaTime));
+        collisionSystem.checkCollisions();
+    }
+
+    private void renderGame() {
+        renderSystem.clear();
+        world.getEntities().forEach(renderSystem::render);
+        renderSystem.render(player);
+    }
+
+    public Scene createScene() {
+        StackPane rootContainer = new StackPane();
+        rootContainer.getChildren().addAll(gameCanvas);
+        createHUD();
+        rootContainer.getChildren().add(hud);
+        
+        // Setup input on the actual root container
+        setupInputHandling(rootContainer);
+        
+        // Ensure focus for key events
+        rootContainer.setFocusTraversable(true);
+        rootContainer.requestFocus();
+        
+        gameLoop.start();
+        spawnTimer.play();
+        
+        return new Scene(rootContainer, 1280, 720);
     }
 }

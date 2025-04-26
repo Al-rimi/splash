@@ -15,4 +15,12 @@ public class DynamicWorld {
     public void spawnEntity(GameEntity entity) {
         entities.add(entity);
     }
+
+    public ConcurrentLinkedQueue<GameEntity> getEntities() {
+        return entities;
+    }
+    
+    public void removeEntity(GameEntity entity) {
+        entities.remove(entity);
+    }
 }
