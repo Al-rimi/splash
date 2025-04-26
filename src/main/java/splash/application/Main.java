@@ -7,7 +7,7 @@ import splash.managers.GameManager;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
-        GameManager.initialize(primaryStage);
+        GameManager.init(primaryStage);
         GameManager.showMainMenu();
     }
     public static void main(String[] args) {

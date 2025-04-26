@@ -7,6 +7,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class Player extends GameEntity {
+    private final IntegerProperty health = new SimpleIntegerProperty(100);
+    private final IntegerProperty level = new SimpleIntegerProperty(1);
+    private final IntegerProperty points = new SimpleIntegerProperty(0);
+    private final IntegerProperty coins = new SimpleIntegerProperty(0);
+
+    public IntegerProperty healthProperty() { return health; }
+    public IntegerProperty levelProperty() { return level; }
+    public IntegerProperty pointsProperty() { return points; }
+    public IntegerProperty coinsProperty() { return coins; }
     private transient ImageView view;
     private final Image texture;
     private final BooleanProperty movingUp = new SimpleBooleanProperty();

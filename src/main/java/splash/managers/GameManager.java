@@ -15,7 +15,7 @@ public final class GameManager {
     
     private GameManager() {}
     
-    public static void initialize(Stage stage) {
+    public static void init(Stage stage) {
         primaryStage = stage;
         
         InputStream imageStream = GameManager.class.getResourceAsStream("/images/character.png");
@@ -31,6 +31,10 @@ public final class GameManager {
     public static void showMainMenu() {
         primaryStage.setScene(new MainMenuScreen().createScene());
         primaryStage.show();
+    }
+
+    public static void showSettingsScreen() {
+        primaryStage.setScene(new SettingsScreen().createScene());
     }
     
     public static void startGame() {

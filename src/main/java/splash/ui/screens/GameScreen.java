@@ -1,11 +1,21 @@
 package splash.ui.screens;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import splash.core.engine.GameLoop;
 import splash.core.engine.RenderSystem;
 import splash.core.entities.Player;
+import splash.managers.GameManager;
+import splash.managers.ResourceManager;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.beans.binding.Bindings;
 
 public class GameScreen {
     private final Pane root = new Pane();
@@ -13,6 +23,7 @@ public class GameScreen {
     private final Canvas gameCanvas = new Canvas(1280, 720);
     private final RenderSystem renderSystem;
     private final GameLoop gameLoop;
+    private HBox hud;
 
     public GameScreen(Player player) {
         this.player = player;
@@ -38,9 +49,51 @@ public class GameScreen {
     public Scene createScene() {
         setupGameElements();
         setupInputHandling();
-        root.getChildren().add(gameCanvas);
+        createHUD();
+        
+        StackPane rootContainer = new StackPane();
+        rootContainer.getChildren().addAll(gameCanvas, hud);
+        
         gameLoop.start();
-        return new Scene(root, 1280, 720);
+        return new Scene(rootContainer, 1280, 720);
+    }
+
+    private void createHUD() {
+        hud = new HBox(20);
+        hud.setPadding(new Insets(10));
+        hud.setAlignment(Pos.TOP_LEFT);
+        
+        Label healthLabel = createDynamicLabel("health", player.healthProperty());
+        Label levelLabel = createDynamicLabel("level", player.levelProperty());
+        Label pointsLabel = createDynamicLabel("points", player.pointsProperty());
+        Label coinsLabel = createDynamicLabel("coins", player.coinsProperty());
+        
+        Button stopButton = new Button();
+        stopButton.textProperty().bind(
+            Bindings.createStringBinding(() -> 
+                ResourceManager.getString("stop"),
+                ResourceManager.currentLocaleProperty()
+            )
+        );
+        stopButton.setOnAction(e -> {
+            gameLoop.stop();
+            GameManager.showMainMenu();
+        });
+
+        hud.getChildren().addAll(healthLabel, levelLabel, 
+                              pointsLabel, coinsLabel, stopButton);
+    }
+
+    private Label createDynamicLabel(String key, IntegerProperty property) {
+        Label label = new Label();
+        label.textProperty().bind(
+            Bindings.createStringBinding(() -> 
+                ResourceManager.getString(key) + ": " + property.get(),
+                property,
+                ResourceManager.currentLocaleProperty()
+            )
+        );
+        return label;
     }
 
     private void setupInputHandling() {
