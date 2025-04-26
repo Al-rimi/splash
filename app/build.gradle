@@ -8,6 +8,8 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    // Apply the JavaFX plugin to manage JavaFX modules easily.
+    id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
 repositories {
@@ -23,18 +25,29 @@ dependencies {
 
     // This dependency is used by the application.
     implementation libs.guava
+
+    // JavaFX dependencies
+    implementation "org.openjfx:javafx-controls:21"
+    implementation "org.openjfx:javafx-media:21"
+    implementation "org.openjfx:javafx-graphics:21"
 }
 
-// Apply a specific Java toolchain to ease working on different environments.
 java {
+    // Apply a specific Java toolchain to ease working on different environments.
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
 application {
-    // Define the main class for the application.
-    mainClass = 'splash.App'
+    // Define the main module and main class for the application.
+    mainModule = 'splash'       // <-- Your module name (from module-info.java)
+    mainClass = 'splash.App'     // <-- Your main class
+}
+
+javafx {
+    version = "21"
+    modules = [ 'javafx.controls', 'javafx.media', 'javafx.graphics' ]
 }
 
 tasks.named('test') {
