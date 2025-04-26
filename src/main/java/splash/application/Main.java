@@ -10,7 +10,6 @@ public class Main extends Application {
         GameManager.initialize(primaryStage);
         GameManager.showMainMenu();
     }
-    
     public static void main(String[] args) {
         launch(args);
     }

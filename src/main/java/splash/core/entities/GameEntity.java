@@ -1,5 +1,7 @@
 package splash.core.entities;
 
+import javafx.scene.canvas.GraphicsContext;
+
 public abstract class GameEntity {
     protected double size;
     protected double x;
@@ -7,7 +9,7 @@ public abstract class GameEntity {
     protected double scale = 1.0;
     
     public abstract void update(double deltaTime);
-    public abstract void render();
+    public abstract void render(GraphicsContext gc);
     
     public void updateScale(double scale) {
         this.scale = scale;

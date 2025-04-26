@@ -2,10 +2,12 @@ package splash.core.entities;
 
 import javafx.beans.property.*;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import splash.core.utils.Vector2D;
+import javafx.scene.image.ImageView;
 
 public class Player extends GameEntity {
+    private transient ImageView view;
     private final Image texture;
     private final BooleanProperty movingUp = new SimpleBooleanProperty();
     private final BooleanProperty movingDown = new SimpleBooleanProperty();
@@ -13,6 +15,7 @@ public class Player extends GameEntity {
     private final BooleanProperty movingRight = new SimpleBooleanProperty();
     
     public Player(Image texture) {
+        this.view = new ImageView(texture);
         this.texture = texture;
         this.size = 50;
         this.x = 640;
@@ -35,7 +38,11 @@ public class Player extends GameEntity {
         return new Rectangle2D(x, y, size * scale, size * scale);
     }
     
-    public void render() {
-        // Implementation would go here
+    public void render(GraphicsContext gc) {
+        view.setX(x - size/2);
+        view.setY(y - size/2);
+        view.setFitWidth(size * scale);
+        view.setFitHeight(size * scale);
+        gc.drawImage(texture, x, y, size * scale, size * scale);
     }
 }
