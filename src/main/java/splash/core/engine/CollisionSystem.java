@@ -1,6 +1,5 @@
 package splash.core.engine;
 
-import javafx.geometry.Rectangle2D;
 import splash.core.entities.*;
 import splash.core.world.DynamicWorld;
 import java.util.*;
@@ -8,7 +7,7 @@ import java.util.*;
 public class CollisionSystem {
     private final Player player;
     private final DynamicWorld world;
-    private final Map<String, List<GameEntity>> collisionLayers;
+    private final Map<String, List<Fish>> collisionLayers;
     private final Set<String> playerCollisionLayers = Set.of("enemy", "block", "food");
 
     public CollisionSystem(Player player, DynamicWorld world) {
@@ -50,14 +49,13 @@ public class CollisionSystem {
         });
     }
 
-    private boolean checkCollision(GameEntity a, GameEntity b) {
+    private boolean checkCollision(Fish a, Fish b) {
         return a.getBounds().intersects(b.getBounds());
     }
 
-    private void handleCollision(Player a, GameEntity b) {
+    private void handleCollision(Player a, Fish b) {
         if (b instanceof Enemy) handlePlayerEnemyCollision(a, (Enemy) b);
         else if (b instanceof Food) handlePlayerFoodCollision(a, (Food) b);
-        else if (b instanceof CollisionBlock) resolveBlockCollision(a, (CollisionBlock) b);
     }
 
     private void handlePlayerEnemyCollision(Player player, Enemy enemy) {
@@ -67,35 +65,5 @@ public class CollisionSystem {
     private void handlePlayerFoodCollision(Player player, Food food) {
         this.player.pointsProperty().set(player.pointsProperty().get() + food.getValue());
         world.removeEntity(food);
-    }
-
-    private void resolveBlockCollision(GameEntity entity, CollisionBlock block) {
-        Rectangle2D entityBounds = entity.getBounds();
-        Rectangle2D blockBounds = block.getBounds();
-
-        double dx = (entityBounds.getMinX() + entityBounds.getWidth()/2) - 
-                   (blockBounds.getMinX() + blockBounds.getWidth()/2);
-        double dy = (entityBounds.getMinY() + entityBounds.getHeight()/2) - 
-                   (blockBounds.getMinY() + blockBounds.getHeight()/2);
-
-        double combinedHalfWidth = (entityBounds.getWidth() + blockBounds.getWidth())/2;
-        double combinedHalfHeight = (entityBounds.getHeight() + blockBounds.getHeight())/2;
-
-        double overlapX = combinedHalfWidth - Math.abs(dx);
-        double overlapY = combinedHalfHeight - Math.abs(dy);
-
-        if (overlapX >= overlapY) {
-            if (dy > 0) {
-                entity.setPosition(entity.getX(), blockBounds.getMinY() - entity.getSize()/2);
-            } else {
-                entity.setPosition(entity.getX(), blockBounds.getMaxY() + entity.getSize()/2);
-            }
-        } else {
-            if (dx > 0) {
-                entity.setPosition(blockBounds.getMinX() - entity.getSize()/2, entity.getY());
-            } else {
-                entity.setPosition(blockBounds.getMaxX() + entity.getSize()/2, entity.getY());
-            }
-        }
     }
 }

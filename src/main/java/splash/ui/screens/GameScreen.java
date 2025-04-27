@@ -88,7 +88,6 @@ public class GameScreen {
     }
 
     private void setupInputHandling(StackPane rootContainer) {
-        // Debugging: Add visual feedback for focus
         rootContainer.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
         
         rootContainer.setOnKeyPressed(e -> {
@@ -149,15 +148,6 @@ public class GameScreen {
     private void setupWorld() {
         // Debug initial player position
         System.out.println("Initial player position: " + player.getX() + ", " + player.getY());
-        
-        // Add collision blocks (debug positions)
-        CollisionBlock block1 = new CollisionBlock(300, 300, 100);
-        CollisionBlock block2 = new CollisionBlock(900, 400, 150); // Moved away from start
-        System.out.println("Block1 bounds: " + block1.getBounds());
-        System.out.println("Block2 bounds: " + block2.getBounds());
-        
-        world.spawnEntity(block1);
-        world.spawnEntity(block2);
         
         // Initial enemies
         world.spawnEntity(new Enemy(player, 200, 200));

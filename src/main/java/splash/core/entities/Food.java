@@ -3,7 +3,7 @@ package splash.core.entities;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Food extends GameEntity {
+public class Food extends Fish {
     private final int value;
     
     public Food(double x, double y, int value) {

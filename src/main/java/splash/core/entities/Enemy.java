@@ -4,7 +4,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import splash.core.utils.Vector2D;
 
-public class Enemy extends GameEntity {
+public class Enemy extends Fish {
     private static final double SPEED = 150;
     private final Player player;
     private final Vector2D direction = new Vector2D();
