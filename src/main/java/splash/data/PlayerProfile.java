@@ -1,4 +1,4 @@
-package splash.data.model;
+package splash.data;
 
 public class PlayerProfile {
     private String playerName;

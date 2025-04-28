@@ -19,7 +19,6 @@ public class Enemy extends Fish {
 
     @Override
     public void update(double deltaTime) {
-        // Calculate direction to player
         direction.x = player.getX() - x;
         direction.y = player.getY() - y;
         double length = Math.sqrt(direction.x*direction.x + direction.y*direction.y);
@@ -31,7 +30,7 @@ public class Enemy extends Fish {
         
         double newX = x + direction.x * SPEED * deltaTime;
         double newY = y + direction.y * SPEED * deltaTime;
-        setPosition(newX, newY); // Updates hitbox
+        setPosition(newX, newY);
     }
 
     @Override
