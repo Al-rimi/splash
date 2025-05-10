@@ -1,4 +1,4 @@
-package splash.core.utils;
+package splash.utils;
 
 public class Vector2D {
     public double x;

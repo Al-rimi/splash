@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import splash.managers.GameManager;
 
-public class Main extends Application {
+public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
         GameManager.init(primaryStage);

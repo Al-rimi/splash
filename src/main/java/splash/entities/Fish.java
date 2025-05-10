@@ -1,4 +1,4 @@
-package splash.core.entities;
+package splash.entities;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;

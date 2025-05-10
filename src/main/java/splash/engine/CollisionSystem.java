@@ -1,7 +1,7 @@
-package splash.core.engine;
+package splash.engine;
 
-import splash.core.entities.*;
-import splash.core.world.DynamicWorld;
+import splash.entities.*;
+
 import java.util.*;
 
 public class CollisionSystem {

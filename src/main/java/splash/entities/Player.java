@@ -1,4 +1,4 @@
-package splash.core.entities;
+package splash.entities;
 
 import javafx.beans.property.*;
 import javafx.scene.canvas.GraphicsContext;

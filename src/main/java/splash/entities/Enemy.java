@@ -1,8 +1,8 @@
-package splash.core.entities;
+package splash.entities;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import splash.core.utils.Vector2D;
+import splash.utils.Vector2D;
 
 public class Enemy extends Fish {
     private static final double SPEED = 150;

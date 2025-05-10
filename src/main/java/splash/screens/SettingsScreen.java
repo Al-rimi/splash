@@ -1,4 +1,4 @@
-package splash.ui.screens;
+package splash.screens;
 
 import splash.managers.GameManager;
 import splash.managers.ResourceManager;

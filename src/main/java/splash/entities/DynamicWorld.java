@@ -1,6 +1,5 @@
-package splash.core.world;
+package splash.entities;
 
-import splash.core.entities.Fish;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class DynamicWorld {

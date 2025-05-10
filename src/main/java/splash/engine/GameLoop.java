@@ -1,4 +1,4 @@
-package splash.core.engine;
+package splash.engine;
 
 import javafx.animation.AnimationTimer;
 

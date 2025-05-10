@@ -1,11 +1,11 @@
-package splash.core.engine;
+package splash.engine;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import splash.core.entities.Enemy;
-import splash.core.entities.Food;
-import splash.core.entities.Fish;
-import splash.core.entities.Player;
+import splash.entities.Enemy;
+import splash.entities.Fish;
+import splash.entities.Food;
+import splash.entities.Player;
 
 public class RenderSystem {
     private final Canvas canvas;

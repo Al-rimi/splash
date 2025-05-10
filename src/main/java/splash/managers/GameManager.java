@@ -1,8 +1,8 @@
 package splash.managers;
 
 import javafx.stage.Stage;
-import splash.ui.screens.*;
-import splash.core.entities.Player;
+import splash.entities.Player;
+import splash.screens.*;
 
 import java.io.InputStream;
 

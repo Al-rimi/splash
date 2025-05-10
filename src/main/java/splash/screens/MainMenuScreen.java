@@ -1,4 +1,4 @@
-package splash.ui.screens;
+package splash.screens;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;

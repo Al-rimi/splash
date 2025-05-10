@@ -1,4 +1,4 @@
-package splash.ui.screens;
+package splash.screens;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -14,11 +14,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
-import splash.core.engine.CollisionSystem;
-import splash.core.engine.GameLoop;
-import splash.core.engine.RenderSystem;
-import splash.core.entities.*;
-import splash.core.world.DynamicWorld;
+import splash.engine.CollisionSystem;
+import splash.engine.GameLoop;
+import splash.engine.RenderSystem;
+import splash.entities.*;
 import splash.managers.GameManager;
 import splash.managers.ResourceManager;
 

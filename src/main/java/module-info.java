@@ -5,6 +5,6 @@ module splash {
     requires java.desktop;
     
     exports splash.application;
-    exports splash.core.entities;
+    exports splash.entities;
     exports splash.managers;
 }
