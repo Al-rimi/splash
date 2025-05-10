@@ -9,6 +9,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -23,18 +24,22 @@ import splash.managers.ResourceManager;
 
 public class GameScreen {
     private final Player player;
-    private final Canvas gameCanvas = new Canvas(1280, 720);
+    private Canvas gameCanvas;
     private final RenderSystem renderSystem;
     private final GameLoop gameLoop;
-    private final DynamicWorld world = new DynamicWorld();
+    private final World world = new World();
     private final CollisionSystem collisionSystem;
     private final Timeline spawnTimer;
     private HBox hud;
+    private double baseWidth = 1280;
+    private double baseHeight = 720;
 
     public GameScreen(Player player) {
         this.player = player;
+        this.gameCanvas = new Canvas();
         this.renderSystem = new RenderSystem(gameCanvas);
         this.collisionSystem = new CollisionSystem(player, world);
+        
         this.gameLoop = new GameLoop() {
             @Override
             protected void update(double deltaTime) {
@@ -42,7 +47,8 @@ public class GameScreen {
                 renderGame();
             }
         };
-        spawnTimer = new Timeline(new KeyFrame(Duration.seconds(3), e -> spawnEntities()));
+        
+        this.spawnTimer = new Timeline(new KeyFrame(Duration.seconds(3), e -> spawnEntities()));
         spawnTimer.setCycleCount(Animation.INDEFINITE);
         
         setupWorld();
@@ -52,46 +58,40 @@ public class GameScreen {
         hud = new HBox(20);
         hud.setPadding(new Insets(10));
         hud.setAlignment(Pos.TOP_LEFT);
-        
+
         Label healthLabel = createDynamicLabel("health", player.healthProperty());
         Label levelLabel = createDynamicLabel("level", player.levelProperty());
         Label pointsLabel = createDynamicLabel("points", player.pointsProperty());
         Label coinsLabel = createDynamicLabel("coins", player.coinsProperty());
-        
+
         Button stopButton = new Button();
         stopButton.textProperty().bind(
-            Bindings.createStringBinding(() -> 
-                ResourceManager.getString("stop"),
-                ResourceManager.currentLocaleProperty()
-            )
-        );
+                Bindings.createStringBinding(() -> ResourceManager.getString("stop"),
+                        ResourceManager.currentLocaleProperty()));
         stopButton.setOnAction(e -> {
             gameLoop.stop();
             GameManager.showMainMenu();
         });
 
-        hud.getChildren().addAll(healthLabel, levelLabel, 
-                              pointsLabel, coinsLabel, stopButton);
+        hud.getChildren().addAll(healthLabel, levelLabel,
+                pointsLabel, coinsLabel, stopButton);
     }
 
     private Label createDynamicLabel(String key, IntegerProperty property) {
         Label label = new Label();
         label.textProperty().bind(
-            Bindings.createStringBinding(() -> 
-                ResourceManager.getString(key) + ": " + property.get(),
-                property,
-                ResourceManager.currentLocaleProperty()
-            )
-        );
+                Bindings.createStringBinding(() -> ResourceManager.getString(key) + ": " + property.get(),
+                        property,
+                        ResourceManager.currentLocaleProperty()));
         return label;
     }
 
     private void setupInputHandling(StackPane rootContainer) {
         rootContainer.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-        
+
         rootContainer.setOnKeyPressed(e -> {
             System.out.println("Key PRESSED: " + e.getCode());
-            switch(e.getCode()) {
+            switch (e.getCode()) {
                 case W:
                 case UP:
                     System.out.println("Moving UP");
@@ -117,10 +117,10 @@ public class GameScreen {
                     break;
             }
         });
-        
+
         rootContainer.setOnKeyReleased(e -> {
             System.out.println("Key RELEASED: " + e.getCode());
-            switch(e.getCode()) {
+            switch (e.getCode()) {
                 case W:
                 case UP:
                     player.moveUp(false);
@@ -147,7 +147,7 @@ public class GameScreen {
     private void setupWorld() {
         // Debug initial player position
         System.out.println("Initial player position: " + player.getX() + ", " + player.getY());
-        
+
         // Initial enemies
         world.spawnEntity(new Enemy(player, 200, 200));
     }
@@ -155,48 +155,78 @@ public class GameScreen {
     private void spawnEntities() {
         // Debug spawns
         System.out.println("Spawning new entities...");
-        
-        if(Math.random() < 0.7) {
+
+        if (Math.random() < 0.7) {
             Enemy enemy = new Enemy(player, Math.random() * 1280, Math.random() * 720);
             System.out.println("Spawned enemy at: " + enemy.getX() + ", " + enemy.getY());
             world.spawnEntity(enemy);
         }
-        
-        if(Math.random() < 0.5) {
-            Food food = new Food(Math.random() * 1280, Math.random() * 720, (int)(Math.random() * 10) + 5);
+
+        if (Math.random() < 0.5) {
+            Food food = new Food(Math.random() * 1280, Math.random() * 720, (int) (Math.random() * 10) + 5);
             System.out.println("Spawned food at: " + food.getX() + ", " + food.getY());
             world.spawnEntity(food);
         }
     }
 
-    private void updateGame(double deltaTime) {    
+    private void updateGame(double deltaTime) {
         player.update(deltaTime);
         world.getEntities().forEach(e -> e.update(deltaTime));
         collisionSystem.checkCollisions();
     }
 
-    private void renderGame() {
-        renderSystem.clear();
-        world.getEntities().forEach(renderSystem::render);
-        renderSystem.render(player);
-    }
-
     public Scene createScene() {
         StackPane rootContainer = new StackPane();
-        rootContainer.getChildren().addAll(gameCanvas);
+        gameCanvas.widthProperty().bind(rootContainer.widthProperty());
+        gameCanvas.heightProperty().bind(rootContainer.heightProperty());
+
         createHUD();
-        rootContainer.getChildren().add(hud);
-        
-        // Setup input on the actual root container
+        rootContainer.getChildren().addAll(gameCanvas, hud);
+
+        // Setup CSS
+        rootContainer.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+        rootContainer.setStyle("-fx-background-color: linear-gradient(to bottom right, #1a237e, #0d47a1);");
+
         setupInputHandling(rootContainer);
-        
-        // Ensure focus for key events
-        rootContainer.setFocusTraversable(true);
         rootContainer.requestFocus();
-        
+
         gameLoop.start();
         spawnTimer.play();
+
+        return new Scene(rootContainer);
+    }
+
+    private void renderGame() {
+        renderSystem.clear();
         
-        return new Scene(rootContainer, 1280, 720);
+        double currentWidth = gameCanvas.getWidth();
+        double currentHeight = gameCanvas.getHeight();
+        
+        // Calculate scale factors
+        double scaleX = currentWidth / baseWidth;
+        double scaleY = currentHeight / baseHeight;
+        double scale = Math.min(scaleX, scaleY);
+        
+        // Update render system scaling
+        renderSystem.setScale(scaleX, scaleY);
+        
+        GraphicsContext gc = renderSystem.getGraphicsContext();
+        gc.save();
+        
+        // Apply scaling transformation
+        gc.scale(scaleX, scaleY);
+        
+        // Center the content if aspect ratio is maintained
+        if(scaleX != scaleY) {
+            double offsetX = (currentWidth - (baseWidth * scale)) / (2 * scaleX);
+            double offsetY = (currentHeight - (baseHeight * scale)) / (2 * scaleY);
+            gc.translate(offsetX, offsetY);
+        }
+        
+        // Render all entities
+        world.getEntities().forEach(renderSystem::render);
+        renderSystem.render(player);
+        
+        gc.restore();
     }
 }

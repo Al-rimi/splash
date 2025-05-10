@@ -1,0 +1,116 @@
+/* Game HUD Styles */
+.hud {
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+    -fx-background-radius: 10;
+    -fx-padding: 10px;
+    -fx-spacing: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0,0,0);
+}
+
+.hud-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 1.2em;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 3, 0,0,1);
+}
+
+.game-canvas {
+    -fx-cursor: crosshair;
+}
+
+.button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-padding: 0.5em 1em;
+    -fx-background-radius: 1.5em;
+    -fx-font-weight: bold;
+}
+
+.button:hover {
+    -fx-background-color: #2980b9;
+}
+
+/* Add to styles.css */
+.menu-container {
+    -fx-background-color: linear-gradient(to bottom right, #1a237e, #0d47a1);
+    -fx-padding: 2em;
+}
+
+.menu-button {
+    -fx-font-size: 1.5em;
+    -fx-pref-width: 15em;
+    -fx-pref-height: 2.5em;
+    -fx-background-radius: 1.5em;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0,0,2);
+}
+
+/* Settings Screen Styles */
+.settings-container {
+    -fx-background-color: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
+}
+
+.section-title {
+    -fx-font-size: 1.8em;
+    -fx-text-fill: #2c3e50;
+    -fx-font-weight: 700;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0,0,1);
+}
+
+.styled-slider {
+    -fx-pref-width: 400px;
+    -fx-pref-height: 40px;
+}
+
+.styled-slider .track {
+    -fx-background-color: #dfe6e9;
+    -fx-background-radius: 10;
+    -fx-pref-height: 8px;
+}
+
+.styled-slider .thumb {
+    -fx-background-color: #3498db;
+    -fx-pref-height: 20px;
+    -fx-pref-width: 20px;
+    -fx-background-radius: 10;
+}
+
+.volume-value {
+    -fx-font-size: 1.4em;
+    -fx-text-fill: #34495e;
+    -fx-font-weight: bold;
+}
+
+.lang-button {
+    -fx-text-fill: white;
+    -fx-padding: 15px 25px;
+    -fx-background-radius: 25px;
+    -fx-font-size: 1.2em;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0,0,2);
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s;
+}
+
+.lang-button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0,0,3);
+}
+
+.nav-button {
+    -fx-background-color: #95a5a6;
+    -fx-text-fill: white;
+    -fx-padding: 10px 25px;
+    -fx-background-radius: 20px;
+    -fx-font-size: 1.1em;
+    -fx-graphic-text-gap: 10px;
+}
+
+.nav-button:hover {
+    -fx-background-color: #7f8c8d;
+}
+
+.bottom-nav {
+    -fx-padding: 20px;
+    -fx-background-color: rgba(255,255,255,0.9);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0,0,-5);
+}

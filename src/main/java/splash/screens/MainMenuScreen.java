@@ -6,26 +6,44 @@ import javafx.scene.layout.VBox;
 import splash.managers.GameManager;
 import splash.managers.ResourceManager;
 import javafx.beans.binding.Bindings;
+import javafx.geometry.Pos;
 
 public class MainMenuScreen {
     public Scene createScene() {
         VBox layout = new VBox(20);
-        Button btnStart = new Button(ResourceManager.getString("start_game"));
-        Button btnExit = new Button(ResourceManager.getString("exit"));
-        Button btnSettings = new Button();
+        layout.setAlignment(Pos.CENTER);
+        layout.getStyleClass().add("menu-container");
+        
+        // Create buttons with actions
+        Button btnStart = this.createMenuButton("start_game", () -> GameManager.startGame());
+        Button btnSettings = createMenuButton("settings", () -> GameManager.showSettingsScreen());
+        Button btnExit = createMenuButton("exit", () -> System.exit(0));
+        
+        layout.getChildren().addAll(btnSettings, btnStart, btnExit);
+        Scene scene = new Scene(layout);
+        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+        
+        // Responsive font sizing
+        layout.styleProperty().bind(Bindings.concat(
+            "-fx-font-size: ", 
+            scene.widthProperty().divide(50).asString(), 
+            "px;"
+        ));
+        
+        return scene;
+    }
 
-        btnSettings.textProperty().bind(
+    private Button createMenuButton(String resourceKey, Runnable action) {
+        Button btn = new Button();
+        btn.textProperty().bind(
             Bindings.createStringBinding(() -> 
-                ResourceManager.getString("settings"),
+                ResourceManager.getString(resourceKey),
                 ResourceManager.currentLocaleProperty()
             )
         );
-        btnSettings.setOnAction(e -> GameManager.showSettingsScreen());
-
-        btnStart.setOnAction(e -> GameManager.startGame());
-        btnExit.setOnAction(e -> System.exit(0));
-
-        layout.getChildren().addAll(btnSettings, btnStart, btnExit);
-        return new Scene(layout, 800, 600);
+        btn.getStyleClass().add("menu-button");
+        btn.setMaxWidth(Double.MAX_VALUE);
+        btn.setOnAction(e -> action.run());
+        return btn;
     }
 }

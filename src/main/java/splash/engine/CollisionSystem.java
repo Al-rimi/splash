@@ -6,11 +6,11 @@ import java.util.*;
 
 public class CollisionSystem {
     private final Player player;
-    private final DynamicWorld world;
+    private final World world;
     private final Map<String, List<Fish>> collisionLayers;
     private final Set<String> playerCollisionLayers = Set.of("enemy", "block", "food");
 
-    public CollisionSystem(Player player, DynamicWorld world) {
+    public CollisionSystem(Player player, World world) {
         this.player = player;
         this.world = world;
         this.collisionLayers = new HashMap<>();

@@ -20,8 +20,9 @@ public class Food extends Fish {
 
     @Override
     public void render(GraphicsContext gc) {
+        double renderSize = getScaledSize();
         gc.setFill(Color.GREEN);
-        gc.fillRect(x - size/2, y - size/2, size, size);
+        gc.fillRect(x - renderSize/2, y - renderSize/2, renderSize, renderSize);
     }
     
     public int getValue() { return value; }

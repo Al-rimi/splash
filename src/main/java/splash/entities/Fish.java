@@ -76,4 +76,8 @@ public abstract class Fish {
     public double getY() {
         return y;
     }
+
+    public double getScaledSize() {
+        return size * scale;
+    }
 }

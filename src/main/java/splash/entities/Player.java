@@ -3,14 +3,12 @@ package splash.entities;
 import javafx.beans.property.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 public class Player extends Fish {
     private final IntegerProperty health = new SimpleIntegerProperty(100);
     private final IntegerProperty level = new SimpleIntegerProperty(1);
     private final IntegerProperty points = new SimpleIntegerProperty(0);
     private final IntegerProperty coins = new SimpleIntegerProperty(0);
-    private transient ImageView view;
     private final Image texture;
     private final BooleanProperty movingUp = new SimpleBooleanProperty();
     private final BooleanProperty movingDown = new SimpleBooleanProperty();
@@ -24,7 +22,6 @@ public class Player extends Fish {
 
     
     public Player(Image texture) {
-        this.view = new ImageView(texture);
         this.texture = texture;
         this.size = 50;
         setPosition(640, 360);
@@ -53,11 +50,14 @@ public class Player extends Fish {
     public void moveLeft(boolean moving) { movingLeft.set(moving); }
     public void moveRight(boolean moving) { movingRight.set(moving); }
     
+    @Override
     public void render(GraphicsContext gc) {
-        view.setX(x - size/2);
-        view.setY(y - size/2);
-        view.setFitWidth(size * scale);
-        view.setFitHeight(size * scale);
-        gc.drawImage(texture, x, y, size * scale, size * scale);
+        double renderSize = getScaledSize();
+        gc.drawImage(texture, 
+            x - renderSize/2, 
+            y - renderSize/2, 
+            renderSize, 
+            renderSize
+        );
     }
 }

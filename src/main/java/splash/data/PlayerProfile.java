@@ -6,7 +6,6 @@ public class PlayerProfile {
     private int coins;
     private String selectedCharacter;
     
-    // Getters, setters, and serialization methods
     public String getPlayerName() {
         return playerName;
     }

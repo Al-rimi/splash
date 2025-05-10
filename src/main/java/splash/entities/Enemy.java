@@ -35,7 +35,8 @@ public class Enemy extends Fish {
 
     @Override
     public void render(GraphicsContext gc) {
+        double renderSize = getScaledSize();
         gc.setFill(Color.RED);
-        gc.fillOval(x - size/2, y - size/2, size, size);
+        gc.fillOval(x - renderSize/2, y - renderSize/2, renderSize, renderSize);
     }
 }

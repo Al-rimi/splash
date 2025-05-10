@@ -2,7 +2,7 @@ package splash.entities;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class DynamicWorld {
+public class World {
     private final ConcurrentLinkedQueue<Fish> entities = new ConcurrentLinkedQueue<>();
     private double worldScale = 1.0;
     
