@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleObjectProperty;
 
 public class ResourceManager {
     private static ResourceBundle bundle;
-    private static final ObjectProperty<Locale> currentLocale = 
+    private static ObjectProperty<Locale> currentLocale = 
         new SimpleObjectProperty<>(Locale.ENGLISH);
 
     static { loadLanguage("en"); }
