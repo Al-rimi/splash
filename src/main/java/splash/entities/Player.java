@@ -5,15 +5,16 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public class Player extends Fish {
+    private double currentAngle = 0;
     private double velocityX = 0;
     private double velocityY = 0;
+    private final Image leftTexture;
+    private final Image rightTexture;
 
     private final IntegerProperty health = new SimpleIntegerProperty(100);
     private final IntegerProperty level = new SimpleIntegerProperty(1);
     private final IntegerProperty points = new SimpleIntegerProperty(0);
     private final IntegerProperty coins = new SimpleIntegerProperty(0);
-    private final Image leftTexture;
-    private final Image rightTexture;
     private final BooleanProperty movingUp = new SimpleBooleanProperty();
     private final BooleanProperty movingDown = new SimpleBooleanProperty();
     private final BooleanProperty movingLeft = new SimpleBooleanProperty();
@@ -42,6 +43,10 @@ public class Player extends Fish {
         setPosition(baseWidth / 2, baseHeight / 2);
         addTag("player");
         setHitboxOffset(-size / 2, -size / 2);
+    }
+
+    public void addPoints(int points) {
+        this.points.set(this.points.get() + points);
     }
 
     @Override
@@ -92,14 +97,29 @@ public class Player extends Fish {
     @Override
     public void render(GraphicsContext gc) {
         double renderSize = getScaledSize();
-        Image texture = facingLeft ? leftTexture : rightTexture;
-        gc.drawImage(texture,
-                x - renderSize / 2,
-                y - renderSize / 2,
+
+        double targetAngle = Math.toDegrees(Math.atan2(velocityY, velocityX)) + (facingLeft ? 180 : 0);
+
+        if (velocityX == 0 && velocityY == 0) {
+            targetAngle = facingLeft ? 360 : 0;
+        }
+
+        double deltaAngle = ((targetAngle - currentAngle + 540) % 360) - 180;
+        currentAngle += deltaAngle / 10;
+
+        gc.save();
+        gc.translate(x, y);
+        gc.rotate(currentAngle);
+
+        gc.drawImage(facingLeft ? leftTexture : rightTexture,
+                -renderSize / 2,
+                -renderSize / 2,
                 renderSize,
                 renderSize);
+
+        gc.restore();
     }
-    
+
     public double getVelocityX() {
         return velocityX;
     }
