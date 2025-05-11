@@ -5,13 +5,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import splash.entities.*;
+import splash.utils.GameManager;
+
 import java.util.*;
 
 public class GameEngine extends AnimationTimer {
-    private static final double DEAD_ZONE_WIDTH = 400;
-    private static final double DEAD_ZONE_HEIGHT = 300;
-    private static final double CAMERA_LERP_FACTOR = 0.1;
-    
     private final double baseWidth;
     private final double baseHeight;
     private final Canvas canvas;
@@ -32,8 +30,8 @@ public class GameEngine extends AnimationTimer {
         this.world = world;
         this.canvas = canvas;
         this.gc = canvas.getGraphicsContext2D();
-        this.baseWidth = 1280;
-        this.baseHeight = 720;
+        this.baseWidth = GameManager.getGameWidth();
+        this.baseHeight = GameManager.getGameHeight();
         this.camX = baseWidth / 2;
         this.camY = baseHeight / 2;
         this.scaleX = canvas.getWidth() / baseWidth;
@@ -179,30 +177,8 @@ public class GameEngine extends AnimationTimer {
     }
 
     private void updateCameraPosition(double deltaTime) {
-        double playerX = player.getX();
-        double playerY = player.getY();
-
-        if (camX == baseWidth / 2 && camY == baseHeight / 2) {
-            camX = playerX;
-            camY = playerY;
-        }
-
-        double desiredCamX = camX;
-        if (playerX < camX - DEAD_ZONE_WIDTH / 2) {
-            desiredCamX = playerX + DEAD_ZONE_WIDTH / 2;
-        } else if (playerX > camX + DEAD_ZONE_WIDTH / 2) {
-            desiredCamX = playerX - DEAD_ZONE_WIDTH / 2;
-        }
-
-        double desiredCamY = camY;
-        if (playerY < camY - DEAD_ZONE_HEIGHT / 2) {
-            desiredCamY = playerY + DEAD_ZONE_HEIGHT / 2;
-        } else if (playerY > camY + DEAD_ZONE_HEIGHT / 2) {
-            desiredCamY = playerY - DEAD_ZONE_HEIGHT / 2;
-        }
-
-        camX += (desiredCamX - camX) * CAMERA_LERP_FACTOR;
-        camY += (desiredCamY - camY) * CAMERA_LERP_FACTOR;
+        this.camX += (player.getX() - camX) * deltaTime;
+        this.camY += (player.getY() - camY) * deltaTime * 2;
     }
 
     public void setScale(double scaleX, double scaleY) {

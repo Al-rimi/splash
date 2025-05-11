@@ -10,6 +10,8 @@ public final class GameManager {
     private static Stage primaryStage;
     private static GameScreen gameScreen;
     private static Player player;
+    private static final double GAME_WIDTH = 1280;
+    private static final double GAME_HEIGHT = 720;
     
     public static void init(Stage stage) {
         primaryStage = stage;
@@ -50,5 +52,13 @@ public final class GameManager {
     
     public static Player getPlayer() {
         return player;
+    }
+
+    public static int getGameWidth() {
+        return (int) GAME_WIDTH;
+    }
+
+    public static int getGameHeight() {
+        return (int) GAME_HEIGHT;
     }
 }

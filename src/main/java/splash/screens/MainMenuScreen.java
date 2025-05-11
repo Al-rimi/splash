@@ -9,6 +9,7 @@ import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
 
 public class MainMenuScreen {
+    
     public Scene createScene() {
         VBox layout = new VBox(20);
         layout.setAlignment(Pos.CENTER);
@@ -19,6 +20,7 @@ public class MainMenuScreen {
         Button btnExit = this.createMenuButton("exit", () -> System.exit(0));
         
         layout.getChildren().addAll(btnSettings, btnStart, btnExit);
+        layout.setPrefSize(GameManager.getGameWidth(), GameManager.getGameHeight());
         Scene scene = new Scene(layout);
         scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
         

@@ -35,7 +35,7 @@ public class GameScreen {
 
     public GameScreen(Player player) {
         this.player = player;
-        this.gameCanvas = new Canvas(1280, 720);
+        this.gameCanvas = new Canvas(GameManager.getGameWidth(), GameManager.getGameHeight());
         this.gameEngine = new GameEngine(player, world, gameCanvas);
         this.spawnTimer = new Timeline(new KeyFrame(Duration.seconds(3), e -> spawnEntities()));
         spawnTimer.setCycleCount(Animation.INDEFINITE);
@@ -65,7 +65,7 @@ public class GameScreen {
         Stream.of(healthLabel, levelLabel, pointsLabel, coinsLabel)
                 .forEach(label -> label.getStyleClass().add("hud-label"));
 
-        stopButton.getStyleClass().add("nav-button"); // Add nav-button styling
+        stopButton.getStyleClass().add("nav-button");
 
         hud.getChildren().addAll(healthLabel, levelLabel,
                 pointsLabel, coinsLabel, stopButton);
@@ -85,17 +85,14 @@ public class GameScreen {
     }
 
     private void spawnEntities() {
-        // Spawn enemies
         if (Math.random() < 0.7) {
             spawnEntityAroundPlayer(SPAWN_RADIUS, true);
         }
 
-        // Spawn food
         if (Math.random() < 0.5) {
             spawnEntityAroundPlayer(SPAWN_RADIUS, false);
         }
 
-        // Despawn distant entities
         cleanupDistantEntities(DESPAWN_RADIUS);
     }
 
