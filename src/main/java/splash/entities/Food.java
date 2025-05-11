@@ -2,7 +2,6 @@ package splash.entities;
 
 import javafx.scene.canvas.GraphicsContext;
 import splash.utils.Vector2D;
-import splash.utils.ResourceManager;
 import javafx.scene.image.Image;
 
 public class Food extends Fish {
@@ -13,13 +12,12 @@ public class Food extends Fish {
     private static final double FLEE_SPEED = 100;
     private final int value;
 
-    public Food(Player player, double x, double y, int value) {
+    public Food(Player player, double x, double y, Image leftImage, Image rightImage) {
         this.player = player;
-        int fishType = (int)(Math.random() * 15) + 1;
-        leftImage = ResourceManager.getFoodImage(fishType, true);
-        rightImage = ResourceManager.getFoodImage(fishType, false);
-        this.size = 30;
-        this.value = value;
+        this.leftImage = leftImage;
+        this.rightImage = rightImage;
+        this.size = player.getSize() * 0.5;
+        this.value = (int) (Math.random() * 10) + 5;
         setPosition(x, y);
         addTag("food");
         setHitboxOffset(-size/2, -size/2);

@@ -2,7 +2,7 @@ package splash.application;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import splash.utils.GameManager;
+import splash.core.GameManager;
 
 public class App extends Application {
     @Override

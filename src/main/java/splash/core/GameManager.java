@@ -1,10 +1,10 @@
-package splash.utils;
+package splash.core;
 
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import splash.data.PlayerProfile;
 import splash.entities.Player;
 import splash.screens.*;
-import javafx.scene.image.Image;
 
 public final class GameManager {
     private static Stage primaryStage;

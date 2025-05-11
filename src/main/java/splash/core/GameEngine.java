@@ -1,13 +1,15 @@
-package splash.engine;
+package splash.core;
 
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import splash.entities.*;
-import splash.utils.GameManager;
-
-import java.util.*;
 
 public class GameEngine extends AnimationTimer {
     private final double baseWidth;
@@ -32,10 +34,10 @@ public class GameEngine extends AnimationTimer {
         this.gc = canvas.getGraphicsContext2D();
         this.baseWidth = GameManager.getGameWidth();
         this.baseHeight = GameManager.getGameHeight();
-        this.camX = baseWidth / 2;
-        this.camY = baseHeight / 2;
-        this.scaleX = canvas.getWidth() / baseWidth;
-        this.scaleY = canvas.getHeight() / baseHeight;
+        this.camX = baseWidth;
+        this.camY = baseHeight;
+        this.scaleX = baseWidth;
+        this.scaleY = baseHeight;
 
         this.collisionLayers.put("enemy", new ArrayList<>());
         this.collisionLayers.put("food", new ArrayList<>());
@@ -102,18 +104,20 @@ public class GameEngine extends AnimationTimer {
         double scale = Math.min(scaleX, scaleY);
         gc.scale(scale, scale);
 
-        double offsetX = (baseWidth - (baseWidth * (scaleX / scale))) / 2;
-        double offsetY = (baseHeight - (baseHeight * (scaleY / scale))) / 2;
-
         double cameraTranslateX = -camX + baseWidth / 2;
         double cameraTranslateY = -camY + baseHeight / 2;
-        gc.translate(offsetX + cameraTranslateX, offsetY + cameraTranslateY);
+
+        double canvasOffsetX = (canvas.getWidth() / scale - baseWidth) / 2;
+        double canvasOffsetY = (canvas.getHeight() / scale - baseHeight) / 2;
+        
+        gc.translate(cameraTranslateX + canvasOffsetX, cameraTranslateY + canvasOffsetY);
 
         world.getEntities().forEach(this::renderEntity);
         renderEntity(player);
 
         gc.restore();
     }
+
 
     private void clear() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -187,11 +191,10 @@ public class GameEngine extends AnimationTimer {
     }
 
     private void updateScale() {
-        double width = canvas.getWidth();
-        double height = canvas.getHeight();
-        scaleX = width / baseWidth;
-        scaleY = height / baseHeight;
-        player.updateScale(scaleX);
+        scaleX = canvas.getWidth() / baseWidth;
+        scaleY = canvas.getHeight() / baseHeight;
+
+        player.updateScale(scaleY);
         world.updateWorldScale(player.getScaledSize());
     }
     

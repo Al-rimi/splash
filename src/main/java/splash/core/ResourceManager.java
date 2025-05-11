@@ -1,8 +1,10 @@
-package splash.utils;
+package splash.core;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

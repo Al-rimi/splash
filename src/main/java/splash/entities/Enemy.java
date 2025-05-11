@@ -2,7 +2,6 @@ package splash.entities;
 
 import javafx.scene.canvas.GraphicsContext;
 import splash.utils.Vector2D;
-import splash.utils.ResourceManager;
 import javafx.scene.image.Image;
 
 public class Enemy extends Fish {
@@ -15,12 +14,11 @@ public class Enemy extends Fish {
     private double timeSinceLastDirectionChange = 0;
     private static final double DIRECTION_CHANGE_INTERVAL = 2.0;
 
-    public Enemy(Player player, double x, double y) {
+    public Enemy(Player player, double x, double y, Image leftImage, Image rightImage) {
         this.player = player;
-        int fishType = (int)(Math.random() * 15) + 1;
-        leftImage = ResourceManager.getEnemyImage(fishType, true);
-        rightImage = ResourceManager.getEnemyImage(fishType, false);
-        this.size = 40;
+        this.leftImage = leftImage;
+        this.rightImage = rightImage;
+        this.size = player.getSize() * 2;
         setPosition(x, y);
         addTag("enemy");
         setHitboxOffset(-size/2, -size/2);

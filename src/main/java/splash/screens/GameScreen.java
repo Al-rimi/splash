@@ -1,7 +1,5 @@
 package splash.screens;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Stream;
 
 import javafx.animation.Animation;
@@ -18,10 +16,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
-import splash.engine.GameEngine;
+import splash.core.GameEngine;
+import splash.core.GameManager;
+import splash.core.ResourceManager;
 import splash.entities.*;
-import splash.utils.GameManager;
-import splash.utils.ResourceManager;
 
 public class GameScreen {
     private final Player player;
@@ -39,7 +37,7 @@ public class GameScreen {
         this.gameEngine = new GameEngine(player, world, gameCanvas);
         this.spawnTimer = new Timeline(new KeyFrame(Duration.seconds(3), e -> spawnEntities()));
         spawnTimer.setCycleCount(Animation.INDEFINITE);
-        setupWorld();
+        // setupWorld();
     }
 
     private void createHUD() {
@@ -80,61 +78,48 @@ public class GameScreen {
         return label;
     }
 
-    private void setupWorld() {
-        world.spawnEntity(new Enemy(player, 200, 200));
-    }
+    // private void setupWorld() {
+    // }
 
     private void spawnEntities() {
-        if (Math.random() < 0.7) {
-            spawnEntityAroundPlayer(SPAWN_RADIUS, true);
-        }
-
-        if (Math.random() < 0.5) {
-            spawnEntityAroundPlayer(SPAWN_RADIUS, false);
-        }
-
-        cleanupDistantEntities(DESPAWN_RADIUS);
-    }
-
-    private void spawnEntityAroundPlayer(double radius, boolean isEnemy) {
         double dx = player.getVelocityX();
         double dy = player.getVelocityY();
         double length = Math.sqrt(dx * dx + dy * dy);
-        double distance = 200 + Math.random() * radius;
+        double distance = 200 + Math.random() * SPAWN_RADIUS;
         double angle = Math.random() * 2 * Math.PI;
         double dirX = (length == 0 ? Math.cos(angle) : dx / length);
         double dirY = (length == 0 ? Math.cos(angle) : dy / length);
         double x = player.getX() + dirX * distance;
         double y = player.getY() + dirY * distance;
+        int fishType = (int)(Math.random() * 15) + 1;
 
-        if (isEnemy) {
-            world.spawnEntity(new Enemy(player, x, y));
-        } else {
-            world.spawnEntity(new Food(player, x, y, (int) (Math.random() * 10) + 5));
+        double spawnRate = Math.random();
+
+        if (spawnRate < 0.3) {
+            world.spawnEntity(new Enemy(player, x, y, ResourceManager.getEnemyImage(fishType, true), ResourceManager.getEnemyImage(fishType, false)));
         }
+        if (Math.random() < 0.8) {
+            world.spawnEntity(new Food(player, x, y, ResourceManager.getFoodImage(fishType, true), ResourceManager.getFoodImage(fishType, false)));
+        }
+
+        cleanupDistantEntities();
     }
 
-    private void cleanupDistantEntities(double despawnRadius) {
-        List<Fish> toRemove = new ArrayList<>();
-        double despawnSq = despawnRadius * despawnRadius;
-
+    private void cleanupDistantEntities() {
         for (Fish entity : world.getEntities()) {
-            if (entity instanceof Player)
-                continue;
+            if (entity instanceof Player) continue;
 
             double dx = entity.getX() - player.getX();
             double dy = entity.getY() - player.getY();
-            if (dx * dx + dy * dy > despawnSq) {
-                toRemove.add(entity);
+            if (dx * dx + dy * dy > DESPAWN_RADIUS * DESPAWN_RADIUS) {
+                world.removeEntity(entity);
             }
         }
-
-        toRemove.forEach(world::removeEntity);
     }
 
     public Scene createScene() {
         StackPane rootContainer = new StackPane();
-        rootContainer.getStyleClass().add("game-container"); // Add if you need additional styling
+        rootContainer.getStyleClass().add("game-container");
         gameCanvas.getStyleClass().add("game-canvas");
         gameCanvas.widthProperty().bind(rootContainer.widthProperty());
         gameCanvas.heightProperty().bind(rootContainer.heightProperty());

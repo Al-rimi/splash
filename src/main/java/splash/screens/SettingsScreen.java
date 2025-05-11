@@ -1,7 +1,7 @@
 package splash.screens;
 
-import splash.utils.GameManager;
-import splash.utils.ResourceManager;
+import splash.core.GameManager;
+import splash.core.ResourceManager;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
