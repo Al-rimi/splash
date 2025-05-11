@@ -35,7 +35,7 @@ public class GameScreen {
         this.player = player;
         this.gameCanvas = new Canvas(GameManager.getGameWidth(), GameManager.getGameHeight());
         this.gameEngine = new GameEngine(player, world, gameCanvas);
-        this.spawnTimer = new Timeline(new KeyFrame(Duration.seconds(3), e -> spawnEntities()));
+        this.spawnTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> spawnEntities()));
         spawnTimer.setCycleCount(Animation.INDEFINITE);
         // setupWorld();
     }

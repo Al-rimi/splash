@@ -1,16 +1,9 @@
 package splash.entities;
 
 import javafx.beans.property.*;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public class Player extends Fish {
-    private double currentAngle = 0;
-    private double velocityX = 0;
-    private double velocityY = 0;
-    private final Image leftTexture;
-    private final Image rightTexture;
-
     private final IntegerProperty health = new SimpleIntegerProperty(100);
     private final IntegerProperty level = new SimpleIntegerProperty(1);
     private final IntegerProperty points = new SimpleIntegerProperty(0);
@@ -19,6 +12,27 @@ public class Player extends Fish {
     private final BooleanProperty movingDown = new SimpleBooleanProperty();
     private final BooleanProperty movingLeft = new SimpleBooleanProperty();
     private final BooleanProperty movingRight = new SimpleBooleanProperty();
+
+    public Player(Image leftTexture, Image rightTexture, double baseWidth, double baseHeight) {
+        super(50);
+        this.leftTexture = leftTexture;
+        this.rightTexture = rightTexture;
+        setPosition(baseWidth / 2, baseHeight / 2);
+        addTag("player");
+    }
+
+    @Override
+    public void update(double deltaTime) {
+        velocityX = (movingLeft.get() ? -300 : 0) + (movingRight.get() ? 300 : 0);
+        velocityY = (movingUp.get() ? -300 : 0) + (movingDown.get() ? 300 : 0);
+        if (velocityX != 0) {
+            facingLeft = velocityX < 0;
+        }
+
+        x += velocityX * deltaTime;
+        y += velocityY * deltaTime;
+        setPosition(x, y);
+    }
 
     public IntegerProperty healthProperty() {
         return health;
@@ -36,46 +50,8 @@ public class Player extends Fish {
         return coins;
     }
 
-    public Player(Image leftTexture, Image rightTexture, double baseWidth, double baseHeight) {
-        this.leftTexture = leftTexture;
-        this.rightTexture = rightTexture;
-        this.size = 50;
-        setPosition(baseWidth / 2, baseHeight / 2);
-        addTag("player");
-        setHitboxOffset(-size / 2, -size / 2);
-    }
-
     public void addPoints(int points) {
         this.points.set(this.points.get() + points);
-    }
-
-    @Override
-    public void update(double deltaTime) {
-        double currentX = getX();
-        double currentY = getY();
-
-        velocityX = 0;
-        velocityY = 0;
-
-        if (movingLeft.get()) {
-            velocityX -= 300;
-            facingLeft = true;
-        }
-        if (movingRight.get()) {
-            velocityX += 300;
-            facingLeft = false;
-        }
-        if (movingUp.get()) {
-            velocityY -= 300;
-        }
-        if (movingDown.get()) {
-            velocityY += 300;
-        }
-
-        currentX += velocityX * deltaTime;
-        currentY += velocityY * deltaTime;
-
-        setPosition(currentX, currentY);
     }
 
     public void moveUp(boolean moving) {
@@ -92,32 +68,6 @@ public class Player extends Fish {
 
     public void moveRight(boolean moving) {
         movingRight.set(moving);
-    }
-
-    @Override
-    public void render(GraphicsContext gc) {
-        double renderSize = getScaledSize();
-
-        double targetAngle = Math.toDegrees(Math.atan2(velocityY, velocityX)) + (facingLeft ? 180 : 0);
-
-        if (velocityX == 0 && velocityY == 0) {
-            targetAngle = facingLeft ? 360 : 0;
-        }
-
-        double deltaAngle = ((targetAngle - currentAngle + 540) % 360) - 180;
-        currentAngle += deltaAngle / 10;
-
-        gc.save();
-        gc.translate(x, y);
-        gc.rotate(currentAngle);
-
-        gc.drawImage(facingLeft ? leftTexture : rightTexture,
-                -renderSize / 2,
-                -renderSize / 2,
-                renderSize,
-                renderSize);
-
-        gc.restore();
     }
 
     public double getVelocityX() {

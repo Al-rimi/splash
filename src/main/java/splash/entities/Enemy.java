@@ -1,69 +1,36 @@
 package splash.entities;
 
-import javafx.scene.canvas.GraphicsContext;
-import splash.utils.Vector2D;
 import javafx.scene.image.Image;
 
 public class Enemy extends Fish {
-    private final Player player;
-    private final Image leftImage;
-    private final Image rightImage;
-    private static final double SPEED = 150;
-    private static final double CHASE_RADIUS = 300;
-    private Vector2D randomDirection = new Vector2D();
-    private double timeSinceLastDirectionChange = 0;
+    private static final double SPEED = 200;
+    private static final double CHASE_RADIUS = 400;
     private static final double DIRECTION_CHANGE_INTERVAL = 2.0;
+    private final Player player;
 
-    public Enemy(Player player, double x, double y, Image leftImage, Image rightImage) {
+    public Enemy(Player player, double x, double y, Image leftTexture, Image rightTexture) {
+        super(player.getSize() * 2);
         this.player = player;
-        this.leftImage = leftImage;
-        this.rightImage = rightImage;
-        this.size = player.getSize() * 2;
+        this.leftTexture = leftTexture;
+        this.rightTexture = rightTexture;
         setPosition(x, y);
         addTag("enemy");
-        setHitboxOffset(-size/2, -size/2);
     }
 
     @Override
     public void update(double deltaTime) {
         double dx = player.getX() - x;
         double dy = player.getY() - y;
-        double distance = Math.sqrt(dx*dx + dy*dy);
+        double distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance <= CHASE_RADIUS) {
-            // Chase player
-            double length = Math.sqrt(dx*dx + dy*dy);
-            if (length > 0) {
-                dx /= length;
-                dy /= length;
-            }
-            facingLeft = dx < 0;
-            x += dx * SPEED * deltaTime;
-            y += dy * SPEED * deltaTime;
+            pursue(player.getX(), player.getY(), SPEED, 0.1);
         } else {
-            // Random movement
-            timeSinceLastDirectionChange += deltaTime;
-            if (timeSinceLastDirectionChange >= DIRECTION_CHANGE_INTERVAL) {
-                randomDirection.x = Math.random() * 2 - 1;
-                randomDirection.y = Math.random() * 2 - 1;
-                double length = Math.sqrt(randomDirection.x*randomDirection.x + randomDirection.y*randomDirection.y);
-                if (length > 0) {
-                    randomDirection.x /= length;
-                    randomDirection.y /= length;
-                }
-                timeSinceLastDirectionChange = 0;
-            }
-            facingLeft = randomDirection.x < 0;
-            x += randomDirection.x * SPEED * deltaTime;
-            y += randomDirection.y * SPEED * deltaTime;
+            wander(deltaTime, DIRECTION_CHANGE_INTERVAL, SPEED, 0.05);
         }
-        setPosition(x, y);
-    }
 
-    @Override
-    public void render(GraphicsContext gc) {
-        double renderSize = getScaledSize();
-        Image image = facingLeft ? leftImage : rightImage;
-        gc.drawImage(image, x - renderSize/2, y - renderSize/2, renderSize, renderSize);
+        x += velocityX * deltaTime;
+        y += velocityY * deltaTime;
+        setPosition(x, y);
     }
 }
