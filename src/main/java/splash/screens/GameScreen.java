@@ -30,8 +30,8 @@ public class GameScreen {
     private final Timeline spawnTimer;
     private HBox hud;
     private final GameEngine gameEngine;
-    private static final double SPAWN_RADIUS = 500;
-    private static final double DESPAWN_RADIUS = 1000;
+    private static final double SPAWN_RADIUS = 1000;
+    private static final double DESPAWN_RADIUS = 4000;
 
     public GameScreen(Player player) {
         this.player = player;
@@ -100,10 +100,15 @@ public class GameScreen {
     }
 
     private void spawnEntityAroundPlayer(double radius, boolean isEnemy) {
+        double dx = player.getVelocityX();
+        double dy = player.getVelocityY();
+        double length = Math.sqrt(dx * dx + dy * dy);
+        double distance = 200 + Math.random() * radius;
         double angle = Math.random() * 2 * Math.PI;
-        double distance = Math.random() * radius;
-        double x = player.getX() + Math.cos(angle) * distance;
-        double y = player.getY() + Math.sin(angle) * distance;
+        double dirX = (length == 0 ? Math.cos(angle) : dx / length);
+        double dirY = (length == 0 ? Math.cos(angle) : dy / length);
+        double x = player.getX() + dirX * distance;
+        double y = player.getY() + dirY * distance;
 
         if (isEnemy) {
             world.spawnEntity(new Enemy(player, x, y));

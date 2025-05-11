@@ -8,23 +8,23 @@ import splash.entities.*;
 import java.util.*;
 
 public class GameEngine extends AnimationTimer {
-    private static final double NANOS_PER_SECOND = 1_000_000_000.0;
-    private final Player player;
-    private final World world;
+    private static final double DEAD_ZONE_WIDTH = 400;
+    private static final double DEAD_ZONE_HEIGHT = 300;
+    private static final double CAMERA_LERP_FACTOR = 0.1;
+    
+    private final double baseWidth;
+    private final double baseHeight;
     private final Canvas canvas;
+    private final World world;
+    private final Player player;
     private final GraphicsContext gc;
     private final Map<String, List<Fish>> collisionLayers = new HashMap<>();
     private final Set<String> playerCollisionLayers = Set.of("enemy", "block", "food");
     private long lastUpdate = 0;
-    private double scaleX = 1.0;
-    private double scaleY = 1.0;
-    private final double baseWidth;
-    private final double baseHeight;
+    private double scaleX;
+    private double scaleY;
     private double camX;
     private double camY;
-    private static final double DEAD_ZONE_WIDTH = 400;
-    private static final double DEAD_ZONE_HEIGHT = 300;
-    private static final double CAMERA_LERP_FACTOR = 0.1;
     private StackPane rootContainer;
 
     public GameEngine(Player player, World world, Canvas canvas) {
@@ -53,7 +53,7 @@ public class GameEngine extends AnimationTimer {
             lastUpdate = now;
             return;
         }
-        double deltaTime = (now - lastUpdate) / NANOS_PER_SECOND;
+        double deltaTime = (now - lastUpdate) / 1_000_000_000.0;
         lastUpdate = now;
         update(deltaTime);
     }
@@ -218,6 +218,7 @@ public class GameEngine extends AnimationTimer {
         player.updateScale(scaleX);
         world.updateWorldScale(player.getScaledSize());
     }
+    
     public StackPane getRootContainer() {
         return rootContainer;
     }

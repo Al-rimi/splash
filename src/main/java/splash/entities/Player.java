@@ -5,6 +5,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public class Player extends Fish {
+    private double velocityX = 0;
+    private double velocityY = 0;
+
     private final IntegerProperty health = new SimpleIntegerProperty(100);
     private final IntegerProperty level = new SimpleIntegerProperty(1);
     private final IntegerProperty points = new SimpleIntegerProperty(0);
@@ -36,7 +39,7 @@ public class Player extends Fish {
         this.leftTexture = leftTexture;
         this.rightTexture = rightTexture;
         this.size = 50;
-        setPosition(baseWidth/2, baseHeight/2);
+        setPosition(baseWidth / 2, baseHeight / 2);
         addTag("player");
         setHitboxOffset(-size / 2, -size / 2);
     }
@@ -46,18 +49,26 @@ public class Player extends Fish {
         double currentX = getX();
         double currentY = getY();
 
+        velocityX = 0;
+        velocityY = 0;
+
         if (movingLeft.get()) {
-            currentX -= 300 * deltaTime;
+            velocityX -= 300;
             facingLeft = true;
         }
         if (movingRight.get()) {
-            currentX += 300 * deltaTime;
+            velocityX += 300;
             facingLeft = false;
         }
-        if (movingUp.get())
-            currentY -= 300 * deltaTime;
-        if (movingDown.get())
-            currentY += 300 * deltaTime;
+        if (movingUp.get()) {
+            velocityY -= 300;
+        }
+        if (movingDown.get()) {
+            velocityY += 300;
+        }
+
+        currentX += velocityX * deltaTime;
+        currentY += velocityY * deltaTime;
 
         setPosition(currentX, currentY);
     }
@@ -88,4 +99,13 @@ public class Player extends Fish {
                 renderSize,
                 renderSize);
     }
+    
+    public double getVelocityX() {
+        return velocityX;
+    }
+
+    public double getVelocityY() {
+        return velocityY;
+    }
+
 }

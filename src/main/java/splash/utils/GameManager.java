@@ -11,8 +11,6 @@ public final class GameManager {
     private static GameScreen gameScreen;
     private static Player player;
     
-    private GameManager() {}
-    
     public static void init(Stage stage) {
         primaryStage = stage;
         primaryStage.setTitle("Splash");
