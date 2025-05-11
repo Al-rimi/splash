@@ -2,6 +2,7 @@ package splash.screens;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -38,12 +39,12 @@ public class GameScreen {
         this.gameEngine = new GameEngine(player, world, gameCanvas);
         this.spawnTimer = new Timeline(new KeyFrame(Duration.seconds(3), e -> spawnEntities()));
         spawnTimer.setCycleCount(Animation.INDEFINITE);
-
         setupWorld();
     }
 
     private void createHUD() {
         hud = new HBox(20);
+        hud.getStyleClass().add("hud");
         hud.setPadding(new Insets(10));
         hud.setAlignment(Pos.TOP_LEFT);
 
@@ -61,6 +62,11 @@ public class GameScreen {
             GameManager.showMainMenu();
         });
 
+        Stream.of(healthLabel, levelLabel, pointsLabel, coinsLabel)
+                .forEach(label -> label.getStyleClass().add("hud-label"));
+
+        stopButton.getStyleClass().add("nav-button"); // Add nav-button styling
+
         hud.getChildren().addAll(healthLabel, levelLabel,
                 pointsLabel, coinsLabel, stopButton);
     }
@@ -72,33 +78,6 @@ public class GameScreen {
                         property,
                         ResourceManager.currentLocaleProperty()));
         return label;
-    }
-
-    private void setupInputHandling(StackPane rootContainer) {
-        rootContainer.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-
-        rootContainer.setOnKeyPressed(e -> {
-            switch (e.getCode()) {
-                case W:
-                case UP:
-                    player.moveUp(true);
-                    break;
-                case S:
-                case DOWN:
-                    player.moveDown(true);
-                    break;
-                case A:
-                case LEFT:
-                    player.moveLeft(true);
-                    break;
-                case D:
-                case RIGHT:
-                    player.moveRight(true);
-                    break;
-                default:
-                    break;
-            }
-        });
     }
 
     private void setupWorld() {
@@ -153,6 +132,8 @@ public class GameScreen {
 
     public Scene createScene() {
         StackPane rootContainer = new StackPane();
+        rootContainer.getStyleClass().add("game-container"); // Add if you need additional styling
+        gameCanvas.getStyleClass().add("game-canvas");
         gameCanvas.widthProperty().bind(rootContainer.widthProperty());
         gameCanvas.heightProperty().bind(rootContainer.heightProperty());
 
@@ -160,9 +141,8 @@ public class GameScreen {
         rootContainer.getChildren().addAll(gameCanvas, hud);
 
         rootContainer.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        rootContainer.setStyle("-fx-background-color: linear-gradient(to bottom right, #1a237e, #0d47a1);");
 
-        setupInputHandling(rootContainer);
+        gameEngine.setRootContainer(rootContainer);
         rootContainer.requestFocus();
 
         gameEngine.start();

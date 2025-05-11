@@ -102,10 +102,8 @@ public class SettingsScreen {
     private Button createLanguageButton(String text, String langCode, String color) {
         Button btn = new Button(text);
         btn.getStyleClass().add("lang-button");
-        btn.setStyle("-fx-background-color: " + color + ";");
         btn.setOnAction(e -> ResourceManager.loadLanguage(langCode));
         
-        // Dynamic sizing
         btn.prefWidthProperty().bind(btn.heightProperty().multiply(3));
         btn.minWidth(120);
         return btn;

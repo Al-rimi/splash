@@ -14,21 +14,13 @@ public class MainMenuScreen {
         layout.setAlignment(Pos.CENTER);
         layout.getStyleClass().add("menu-container");
         
-        // Create buttons with actions
         Button btnStart = this.createMenuButton("start_game", () -> GameManager.startGame());
-        Button btnSettings = createMenuButton("settings", () -> GameManager.showSettingsScreen());
-        Button btnExit = createMenuButton("exit", () -> System.exit(0));
+        Button btnSettings = this.createMenuButton("settings", () -> GameManager.showSettingsScreen());
+        Button btnExit = this.createMenuButton("exit", () -> System.exit(0));
         
         layout.getChildren().addAll(btnSettings, btnStart, btnExit);
         Scene scene = new Scene(layout);
         scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        
-        // Responsive font sizing
-        layout.styleProperty().bind(Bindings.concat(
-            "-fx-font-size: ", 
-            scene.widthProperty().divide(50).asString(), 
-            "px;"
-        ));
         
         return scene;
     }
