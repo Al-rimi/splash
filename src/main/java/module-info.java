@@ -6,5 +6,5 @@ module splash {
     
     exports splash.application;
     exports splash.entities;
-    exports splash.managers;
+    exports splash.utils;
 }

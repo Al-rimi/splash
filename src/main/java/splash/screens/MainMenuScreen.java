@@ -3,8 +3,8 @@ package splash.screens;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
-import splash.managers.GameManager;
-import splash.managers.ResourceManager;
+import splash.utils.GameManager;
+import splash.utils.ResourceManager;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
 

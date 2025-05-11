@@ -14,6 +14,7 @@ public abstract class Fish {
     protected Set<String> tags = new HashSet<>();
     protected double hitboxOffsetX = 0;
     protected double hitboxOffsetY = 0;
+    protected boolean facingLeft = false;
 
     public abstract void update(double deltaTime);
 
@@ -37,6 +38,10 @@ public abstract class Fish {
                 y - scaledSize / 2 + hitboxOffsetY,
                 scaledSize,
                 scaledSize);
+    }
+
+    public boolean isFacingLeft() {
+        return facingLeft;
     }
 
     public void setHitboxOffset(double x, double y) {

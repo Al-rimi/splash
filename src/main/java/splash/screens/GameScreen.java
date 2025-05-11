@@ -1,5 +1,8 @@
 package splash.screens;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -16,8 +19,8 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import splash.engine.GameEngine;
 import splash.entities.*;
-import splash.managers.GameManager;
-import splash.managers.ResourceManager;
+import splash.utils.GameManager;
+import splash.utils.ResourceManager;
 
 public class GameScreen {
     private final Player player;
@@ -25,16 +28,17 @@ public class GameScreen {
     private final World world = new World();
     private final Timeline spawnTimer;
     private HBox hud;
-    private final double baseWidth = 1280;
-    private final double baseHeight = 720;
     private final GameEngine gameEngine;
+    private static final double SPAWN_RADIUS = 500;
+    private static final double DESPAWN_RADIUS = 1000;
 
     public GameScreen(Player player) {
         this.player = player;
-        this.gameCanvas = new Canvas();
-        this.gameEngine = new GameEngine(player, world, gameCanvas);        
-        this.spawnTimer = new Timeline(new KeyFrame(Duration.seconds(3), e -> spawnEntities()));        spawnTimer.setCycleCount(Animation.INDEFINITE);
-        
+        this.gameCanvas = new Canvas(1280, 720);
+        this.gameEngine = new GameEngine(player, world, gameCanvas);
+        this.spawnTimer = new Timeline(new KeyFrame(Duration.seconds(3), e -> spawnEntities()));
+        spawnTimer.setCycleCount(Animation.INDEFINITE);
+
         setupWorld();
     }
 
@@ -102,15 +106,49 @@ public class GameScreen {
     }
 
     private void spawnEntities() {
+        // Spawn enemies
         if (Math.random() < 0.7) {
-            Enemy enemy = new Enemy(player, Math.random() * baseWidth * 2, Math.random() * baseHeight * 2);
-            world.spawnEntity(enemy);
+            spawnEntityAroundPlayer(SPAWN_RADIUS, true);
         }
 
+        // Spawn food
         if (Math.random() < 0.5) {
-            Food food = new Food(Math.random() * baseWidth * 2, Math.random() * baseHeight * 2, (int) (Math.random() * 10) + 5);
-            world.spawnEntity(food);
+            spawnEntityAroundPlayer(SPAWN_RADIUS, false);
         }
+
+        // Despawn distant entities
+        cleanupDistantEntities(DESPAWN_RADIUS);
+    }
+
+    private void spawnEntityAroundPlayer(double radius, boolean isEnemy) {
+        double angle = Math.random() * 2 * Math.PI;
+        double distance = Math.random() * radius;
+        double x = player.getX() + Math.cos(angle) * distance;
+        double y = player.getY() + Math.sin(angle) * distance;
+
+        if (isEnemy) {
+            world.spawnEntity(new Enemy(player, x, y));
+        } else {
+            world.spawnEntity(new Food(player, x, y, (int) (Math.random() * 10) + 5));
+        }
+    }
+
+    private void cleanupDistantEntities(double despawnRadius) {
+        List<Fish> toRemove = new ArrayList<>();
+        double despawnSq = despawnRadius * despawnRadius;
+
+        for (Fish entity : world.getEntities()) {
+            if (entity instanceof Player)
+                continue;
+
+            double dx = entity.getX() - player.getX();
+            double dy = entity.getY() - player.getY();
+            if (dx * dx + dy * dy > despawnSq) {
+                toRemove.add(entity);
+            }
+        }
+
+        toRemove.forEach(world::removeEntity);
     }
 
     public Scene createScene() {

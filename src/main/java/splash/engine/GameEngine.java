@@ -19,16 +19,23 @@ public class GameEngine extends AnimationTimer {
     private double scaleY = 1.0;
     private final double baseWidth;
     private final double baseHeight;
+    private double camX;
+    private double camY;
+    private static final double DEAD_ZONE_WIDTH = 400;
+    private static final double DEAD_ZONE_HEIGHT = 300;
+    private static final double CAMERA_LERP_FACTOR = 0.1;
 
     public GameEngine(Player player, World world, Canvas canvas) {
         this.player = player;
         this.world = world;
         this.canvas = canvas;
         this.gc = canvas.getGraphicsContext2D();
-        this.baseWidth = canvas.getWidth();
-        this.baseHeight = canvas.getHeight();
+        this.baseWidth = 1280;
+        this.baseHeight = 720;
+        this.camX = baseWidth / 2;
+        this.camY = baseHeight / 2;
         initCollisionLayers();
-        
+
         canvas.widthProperty().addListener((obs, oldVal, newVal) -> updateScale());
         canvas.heightProperty().addListener((obs, oldVal, newVal) -> updateScale());
     }
@@ -53,6 +60,7 @@ public class GameEngine extends AnimationTimer {
     private void update(double deltaTime) {
         player.update(deltaTime);
         world.getEntities().forEach(e -> e.update(deltaTime));
+        updateCameraPosition(deltaTime);
         checkCollisions();
         renderFrame();
     }
@@ -79,7 +87,8 @@ public class GameEngine extends AnimationTimer {
     private void checkPlayerCollisions() {
         for (String layer : playerCollisionLayers) {
             List<Fish> entities = collisionLayers.get(layer);
-            if (entities == null) continue;
+            if (entities == null)
+                continue;
             for (Fish entity : entities) {
                 if (checkCollision(player, entity)) {
                     handleCollision(player, entity);
@@ -113,14 +122,17 @@ public class GameEngine extends AnimationTimer {
         clear();
         gc.save();
         
-        // Apply proper scaling and centering
         double scale = Math.min(scaleX, scaleY);
         gc.scale(scale, scale);
-        
-        // Calculate offset for centering
-        double offsetX = (baseWidth - (baseWidth * (scaleX/scale))) / 2;
-        double offsetY = (baseHeight - (baseHeight * (scaleY/scale))) / 2;
-        gc.translate(offsetX, offsetY);
+
+        // Calculate offsets for letterboxing
+        double offsetX = (baseWidth - (baseWidth * (scaleX / scale))) / 2;
+        double offsetY = (baseHeight - (baseHeight * (scaleY / scale))) / 2;
+
+        // Apply camera translation
+        double cameraTranslateX = -camX + baseWidth / 2;
+        double cameraTranslateY = -camY + baseHeight / 2;
+        gc.translate(offsetX + cameraTranslateX, offsetY + cameraTranslateY);
 
         // Render entities
         world.getEntities().forEach(this::renderEntity);
@@ -143,6 +155,36 @@ public class GameEngine extends AnimationTimer {
         }
     }
 
+    private void updateCameraPosition(double deltaTime) {
+        double playerX = player.getX();
+        double playerY = player.getY();
+
+        // Keep camera centered on player at start
+        if(camX == baseWidth/2 && camY == baseHeight/2) {
+            camX = playerX;
+            camY = playerY;
+        }
+
+        // Calculate desired camera position based on dead zone
+        double desiredCamX = camX;
+        if (playerX < camX - DEAD_ZONE_WIDTH / 2) {
+            desiredCamX = playerX + DEAD_ZONE_WIDTH / 2;
+        } else if (playerX > camX + DEAD_ZONE_WIDTH / 2) {
+            desiredCamX = playerX - DEAD_ZONE_WIDTH / 2;
+        }
+
+        double desiredCamY = camY;
+        if (playerY < camY - DEAD_ZONE_HEIGHT / 2) {
+            desiredCamY = playerY + DEAD_ZONE_HEIGHT / 2;
+        } else if (playerY > camY + DEAD_ZONE_HEIGHT / 2) {
+            desiredCamY = playerY - DEAD_ZONE_HEIGHT / 2;
+        }
+
+        // Smoothly interpolate camera position
+        camX += (desiredCamX - camX) * CAMERA_LERP_FACTOR;
+        camY += (desiredCamY - camY) * CAMERA_LERP_FACTOR;
+    }
+
     public void setScale(double scaleX, double scaleY) {
         this.scaleX = scaleX;
         this.scaleY = scaleY;
@@ -155,5 +197,13 @@ public class GameEngine extends AnimationTimer {
         scaleY = height / baseHeight;
         player.updateScale(scaleX);
         world.updateWorldScale(player.getScaledSize());
+    }
+
+    public double getBaseWidth() {
+        return baseWidth;
+    }
+
+    public double getBaseHeight() {
+        return baseHeight;
     }
 }
