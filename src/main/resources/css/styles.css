@@ -126,7 +126,6 @@
 }
 
 .hud {
-    -fx-background-color: rgba(0, 0, 0, 0.75);
     -fx-background-radius: 8px;
     -fx-padding: 12px 20px;
     -fx-spacing: 15px;
@@ -171,4 +170,82 @@
 .button:pressed {
     -fx-scale-x: 0.95;
     -fx-scale-y: 0.95;
+}
+
+/* ==================== */
+/* == Depth Darkness == */
+/* ==================== */
+
+.game-canvas {
+    -fx-effect: 
+        /* Base water tint */
+        dropshadow(gaussian, rgba(0,50,150,0.3), 30, 0.7, 0, 0),
+        
+        /* Depth-based shadow */
+        innershadow(gaussian, derive(#000000, -20%), 30, 0.5, 0, 0),
+        
+        /* Surface light scattering */
+        blend(
+            src-over,
+            dropshadow(gaussian, rgba(173, 216, 230, 0.15), 60, 0.8, 0, 0),
+            multiply
+        );
+}
+
+/* Enhanced light rays animation */
+@keyframes light-rays {
+    0% { -fx-background-position: 0 0, 100% 100%, 50% 20%; }
+    100% { -fx-background-position: 100% 100%, 0 0, 80% 90%; }
+}
+
+@keyframes caustics {
+    0% { opacity: 0.3; }
+    50% { opacity: 0.5; }
+    100% { opacity: 0.3; }
+}
+
+.game-container {
+    -fx-background-color: 
+        /* Deep water gradient */
+        linear-gradient(to bottom, 
+            rgba(0,40,80,0.2) 0%,
+            rgba(0,0,0,0.7) 70%,
+            rgba(0,0,0,0.9) 100%),
+        
+        /* Dynamic caustic patterns */
+        repeating-linear-gradient(
+            45deg,
+            rgba(0,150,255,0.1) 0%,
+            transparent 5%,
+            transparent 10%,
+            rgba(0,150,255,0.1) 15%),
+        
+        /* Surface light ripples */
+        radial-gradient(
+            circle at 50% 20%,
+            rgba(173, 216, 230, 0.15) 0%,
+            transparent 30%);
+    
+    -fx-background-size: 
+        auto, /* For water gradient */
+        200px 200px, /* Caustic pattern size */
+        100% 100%; /* Light ripple size */
+    
+    -fx-animation: 
+        light-rays 40s linear infinite,
+        caustics 6s ease-in-out infinite;
+}
+
+/* Depth-based overlay (will be controlled via Java code) */
+.depth-overlay {
+    -fx-background-color: 
+        linear-gradient(to bottom, 
+            transparent 30%,
+            rgba(0,0,0,0.4) 60%,
+            rgba(0,0,0,0.8) 100%),
+        radial-gradient(
+            circle at center,
+            transparent 30%,
+            rgba(0,0,0,0.6) 80%);
+    -fx-blend-mode: multiply;
 }

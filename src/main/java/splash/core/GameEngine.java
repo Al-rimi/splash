@@ -21,6 +21,7 @@ public class GameEngine extends AnimationTimer {
     private final Map<String, List<Fish>> collisionLayers = new HashMap<>();
     private final Set<String> playerCollisionLayers = Set.of("enemy", "block", "food");
     private long lastUpdate = 0;
+    private double depthEffectAlpha = 0;
     private double scaleX;
     private double scaleY;
     private double camX;
@@ -63,6 +64,7 @@ public class GameEngine extends AnimationTimer {
         setupInputHandling();
         world.getEntities().forEach(e -> e.update(deltaTime));
         updateCameraPosition(deltaTime);
+        updateDepthEffect();  // Add this line
         checkCollisions();
         renderFrame();
     }
@@ -116,6 +118,8 @@ public class GameEngine extends AnimationTimer {
         renderEntity(player);
 
         gc.restore();
+        gc.setFill(javafx.scene.paint.Color.rgb(0, 0, 0, depthEffectAlpha));
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
 
@@ -178,6 +182,11 @@ public class GameEngine extends AnimationTimer {
                     break;
             }
         });
+    }
+
+    private void updateDepthEffect() {
+        double depth = (camY * 2 - baseHeight) / 10000.0;
+        depthEffectAlpha = (depth > 1.0 ? 0.95 : (depth <= 0 ? 0 : depth * 0.95));
     }
 
     private void updateCameraPosition(double deltaTime) {

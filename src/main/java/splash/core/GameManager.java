@@ -7,11 +7,11 @@ import splash.entities.Player;
 import splash.screens.*;
 
 public final class GameManager {
+    private static final double GAME_WIDTH = 1280;
+    private static final double GAME_HEIGHT = 720;
     private static Stage primaryStage;
     private static GameScreen gameScreen;
     private static Player player;
-    private static final double GAME_WIDTH = 1280;
-    private static final double GAME_HEIGHT = 720;
     
     public static void init(Stage stage) {
         primaryStage = stage;
