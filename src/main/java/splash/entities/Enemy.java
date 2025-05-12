@@ -6,6 +6,7 @@ public class Enemy extends Fish {
     private static final double SPEED = 200;
     private static final double CHASE_RADIUS = 400;
     private static final double DIRECTION_CHANGE_INTERVAL = 2.0;
+
     private final Player player;
 
     public Enemy(Player player, double x, double y, Image leftTexture, Image rightTexture) {
@@ -21,7 +22,7 @@ public class Enemy extends Fish {
     public void update(double deltaTime) {
         double dx = player.getX() - x;
         double dy = player.getY() - y;
-        double distance = Math.sqrt(dx * dx + dy * dy);
+        double distance = Math.hypot(dx, dy);
 
         if (distance <= CHASE_RADIUS) {
             pursue(player.getX(), player.getY(), SPEED, 0.1);
@@ -29,6 +30,10 @@ public class Enemy extends Fish {
             wander(deltaTime, DIRECTION_CHANGE_INTERVAL, SPEED, 0.05);
         }
 
+        updatePosition(deltaTime);
+    }
+
+    private void updatePosition(double deltaTime) {
         x += velocityX * deltaTime;
         y += velocityY * deltaTime;
         setPosition(x, y);

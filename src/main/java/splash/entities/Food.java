@@ -6,6 +6,7 @@ public class Food extends Fish {
     private static final double FLEE_RADIUS = 400;
     private static final double FLEE_SPEED = 200;
     private static final double DIRECTION_CHANGE_INTERVAL = 3.0;
+
     private final Player player;
     private final int value;
 
@@ -23,7 +24,7 @@ public class Food extends Fish {
     public void update(double deltaTime) {
         double dx = player.getX() - x;
         double dy = player.getY() - y;
-        double distance = Math.sqrt(dx * dx + dy * dy);
+        double distance = Math.hypot(dx, dy);
 
         if (distance <= FLEE_RADIUS) {
             fleeFrom(player.getX(), player.getY(), FLEE_SPEED, 0.1);
@@ -31,6 +32,10 @@ public class Food extends Fish {
             wander(deltaTime, DIRECTION_CHANGE_INTERVAL, FLEE_SPEED * 0.6, 0.05);
         }
 
+        updatePosition(deltaTime);
+    }
+
+    private void updatePosition(double deltaTime) {
         x += velocityX * deltaTime;
         y += velocityY * deltaTime;
         setPosition(x, y);

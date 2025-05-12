@@ -4,29 +4,34 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javafx.scene.paint.Color;
 import splash.entities.*;
 
+import java.util.*;
+
 public class GameEngine extends AnimationTimer {
+    private static final double DEPTH_DIVISOR = 10000.0;
+    private static final double MAX_DEPTH_ALPHA = 0.95;
+
     private final double baseWidth;
     private final double baseHeight;
     private final Canvas canvas;
+    private final GraphicsContext gc;
+
     private final World world;
     private final Player player;
-    private final GraphicsContext gc;
-    private final Map<String, List<Fish>> collisionLayers = new HashMap<>();
-    private final Set<String> playerCollisionLayers = Set.of("enemy", "block", "food");
-    private long lastUpdate = 0;
-    private double depthEffectAlpha = 0;
+
     private double scaleX;
     private double scaleY;
     private double camX;
     private double camY;
+    private double depthEffectAlpha = 0;
+    private long lastUpdate = 0;
+
     private StackPane rootContainer;
+
+    private final Map<String, List<Fish>> collisionLayers = new HashMap<>();
+    private final Set<String> playerCollisionLayers = Set.of("enemy", "block", "food");
 
     public GameEngine(Player player, World world, Canvas canvas) {
         this.player = player;
@@ -40,10 +45,17 @@ public class GameEngine extends AnimationTimer {
         this.scaleX = baseWidth;
         this.scaleY = baseHeight;
 
-        this.collisionLayers.put("enemy", new ArrayList<>());
-        this.collisionLayers.put("food", new ArrayList<>());
-        this.collisionLayers.put("block", new ArrayList<>());
+        initializeCollisionLayers();
+        bindCanvasResize();
+    }
 
+    private void initializeCollisionLayers() {
+        collisionLayers.put("enemy", new ArrayList<>());
+        collisionLayers.put("food", new ArrayList<>());
+        collisionLayers.put("block", new ArrayList<>());
+    }
+
+    private void bindCanvasResize() {
         canvas.widthProperty().addListener((obs, oldVal, newVal) -> updateScale());
         canvas.heightProperty().addListener((obs, oldVal, newVal) -> updateScale());
     }
@@ -54,6 +66,7 @@ public class GameEngine extends AnimationTimer {
             lastUpdate = now;
             return;
         }
+
         double deltaTime = (now - lastUpdate) / 1_000_000_000.0;
         lastUpdate = now;
         update(deltaTime);
@@ -63,37 +76,34 @@ public class GameEngine extends AnimationTimer {
         player.update(deltaTime);
         setupInputHandling();
         world.getEntities().forEach(e -> e.update(deltaTime));
+
         updateCameraPosition(deltaTime);
-        updateDepthEffect();  // Add this line
+        updateDepthEffect();
         checkCollisions();
         renderFrame();
     }
 
     private void checkCollisions() {
-        for (List<Fish> layer : collisionLayers.values()) {
-            layer.clear();
-        }
+        collisionLayers.values().forEach(List::clear);
 
         for (Fish entity : world.getEntities()) {
             for (String tag : entity.getTags()) {
-                List<Fish> layer = collisionLayers.get(tag);
-                if (layer != null) {
-                    layer.add(entity);
-                }
+                collisionLayers.getOrDefault(tag, new ArrayList<>()).add(entity);
             }
         }
 
         for (String layer : playerCollisionLayers) {
             List<Fish> entities = collisionLayers.get(layer);
             if (entities == null) continue;
+
             for (Fish entity : entities) {
-                if (player.getBounds().intersects(entity.getBounds())) {
-                    if (entity instanceof Enemy) {
-                        player.healthProperty().set(player.healthProperty().get() - 1);
-                    } else if (entity instanceof Food) {
-                        player.pointsProperty().set(player.pointsProperty().get() + ((Food) entity).getValue());
-                        world.removeEntity(entity);
-                    }
+                if (!player.getBounds().intersects(entity.getBounds())) continue;
+
+                if (entity instanceof Enemy) {
+                    player.healthProperty().set(player.healthProperty().get() - 1);
+                } else if (entity instanceof Food food) {
+                    player.pointsProperty().set(player.pointsProperty().get() + food.getValue());
+                    world.removeEntity(entity);
                 }
             }
         }
@@ -106,97 +116,64 @@ public class GameEngine extends AnimationTimer {
         double scale = Math.min(scaleX, scaleY);
         gc.scale(scale, scale);
 
-        double cameraTranslateX = -camX + baseWidth / 2;
-        double cameraTranslateY = -camY + baseHeight / 2;
+        double translateX = -camX + baseWidth / 2;
+        double translateY = -camY + baseHeight / 2;
+        double offsetX = (canvas.getWidth() / scale - baseWidth) / 2;
+        double offsetY = (canvas.getHeight() / scale - baseHeight) / 2;
 
-        double canvasOffsetX = (canvas.getWidth() / scale - baseWidth) / 2;
-        double canvasOffsetY = (canvas.getHeight() / scale - baseHeight) / 2;
-        
-        gc.translate(cameraTranslateX + canvasOffsetX, cameraTranslateY + canvasOffsetY);
+        gc.translate(translateX + offsetX, translateY + offsetY);
 
         world.getEntities().forEach(this::renderEntity);
         renderEntity(player);
 
         gc.restore();
-        gc.setFill(javafx.scene.paint.Color.rgb(0, 0, 0, depthEffectAlpha));
+
+        gc.setFill(Color.rgb(0, 0, 0, depthEffectAlpha));
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
+    private void renderEntity(Fish entity) {
+        if (entity instanceof Player p) p.render(gc);
+        else if (entity instanceof Enemy e) e.render(gc);
+        else if (entity instanceof Food f) f.render(gc);
+    }
 
     private void clear() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
-    private void renderEntity(Fish entity) {
-        if (entity instanceof Player) {
-            ((Player) entity).render(gc);
-        } else if (entity instanceof Enemy) {
-            ((Enemy) entity).render(gc);
-        } else if (entity instanceof Food) {
-            ((Food) entity).render(gc);
-        }
-    }
-
-    public void setupInputHandling() {
-        rootContainer.setOnKeyPressed(e -> {
-            switch (e.getCode()) {
-                case W:
-                case UP:
-                    player.moveUp(true);
-                    break;
-                case S:
-                case DOWN:
-                    player.moveDown(true);
-                    break;
-                case A:
-                case LEFT:
-                    player.moveLeft(true);
-                    break;
-                case D:
-                case RIGHT:
-                    player.moveRight(true);
-                    break;
-                default:
-                    break;
-            }
-        });
-        rootContainer.setOnKeyReleased(e -> {
-            switch (e.getCode()) {
-                case W:
-                case UP:
-                    player.moveUp(false);
-                    break;
-                case S:
-                case DOWN:
-                    player.moveDown(false);
-                    break;
-                case A:
-                case LEFT:
-                    player.moveLeft(false);
-                    break;
-                case D:
-                case RIGHT:
-                    player.moveRight(false);
-                    break;
-                default:
-                    break;
-            }
-        });
+    private void updateCameraPosition(double deltaTime) {
+        camX += (player.getX() - camX) * deltaTime;
+        camY += (player.getY() - camY) * deltaTime * 2;
     }
 
     private void updateDepthEffect() {
-        double depth = (camY * 2 - baseHeight) / 10000.0;
-        depthEffectAlpha = (depth > 1.0 ? 0.95 : (depth <= 0 ? 0 : depth * 0.95));
+        double depth = (camY * 2 - baseHeight) / DEPTH_DIVISOR;
+        depthEffectAlpha = depth <= 0 ? 0 : (Math.min(depth, 1.0) * MAX_DEPTH_ALPHA);
     }
 
-    private void updateCameraPosition(double deltaTime) {
-        this.camX += (player.getX() - camX) * deltaTime;
-        this.camY += (player.getY() - camY) * deltaTime * 2;
-    }
+    public void setupInputHandling() {
+        if (rootContainer == null) return;
 
-    public void setScale(double scaleX, double scaleY) {
-        this.scaleX = scaleX;
-        this.scaleY = scaleY;
+        rootContainer.setOnKeyPressed(e -> {
+            switch (e.getCode()) {
+                case W, UP -> player.moveUp(true);
+                case S, DOWN -> player.moveDown(true);
+                case A, LEFT -> player.moveLeft(true);
+                case D, RIGHT -> player.moveRight(true);
+                default -> {}
+            }
+        });
+
+        rootContainer.setOnKeyReleased(e -> {
+            switch (e.getCode()) {
+                case W, UP -> player.moveUp(false);
+                case S, DOWN -> player.moveDown(false);
+                case A, LEFT -> player.moveLeft(false);
+                case D, RIGHT -> player.moveRight(false);
+                default -> {}
+            }
+        });
     }
 
     private void updateScale() {
@@ -206,7 +183,12 @@ public class GameEngine extends AnimationTimer {
         player.updateScale(scaleY);
         world.updateWorldScale(player.getScaledSize());
     }
-    
+
+    public void setScale(double scaleX, double scaleY) {
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+    }
+
     public StackPane getRootContainer() {
         return rootContainer;
     }

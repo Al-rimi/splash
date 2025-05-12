@@ -12,14 +12,14 @@ import javafx.scene.image.Image;
 
 public class ResourceManager {
     private static ResourceBundle bundle;
-    private static ObjectProperty<Locale> currentLocale = new SimpleObjectProperty<>(Locale.ENGLISH);
+    private static final ObjectProperty<Locale> currentLocale = new SimpleObjectProperty<>(Locale.ENGLISH);
 
     static {
         loadLanguage("en");
     }
 
     public static void loadLanguage(String lang) {
-        Locale locale = Locale.of(lang);
+        Locale locale = Locale.forLanguageTag(lang);
         try {
             bundle = ResourceBundle.getBundle("splash/lang/messages", locale);
             currentLocale.set(locale);
@@ -44,31 +44,29 @@ public class ResourceManager {
 
     public static Image getEnemyImage(int fishNumber, boolean isLeft) {
         String path = String.format("/images/characters/enemy/fish-%d-%s.png", fishNumber, isLeft ? "left" : "right");
-        try (InputStream is = ResourceManager.class.getResourceAsStream(path)) {
-            return new Image(is);
-        } catch (IOException e) {
-            System.err.println("Error loading enemy image: " + path);
-            return null;
-        }
+        return loadImage(path, "enemy");
     }
 
     public static Image getFoodImage(int fishNumber, boolean isLeft) {
         String path = String.format("/images/characters/food/fish-%d-%s.png", fishNumber, isLeft ? "left" : "right");
-        try (InputStream is = ResourceManager.class.getResourceAsStream(path)) {
-            return new Image(is);
-        } catch (IOException e) {
-            System.err.println("Error loading food image: " + path);
-            return null;
-        }
+        return loadImage(path, "food");
     }
 
     public static Image getPlayerImage(String character, boolean isLeft) {
         String path = String.format("/images/characters/players/%s-%s.png", character, isLeft ? "left" : "right");
+        return loadImage(path, "player");
+    }
+
+    private static Image loadImage(String path, String type) {
         try (InputStream is = ResourceManager.class.getResourceAsStream(path)) {
             return new Image(is);
-        } catch (IOException e) {
-            System.err.println("Error loading player image: " + path);
+        } catch (IOException | NullPointerException e) {
+            System.err.println("Error loading " + type + " image: " + path);
             return null;
         }
+    }
+
+    public static String getStyleSheet() {
+        return ResourceManager.class.getResource("/css/styles.css").toExternalForm();
     }
 }
