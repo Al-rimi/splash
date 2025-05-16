@@ -9,7 +9,6 @@ public class App extends Application {
     public void start(Stage primaryStage) {
         GameManager.init(primaryStage);
         GameManager.showMainMenu();
-
     }
     
     public static void main(String[] args) {

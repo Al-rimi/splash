@@ -103,18 +103,18 @@ public class GameScreen {
         double spawnX = player.getX() + dirX * distance;
         double spawnY = player.getY() + dirY * distance;
 
-        int fishType = (int) (Math.random() * 15) + 1;
+        int fishType = (int) (Math.random() * 19) + 1;
 
         if (Math.random() < 0.3) {
             world.spawnEntity(new Enemy(player, spawnX, spawnY,
-                    ResourceManager.getEnemyImage(fishType, true),
-                    ResourceManager.getEnemyImage(fishType, false)));
+                    ResourceManager.getFishImage(fishType, true),
+                    ResourceManager.getFishImage(fishType, false)));
         }
 
         if (Math.random() < 0.8) {
             world.spawnEntity(new Food(player, spawnX, spawnY,
-                    ResourceManager.getFoodImage(fishType, true),
-                    ResourceManager.getFoodImage(fishType, false)));
+                    ResourceManager.getFishImage(fishType, true),
+                    ResourceManager.getFishImage(fishType, false)));
         }
 
         cleanupDistantEntities();

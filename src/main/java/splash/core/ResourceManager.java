@@ -42,26 +42,21 @@ public class ResourceManager {
         }
     }
 
-    public static Image getEnemyImage(int fishNumber, boolean isLeft) {
-        String path = String.format("/images/characters/enemy/fish-%d-%s.png", fishNumber, isLeft ? "left" : "right");
-        return loadImage(path, "enemy");
+    public static Image getFishImage(int fishNumber, boolean isLeft) {
+        String path = String.format("/images/characters/fish-%d-%s.png", fishNumber, isLeft ? "left" : "right");
+        return loadImage(path);
     }
 
-    public static Image getFoodImage(int fishNumber, boolean isLeft) {
-        String path = String.format("/images/characters/food/fish-%d-%s.png", fishNumber, isLeft ? "left" : "right");
-        return loadImage(path, "food");
+    public static Image getBackgroundImage(int backgroundNumber) {
+        String path = String.format("/images/environment/background-%d.png", backgroundNumber);
+        return loadImage(path);
     }
 
-    public static Image getPlayerImage(String character, boolean isLeft) {
-        String path = String.format("/images/characters/players/%s-%s.png", character, isLeft ? "left" : "right");
-        return loadImage(path, "player");
-    }
-
-    private static Image loadImage(String path, String type) {
+    private static Image loadImage(String path) {
         try (InputStream is = ResourceManager.class.getResourceAsStream(path)) {
             return new Image(is);
         } catch (IOException | NullPointerException e) {
-            System.err.println("Error loading " + type + " image: " + path);
+            System.err.println("Error loading " + " image: " + path);
             return null;
         }
     }

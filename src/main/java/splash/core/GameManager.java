@@ -31,11 +31,10 @@ public final class GameManager {
 
     public static void startGame() {
         PlayerProfile profile = new PlayerProfile();
-        String selectedCharacter = profile.getSelectedCharacter() != null
-            ? profile.getSelectedCharacter() : "player-1";
+        int selectedCharacter = profile.getSelectedCharacter();
 
-        Image leftImage = ResourceManager.getPlayerImage(selectedCharacter, true);
-        Image rightImage = ResourceManager.getPlayerImage(selectedCharacter, false);
+        Image leftImage = ResourceManager.getFishImage(selectedCharacter, true);
+        Image rightImage = ResourceManager.getFishImage(selectedCharacter, false);
 
         if (leftImage == null || rightImage == null) {
             throw new RuntimeException("Could not load character images");
