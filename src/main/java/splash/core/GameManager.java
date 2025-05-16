@@ -18,7 +18,6 @@ public final class GameManager {
         primaryStage = stage;
         primaryStage.setTitle("Splash");
         primaryStage.setMaximized(true);
-        showMainMenu();
     }
 
     public static void showMainMenu() {
