@@ -36,7 +36,6 @@ public class Config {
     public static final double DESPAWN_RADIUS = 4000;
 
     // Resource Configuration
-    public static final String DEFAULT_LANGUAGE = "ar";
-    public static final int BACKGROUND_IMAGE_COUNT = 4;
+    public static final String DEFAULT_LANGUAGE = "en";
     public static final int FISH_IMAGE_COUNT = 19;
 }

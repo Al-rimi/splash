@@ -51,12 +51,22 @@ public class ResourceManager {
         return loadImage(path);
     }
 
-    public static Image getBackgroundImage(int backgroundNumber) {
-        if (backgroundNumber < 1 || backgroundNumber > Config.BACKGROUND_IMAGE_COUNT) {
-            System.err.println("Background number must be between 1 and " + Config.BACKGROUND_IMAGE_COUNT);
-            return null;
-        }
-        String path = String.format("/images/environment/background-%d.png", backgroundNumber);
+    public static Image getWaterTexture(){
+        return loadImage("/images/environment/texture-water.png");
+    }
+
+    public static Image getMountainImage(int mountainNumber) {
+        String path = String.format("/images/environment/mountain-%d.png", mountainNumber);
+        return loadImage(path);
+    }
+
+    public static Image getSeaWeedsImage(int seaweedNumber) {
+        String path = String.format("/images/environment/seaweed-%d.png", seaweedNumber);
+        return loadImage(path);
+    }
+
+    public static Image getRockImage(int rockNumber) {
+        String path = String.format("/images/environment/rock-%d.png", rockNumber);
         return loadImage(path);
     }
 
