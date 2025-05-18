@@ -70,8 +70,7 @@ public class GameScreen {
                 Bindings.createStringBinding(
                         () -> ResourceManager.getString(key) + ": " + property.get(),
                         property,
-                        ResourceManager.currentLocaleProperty()
-                ));
+                        ResourceManager.currentLocaleProperty()));
         return label;
     }
 
@@ -80,8 +79,7 @@ public class GameScreen {
         stopButton.textProperty().bind(
                 Bindings.createStringBinding(
                         () -> ResourceManager.getString("stop"),
-                        ResourceManager.currentLocaleProperty()
-                ));
+                        ResourceManager.currentLocaleProperty()));
         stopButton.setOnAction(e -> {
             gameEngine.stop();
             GameManager.showMainMenu();
@@ -105,13 +103,17 @@ public class GameScreen {
         int fishType = (int) (Math.random() * 19) + 1;
 
         if (Math.random() < 0.3) {
-            world.spawnEntity(new Enemy(player, spawnX, spawnY,
+            world.spawnEntity(Boat.createEnemy(
+                    player,
+                    spawnX, spawnY,
                     ResourceManager.getFishImage(fishType, true),
                     ResourceManager.getFishImage(fishType, false)));
         }
 
         if (Math.random() < 0.8) {
-            world.spawnEntity(new Food(player, spawnX, spawnY,
+            world.spawnEntity(Boat.createFood(
+                    player,
+                    spawnX, spawnY,
                     ResourceManager.getFishImage(fishType, true),
                     ResourceManager.getFishImage(fishType, false)));
         }
@@ -121,7 +123,8 @@ public class GameScreen {
 
     private void cleanupDistantEntities() {
         world.getEntities().removeIf(entity -> {
-            if (entity instanceof Player) return false;
+            if (entity instanceof Player)
+                return false;
             double dx = entity.getX() - player.getX();
             double dy = entity.getY() - player.getY();
             return dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS;

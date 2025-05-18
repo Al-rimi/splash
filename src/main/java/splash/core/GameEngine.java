@@ -91,16 +91,20 @@ public class GameEngine extends AnimationTimer {
 
         for (String layer : playerCollisionLayers) {
             List<Fish> entities = collisionLayers.get(layer);
-            if (entities == null) continue;
+            if (entities == null)
+                continue;
 
             for (Fish entity : entities) {
-                if (!player.getBounds().intersects(entity.getBounds())) continue;
+                if (!player.getBounds().intersects(entity.getBounds()))
+                    continue;
 
-                if (entity instanceof Enemy) {
-                    player.healthProperty().set(player.healthProperty().get() - 1);
-                } else if (entity instanceof Food food) {
-                    player.pointsProperty().set(player.pointsProperty().get() + food.getValue());
-                    world.removeEntity(entity);
+                if (entity instanceof Boat boat) {
+                    if (boat.getBehaviorType() == Boat.BehaviorType.ENEMY) {
+                        player.healthProperty().set(player.healthProperty().get() - 1);
+                    } else if (boat.getBehaviorType() == Boat.BehaviorType.FOOD) {
+                        player.pointsProperty().set(player.pointsProperty().get() + boat.getValue());
+                        world.removeEntity(boat);
+                    }
                 }
             }
         }
@@ -130,9 +134,11 @@ public class GameEngine extends AnimationTimer {
     }
 
     private void renderEntity(Fish entity) {
-        if (entity instanceof Player p) p.render(gc);
-        else if (entity instanceof Enemy e) e.render(gc);
-        else if (entity instanceof Food f) f.render(gc);
+        if (entity instanceof Player p) {
+            p.render(gc);
+        } else if (entity instanceof Boat b) {
+            b.render(gc);
+        }
     }
 
     private void clear() {
@@ -150,7 +156,8 @@ public class GameEngine extends AnimationTimer {
     }
 
     public void setupInputHandling() {
-        if (rootContainer == null) return;
+        if (rootContainer == null)
+            return;
 
         rootContainer.setOnKeyPressed(e -> {
             switch (e.getCode()) {
@@ -158,7 +165,8 @@ public class GameEngine extends AnimationTimer {
                 case S, DOWN -> player.moveDown(true);
                 case A, LEFT -> player.moveLeft(true);
                 case D, RIGHT -> player.moveRight(true);
-                default -> {}
+                default -> {
+                }
             }
         });
 
@@ -168,7 +176,8 @@ public class GameEngine extends AnimationTimer {
                 case S, DOWN -> player.moveDown(false);
                 case A, LEFT -> player.moveLeft(false);
                 case D, RIGHT -> player.moveRight(false);
-                default -> {}
+                default -> {
+                }
             }
         });
     }
@@ -178,7 +187,6 @@ public class GameEngine extends AnimationTimer {
         scaleY = canvas.getHeight() / baseHeight;
 
         player.updateScale(scaleY);
-        world.updateWorldScale(player.getScaledSize());
     }
 
     public void setScale(double scaleX, double scaleY) {

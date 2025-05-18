@@ -15,15 +15,19 @@ public class Config {
     public static final double MAX_DEPTH_ALPHA = 0.95;
     public static final double CAMERA_LERP_SPEED = 2.0;
     
-    // Enemy Configuration
-    public static final double ENEMY_BASE_SIZE_MULTIPLIER = 2.0;
-    public static final double ENEMY_SPEED = 200;
-    public static final double ENEMY_DETECTION_RADIUS = 500;
-    
-    // Food Configuration
-    public static final double FOOD_SIZE_MULTIPLIER = 0.5;
-    public static final double FOOD_SPEED = 200;
-    public static final double FOOD_DETECTION_RADIUS = 500;
+    // Enemy configuration
+    public static final double ENEMY_MAX_SIZE_MULTIPLIER = 4;
+    public static final double ENEMY_MIN_SIZE_MULTIPLIER = 2;
+    public static final double ENEMY_DETECTION_RADIUS = 400;
+    public static final double ENEMY_MOVEMENT_SPEED = 200;
+    public static final double ENEMY_DIRECTION_CHANGE_INTERVAL = 2.0;
+
+    // Food configuration
+    public static final double FOOD_MAX_SIZE_MULTIPLIER = 0.9;
+    public static final double FOOD_MIN_SIZE_MULTIPLIER = 0.4;
+    public static final double FOOD_DETECTION_RADIUS = 400;
+    public static final double FOOD_MOVEMENT_SPEED = 200;
+    public static final double FOOD_DIRECTION_CHANGE_INTERVAL = 3.0;
     
     // World Configuration
     public static final double MIN_WORLD_SCALE = 1.0;
