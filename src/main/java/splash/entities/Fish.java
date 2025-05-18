@@ -25,8 +25,7 @@ public abstract class Fish {
     protected Vector2D randomDirection = new Vector2D();
     protected double timeSinceLastDirectionChange = 0;
 
-    protected Image leftTexture;
-    protected Image rightTexture;
+    protected Image texture;
 
     protected Set<String> tags = new HashSet<>();
 
@@ -40,18 +39,32 @@ public abstract class Fish {
     public void render(GraphicsContext gc) {
         double renderSize = getScaledSize();
         double targetAngle = calculateTargetAngle();
-
         currentAngle += angleDiff(targetAngle, currentAngle) / 10;
 
         gc.save();
         gc.translate(x, y);
         gc.rotate(currentAngle);
-        gc.drawImage(getCurrentTexture(), -renderSize / 2, -renderSize / 2, renderSize, renderSize);
+        gc.setGlobalAlpha(getOpacity());
+
+        if (facingLeft) {
+            gc.scale(-1, 1);
+        }
+
+        double drawX = -renderSize / 2;
+        double drawY = -renderSize / 2;
+
+        if (facingLeft) {
+            drawX = -drawX - renderSize;
+        }
+
+        gc.drawImage(texture, drawX, drawY, renderSize, renderSize);
+
         gc.restore();
     }
 
     protected double calculateTargetAngle() {
-        if (velocityX == 0 && velocityY == 0) return facingLeft ? 360 : 0;
+        if (velocityX == 0 && velocityY == 0)
+            return facingLeft ? 360 : 0;
         double angle = Math.toDegrees(Math.atan2(velocityY, velocityX));
         return facingLeft ? angle + 180 : angle;
     }
@@ -62,23 +75,26 @@ public abstract class Fish {
     }
 
     protected Image getCurrentTexture() {
-        return facingLeft ? leftTexture : rightTexture;
+        return texture;
     }
 
     protected void applyVelocity(double targetVx, double targetVy, double smoothFactor) {
         velocityX += (targetVx - velocityX) * smoothFactor;
         velocityY += (targetVy - velocityY) * smoothFactor;
-        if (velocityX != 0) facingLeft = velocityX < 0;
+        if (velocityX != 0)
+            facingLeft = velocityX < 0;
     }
 
     protected void fleeFrom(double targetX, double targetY, double speed, double smoothFactor) {
         Vector2D dir = new Vector2D(targetX - x, targetY - y);
-        if (normalizeVector(dir)) applyVelocity(-dir.x * speed, -dir.y * speed, smoothFactor);
+        if (normalizeVector(dir))
+            applyVelocity(-dir.x * speed, -dir.y * speed, smoothFactor);
     }
 
     protected void pursue(double targetX, double targetY, double speed, double smoothFactor) {
         Vector2D dir = new Vector2D(targetX - x, targetY - y);
-        if (normalizeVector(dir)) applyVelocity(dir.x * speed, dir.y * speed, smoothFactor);
+        if (normalizeVector(dir))
+            applyVelocity(dir.x * speed, dir.y * speed, smoothFactor);
     }
 
     protected void wander(double deltaTime, double directionChangeInterval, double speed, double smoothFactor) {
@@ -94,7 +110,8 @@ public abstract class Fish {
 
     protected boolean normalizeVector(Vector2D v) {
         double length = Math.hypot(v.x, v.y);
-        if (length == 0) return false;
+        if (length == 0)
+            return false;
         v.x /= length;
         v.y /= length;
         return true;
@@ -120,23 +137,53 @@ public abstract class Fish {
     protected void updateHitbox() {
         double scaledSize = getScaledSize();
         hitbox = new Rectangle2D(
-            x - scaledSize / 2 + hitboxOffsetX,
-            y - scaledSize / 2 + hitboxOffsetY,
-            scaledSize,
-            scaledSize
-        );
+                x - scaledSize / 2 + hitboxOffsetX,
+                y - scaledSize / 2 + hitboxOffsetY,
+                scaledSize,
+                scaledSize);
     }
 
-    public Rectangle2D getBounds() { return hitbox; }
-    public Set<String> getTags() { return tags; }
+    public Rectangle2D getBounds() {
+        return hitbox;
+    }
 
-    public void addTag(String tag) { tags.add(tag); }
-    public void removeTag(String tag) { tags.remove(tag); }
-    public boolean hasTag(String tag) { return tags.contains(tag); }
+    public Set<String> getTags() {
+        return tags;
+    }
 
-    public boolean isFacingLeft() { return facingLeft; }
-    public double getSize() { return size; }
-    public double getX() { return x; }
-    public double getY() { return y; }
-    public double getScaledSize() { return size * scale; }
+    public void addTag(String tag) {
+        tags.add(tag);
+    }
+
+    public void removeTag(String tag) {
+        tags.remove(tag);
+    }
+
+    public boolean hasTag(String tag) {
+        return tags.contains(tag);
+    }
+
+    public boolean isFacingLeft() {
+        return facingLeft;
+    }
+
+    public double getSize() {
+        return size;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getScaledSize() {
+        return size * scale;
+    }
+
+    public double getOpacity() {
+        return 1.0;
+    }
 }

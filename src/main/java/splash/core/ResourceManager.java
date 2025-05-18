@@ -42,12 +42,12 @@ public class ResourceManager {
         }
     }
 
-    public static Image getFishImage(int fishNumber, boolean isLeft) {
+    public static Image getFishImage(int fishNumber) {
         if (fishNumber < 1 || fishNumber > Config.FISH_IMAGE_COUNT) {
             System.err.println("Fish number must be between 1 and " + Config.FISH_IMAGE_COUNT);
             return null;
         }
-        String path = String.format("/images/characters/fish-%d-%s.png", fishNumber, isLeft ? "left" : "right");
+        String path = String.format("/images/characters/fish-%d.png", fishNumber);
         return loadImage(path);
     }
 

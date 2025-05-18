@@ -108,7 +108,10 @@ public class GameEngine extends AnimationTimer {
 
                 if (entity instanceof Boat boat) {
                     if (boat.getBehaviorType() == Boat.BehaviorType.ENEMY) {
-                        player.healthProperty().set(player.healthProperty().get() - boat.getValue());
+                        if (!player.isInvulnerable()) { // Check invulnerability
+                            player.healthProperty().set(player.healthProperty().get() - boat.getValue());
+                            player.startDamageAnimation();
+                        }
                     } else if (boat.getBehaviorType() == Boat.BehaviorType.FOOD) {
                         player.pointsProperty().set(player.pointsProperty().get() + boat.getValue());
                         world.removeEntity(boat);

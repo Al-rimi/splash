@@ -18,12 +18,13 @@ public class StaticEntity {
         this.parallaxFactor = parallaxFactor;
     }
 
-    public void render(GraphicsContext gc, double camX, double camY, double baseWidth, double baseHeight, double offsetX, double offsetY) {
+    public void render(GraphicsContext gc, double camX, double camY, double baseWidth, double baseHeight,
+            double offsetX, double offsetY) {
         double screenX = (x - camX * parallaxFactor) + baseWidth / 2 + offsetX;
         double screenY = (y - camY * parallaxFactor) + baseHeight / 2 + offsetY;
         double width = image.getWidth() * scale;
         double height = image.getHeight() * scale;
-        gc.drawImage(image, screenX - width/2, screenY - height/2, width, height);
+        gc.drawImage(image, screenX - width / 2, screenY - height / 2, width, height);
     }
 
     public double getX() {

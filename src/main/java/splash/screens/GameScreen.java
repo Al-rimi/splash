@@ -32,8 +32,7 @@ public class GameScreen {
     private final World world = new World();
     private final GameEngine gameEngine;
     private final Timeline spawnTimer;
-    private final Image[] fishImagesLift = new Image[Config.FISH_IMAGE_COUNT];
-    private final Image[] fishImagesRight = new Image[Config.FISH_IMAGE_COUNT];
+    private final Image[] fishImages = new Image[Config.FISH_IMAGE_COUNT];
     private final Image[] mountains = new Image[Config.MOUNTAIN_IMAGE_COUNT];
     private final Image[] seaweeds = new Image[Config.SEAWEED_IMAGE_COUNT];
     private final Image[] rocks = new Image[Config.ROCK_IMAGE_COUNT];
@@ -49,8 +48,7 @@ public class GameScreen {
         this.gameEngine = new GameEngine(player, world, gameCanvas);
         this.spawnTimer = createSpawnTimer();
         for (int i = 0; i < Config.FISH_IMAGE_COUNT; i++) {
-            fishImagesLift[i] = ResourceManager.getFishImage(i + 1, true);
-            fishImagesRight[i] = ResourceManager.getFishImage(i + 1, false);
+            fishImages[i] = ResourceManager.getFishImage(i + 1);
         }
         for (int i = 0; i < Config.MOUNTAIN_IMAGE_COUNT; i++) {
             mountains[i] = ResourceManager.getMountainImage(i + 1);
@@ -137,16 +135,14 @@ public class GameScreen {
             world.spawnEntity(Boat.createEnemy(
                     player,
                     spawnX, spawnY,
-                    fishImagesLift[fishType],
-                    fishImagesRight[fishType]));
+                    fishImages[fishType]));
         }
 
         if (random.nextDouble() < Config.SPAWN_FOOD_PROBABILITY) {
             world.spawnEntity(Boat.createFood(
                     player,
                     spawnX, spawnY,
-                    fishImagesLift[fishType],
-                    fishImagesRight[fishType]));
+                    fishImages[fishType]));
         }
 
         if (random.nextDouble() < Config.SPAWN_MUNTION_PROBABILITY) {

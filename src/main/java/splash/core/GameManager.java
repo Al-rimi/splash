@@ -30,14 +30,13 @@ public final class GameManager {
         PlayerProfile profile = new PlayerProfile();
         int selectedCharacter = profile.getSelectedCharacter();
 
-        Image leftImage = ResourceManager.getFishImage(selectedCharacter, true);
-        Image rightImage = ResourceManager.getFishImage(selectedCharacter, false);
+        Image image = ResourceManager.getFishImage(selectedCharacter);
 
-        if (leftImage == null || rightImage == null) {
+        if (image == null) {
             throw new RuntimeException("Could not load character images");
         }
 
-        player = new Player(selectedCharacter ,leftImage, rightImage, primaryStage.getWidth(), primaryStage.getHeight());
+        player = new Player(selectedCharacter , image, primaryStage.getWidth(), primaryStage.getHeight());
         gameScreen = new GameScreen(player);
 
         primaryStage.setScene(gameScreen.createScene());

@@ -17,7 +17,7 @@ public class Boat extends Fish {
 
     public Boat(Player player, BehaviorType behavior,
             double x, double y,
-            Image leftTexture, Image rightTexture,
+            Image texture,
             double sizeMultiplier,
             double detectionRadius,
             double movementSpeed,
@@ -29,8 +29,7 @@ public class Boat extends Fish {
         this.detectionRadius = detectionRadius;
         this.movementSpeed = movementSpeed;
         this.directionChangeInterval = directionChangeInterval;
-        this.leftTexture = leftTexture;
-        this.rightTexture = rightTexture;
+        this.texture = texture;
         this.value = value;
         setPosition(x, y);
 
@@ -39,7 +38,7 @@ public class Boat extends Fish {
 
     // Factory methods for specific entity types
     public static Boat createEnemy(Player player, double x, double y,
-            Image leftTexture, Image rightTexture) {
+            Image texture) {
         double sizeMultiplier = Math.random() * (Config.ENEMY_MAX_SIZE_MULTIPLIER - Config.ENEMY_MIN_SIZE_MULTIPLIER)
                 + Config.ENEMY_MIN_SIZE_MULTIPLIER;
         int value = (int) (sizeMultiplier * 10) + 5;
@@ -48,7 +47,7 @@ public class Boat extends Fish {
                 player,
                 BehaviorType.ENEMY,
                 x, y,
-                leftTexture, rightTexture,
+                texture,
                 sizeMultiplier,
                 Config.ENEMY_DETECTION_RADIUS,
                 Config.ENEMY_MOVEMENT_SPEED,
@@ -57,23 +56,21 @@ public class Boat extends Fish {
     }
 
     public static Boat createFood(Player player, double x, double y,
-            Image leftTexture, Image rightTexture) {
+            Image texture) {
         double sizeMultiplier = Math.random() * (Config.FOOD_MAX_SIZE_MULTIPLIER - Config.FOOD_MIN_SIZE_MULTIPLIER)
                 + Config.FOOD_MIN_SIZE_MULTIPLIER;
         int value = (int) (sizeMultiplier * 10) + 5;
 
-        Boat food = new Boat(
+        return new Boat(
                 player,
                 BehaviorType.FOOD,
                 x, y,
-                leftTexture, rightTexture,
+                texture,
                 sizeMultiplier,
                 Config.FOOD_DETECTION_RADIUS,
                 Config.FOOD_MOVEMENT_SPEED,
                 Config.FOOD_DIRECTION_CHANGE_INTERVAL,
                 value);
-
-        return food;
     }
 
     @Override
@@ -109,7 +106,7 @@ public class Boat extends Fish {
     }
 
     public int getValue() {
-        return behavior == BehaviorType.FOOD ? value : 0;
+        return value;
     }
 
     public BehaviorType getBehaviorType() {
