@@ -10,7 +10,7 @@ public class PlayerProfile {
         this.playerName = "Player";
         this.highScore = 0;
         this.coins = 0;
-        this.selectedCharacter = 1;
+        this.selectedCharacter = 13;
     }
     
     public PlayerProfile(String playerName, int highScore, int coins, int selectedCharacter) {

@@ -10,16 +10,18 @@ public class Player extends Fish {
     private final IntegerProperty level = new SimpleIntegerProperty(1);
     private final IntegerProperty points = new SimpleIntegerProperty(0);
     private final IntegerProperty coins = new SimpleIntegerProperty(0);
+    private final int character;
     
     private final BooleanProperty movingUp = new SimpleBooleanProperty();
     private final BooleanProperty movingDown = new SimpleBooleanProperty();
     private final BooleanProperty movingLeft = new SimpleBooleanProperty();
     private final BooleanProperty movingRight = new SimpleBooleanProperty();
 
-    public Player(Image leftTexture, Image rightTexture, double baseWidth, double baseHeight) {
+    public Player(int character,Image leftTexture, Image rightTexture, double baseWidth, double baseHeight) {
         super(Config.PLAYER_BASE_SIZE);
         this.leftTexture = leftTexture;
         this.rightTexture = rightTexture;
+        this.character = character;
         setPosition(baseWidth / 2, baseHeight / 2);
         addTag("player");
     }
@@ -63,4 +65,5 @@ public class Player extends Fish {
 
     public double getVelocityX() { return velocityX; }
     public double getVelocityY() { return velocityY; }
+    public int getCharacter() { return character; }
 }

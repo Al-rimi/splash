@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
@@ -28,6 +29,8 @@ public class GameScreen {
     private final World world = new World();
     private final GameEngine gameEngine;
     private final Timeline spawnTimer;
+    private final Image[] fishImagesLift = new Image[Config.FISH_IMAGE_COUNT];
+    private final Image[] fishImagesRight = new Image[Config.FISH_IMAGE_COUNT];
 
     private Canvas gameCanvas;
     private HBox hud;
@@ -37,6 +40,10 @@ public class GameScreen {
         this.gameCanvas = new Canvas(Config.GAME_WIDTH, Config.GAME_HEIGHT);
         this.gameEngine = new GameEngine(player, world, gameCanvas);
         this.spawnTimer = createSpawnTimer();
+        for (int i = 0; i < Config.FISH_IMAGE_COUNT; i++) {
+            fishImagesLift[i] = ResourceManager.getFishImage(i + 1, true);
+            fishImagesRight[i] = ResourceManager.getFishImage(i + 1, false);
+        }
     }
 
     private Timeline createSpawnTimer() {
@@ -100,22 +107,29 @@ public class GameScreen {
         double spawnX = player.getX() + dirX * distance;
         double spawnY = player.getY() + dirY * distance;
 
-        int fishType = (int) (Math.random() * 19) + 1;
+        int fishType = (int) (Math.random() * Config.FISH_IMAGE_COUNT) + 1;
+        if (fishType == player.getCharacter()) {
+            if (fishType >= Config.FISH_IMAGE_COUNT) {
+                fishType -= 2;
+            } else {
+                fishType++;
+            }
+        }
 
         if (Math.random() < 0.3) {
             world.spawnEntity(Boat.createEnemy(
                     player,
                     spawnX, spawnY,
-                    ResourceManager.getFishImage(fishType, true),
-                    ResourceManager.getFishImage(fishType, false)));
+                    fishImagesLift[fishType],
+                    fishImagesRight[fishType]));
         }
 
         if (Math.random() < 0.8) {
             world.spawnEntity(Boat.createFood(
                     player,
                     spawnX, spawnY,
-                    ResourceManager.getFishImage(fishType, true),
-                    ResourceManager.getFishImage(fishType, false)));
+                    fishImagesLift[fishType],
+                    fishImagesRight[fishType]));
         }
 
         cleanupDistantEntities();

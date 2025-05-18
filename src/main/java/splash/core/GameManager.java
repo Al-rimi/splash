@@ -37,7 +37,7 @@ public final class GameManager {
             throw new RuntimeException("Could not load character images");
         }
 
-        player = new Player(leftImage, rightImage, primaryStage.getWidth(), primaryStage.getHeight());
+        player = new Player(selectedCharacter ,leftImage, rightImage, primaryStage.getWidth(), primaryStage.getHeight());
         gameScreen = new GameScreen(player);
 
         primaryStage.setScene(gameScreen.createScene());

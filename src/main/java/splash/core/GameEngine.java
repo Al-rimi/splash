@@ -3,6 +3,7 @@ package splash.core;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import splash.entities.*;
@@ -14,6 +15,7 @@ public class GameEngine extends AnimationTimer {
     private final double baseHeight;
     private final Canvas canvas;
     private final GraphicsContext gc;
+    private final Image waterTexture;
 
     private final World world;
     private final Player player;
@@ -41,6 +43,7 @@ public class GameEngine extends AnimationTimer {
         this.camY = baseHeight;
         this.scaleX = baseWidth;
         this.scaleY = baseHeight;
+        this.waterTexture = ResourceManager.getWaterTexture();
 
         initializeCollisionLayers();
         bindCanvasResize();
@@ -124,6 +127,8 @@ public class GameEngine extends AnimationTimer {
 
         gc.translate(translateX + offsetX, translateY + offsetY);
 
+        drawWaterTiles();
+
         world.getEntities().forEach(this::renderEntity);
         renderEntity(player);
 
@@ -131,6 +136,40 @@ public class GameEngine extends AnimationTimer {
 
         gc.setFill(Color.rgb(0, 0, 0, depthEffectAlpha));
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    }
+
+    private void drawWaterTiles() {
+        if (waterTexture == null) {
+            return;
+        }
+
+        final double tileSize = 1024;
+        final double renderRadius = 1400;
+
+        double playerX = player.getX();
+        double playerY = player.getY();
+
+        int minTileX = (int) Math.floor((playerX - renderRadius) / tileSize);
+        int maxTileX = (int) Math.ceil((playerX + renderRadius) / tileSize);
+        int minTileY = (int) Math.floor((playerY - renderRadius) / tileSize);
+        int maxTileY = (int) Math.ceil((playerY + renderRadius) / tileSize);
+
+        for (int xTile = minTileX; xTile <= maxTileX; xTile++) {
+            for (int yTile = minTileY; yTile <= maxTileY; yTile++) {
+                double tileWorldX = xTile * tileSize;
+                double tileWorldY = yTile * tileSize;
+
+                double closestX = Math.max(tileWorldX, Math.min(playerX, tileWorldX + tileSize));
+                double closestY = Math.max(tileWorldY, Math.min(playerY, tileWorldY + tileSize));
+                double dx = playerX - closestX;
+                double dy = playerY - closestY;
+                double distanceSq = dx * dx + dy * dy;
+
+                if (distanceSq <= renderRadius * renderRadius) {
+                    gc.drawImage(waterTexture, tileWorldX, tileWorldY);
+                }
+            }
+        }
     }
 
     private void renderEntity(Fish entity) {
