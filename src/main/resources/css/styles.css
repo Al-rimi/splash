@@ -182,15 +182,6 @@
 }
 
 .game-container {
-    -fx-background-color: linear-gradient(
-        45deg,
-        rgba(0,100,200,0.1) 25%,
-        transparent 25%,
-        transparent 50%,
-        rgba(0,100,200,0.1) 50%,
-        rgba(0,100,200,0.1) 75%,
-        transparent 75%
-    );
     -fx-background-size: 50px 50px;
     -fx-animation: light-rays 20s linear infinite;
 }

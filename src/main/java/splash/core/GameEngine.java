@@ -16,6 +16,7 @@ public class GameEngine extends AnimationTimer {
     private final Canvas canvas;
     private final GraphicsContext gc;
     private final Image waterTexture;
+    private List<StaticEntity> staticEntities;
 
     private final World world;
     private final Player player;
@@ -47,6 +48,10 @@ public class GameEngine extends AnimationTimer {
 
         initializeCollisionLayers();
         bindCanvasResize();
+    }
+
+    public void setStaticEntities(List<StaticEntity> staticEntities) {
+        this.staticEntities = staticEntities;
     }
 
     private void initializeCollisionLayers() {
@@ -103,7 +108,7 @@ public class GameEngine extends AnimationTimer {
 
                 if (entity instanceof Boat boat) {
                     if (boat.getBehaviorType() == Boat.BehaviorType.ENEMY) {
-                        player.healthProperty().set(player.healthProperty().get() - 1);
+                        player.healthProperty().set(player.healthProperty().get() - boat.getValue());
                     } else if (boat.getBehaviorType() == Boat.BehaviorType.FOOD) {
                         player.pointsProperty().set(player.pointsProperty().get() + boat.getValue());
                         world.removeEntity(boat);
@@ -125,6 +130,8 @@ public class GameEngine extends AnimationTimer {
         double offsetX = (canvas.getWidth() / scale - baseWidth) / 2;
         double offsetY = (canvas.getHeight() / scale - baseHeight) / 2;
 
+        staticEntities.forEach(e -> e.render(gc, camX, camY, baseWidth, baseHeight, offsetX, offsetY));
+
         gc.translate(translateX + offsetX, translateY + offsetY);
 
         drawWaterTiles();
@@ -136,6 +143,7 @@ public class GameEngine extends AnimationTimer {
 
         gc.setFill(Color.rgb(0, 0, 0, depthEffectAlpha));
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
     }
 
     private void drawWaterTiles() {

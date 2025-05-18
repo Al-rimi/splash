@@ -21,6 +21,9 @@ import splash.core.ResourceManager;
 import splash.core.Config;
 import splash.entities.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.stream.Stream;
 
 public class GameScreen {
@@ -31,6 +34,11 @@ public class GameScreen {
     private final Timeline spawnTimer;
     private final Image[] fishImagesLift = new Image[Config.FISH_IMAGE_COUNT];
     private final Image[] fishImagesRight = new Image[Config.FISH_IMAGE_COUNT];
+    private final Image[] mountains = new Image[Config.MOUNTAIN_IMAGE_COUNT];
+    private final Image[] seaweeds = new Image[Config.SEAWEED_IMAGE_COUNT];
+    private final Image[] rocks = new Image[Config.ROCK_IMAGE_COUNT];
+    private final List<StaticEntity> staticEntities = new ArrayList<>();
+    private final Random random = new Random();
 
     private Canvas gameCanvas;
     private HBox hud;
@@ -44,10 +52,19 @@ public class GameScreen {
             fishImagesLift[i] = ResourceManager.getFishImage(i + 1, true);
             fishImagesRight[i] = ResourceManager.getFishImage(i + 1, false);
         }
+        for (int i = 0; i < Config.MOUNTAIN_IMAGE_COUNT; i++) {
+            mountains[i] = ResourceManager.getMountainImage(i + 1);
+        }
+        for (int i = 0; i < Config.SEAWEED_IMAGE_COUNT; i++) {
+            seaweeds[i] = ResourceManager.getSeaweedImage(i + 1);
+        }
+        for (int i = 0; i < Config.ROCK_IMAGE_COUNT; i++) {
+            rocks[i] = ResourceManager.getRockImage(i + 1);
+        }
     }
 
     private Timeline createSpawnTimer() {
-        Timeline timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> spawnEntities()));
+        Timeline timer = new Timeline(new KeyFrame(Duration.seconds(Config.SPAWN_DURATION_SECONDS), e -> spawnEntities()));
         timer.setCycleCount(Animation.INDEFINITE);
         return timer;
     }
@@ -107,7 +124,7 @@ public class GameScreen {
         double spawnX = player.getX() + dirX * distance;
         double spawnY = player.getY() + dirY * distance;
 
-        int fishType = (int) (Math.random() * Config.FISH_IMAGE_COUNT) + 1;
+        int fishType = (int) (random.nextDouble() * Config.FISH_IMAGE_COUNT);
         if (fishType == player.getCharacter()) {
             if (fishType >= Config.FISH_IMAGE_COUNT) {
                 fishType -= 2;
@@ -116,7 +133,7 @@ public class GameScreen {
             }
         }
 
-        if (Math.random() < 0.3) {
+        if (random.nextDouble() < Config.SPAWN_ENEMY_PROBABILITY) {
             world.spawnEntity(Boat.createEnemy(
                     player,
                     spawnX, spawnY,
@@ -124,12 +141,44 @@ public class GameScreen {
                     fishImagesRight[fishType]));
         }
 
-        if (Math.random() < 0.8) {
+        if (random.nextDouble() < Config.SPAWN_FOOD_PROBABILITY) {
             world.spawnEntity(Boat.createFood(
                     player,
                     spawnX, spawnY,
                     fishImagesLift[fishType],
                     fishImagesRight[fishType]));
+        }
+
+        if (random.nextDouble() < Config.SPAWN_MUNTION_PROBABILITY) {
+            Image mountain = mountains[random.nextInt(Config.MOUNTAIN_IMAGE_COUNT)];
+            staticEntities.add(new StaticEntity(
+                spawnX, spawnY, 
+                mountain, 
+                random.nextDouble() * 2 + 1.2,
+                random.nextDouble() * 0.2 + 0.1 
+            ));
+        }
+
+        if (random.nextDouble() < Config.SPAWN_ROCK_PROBABILITY) {
+            Image rock = rocks[random.nextInt(Config.ROCK_IMAGE_COUNT)];
+            staticEntities.add(new StaticEntity(
+                spawnX + random.nextDouble() * 200 - 100, 
+                spawnY + random.nextDouble() * 200 - 100,
+                rock,
+                random.nextDouble() * 0.3 + 0.1,
+                random.nextDouble() * 0.6 + 0.3
+            ));
+        }
+
+        if (random.nextDouble() < Config.SPAWN_SEAWEED_PROBABILITY) {
+            Image seaweed = seaweeds[random.nextInt(Config.SEAWEED_IMAGE_COUNT)];
+            staticEntities.add(new StaticEntity(
+                spawnX + random.nextDouble() * 300 - 150,
+                spawnY + random.nextDouble() * 300 - 150,
+                seaweed,
+                random.nextDouble() * 0.4 + 0.2,
+                random.nextDouble() * 0.8 + 0.2
+            ));
         }
 
         cleanupDistantEntities();
@@ -142,6 +191,12 @@ public class GameScreen {
             double dx = entity.getX() - player.getX();
             double dy = entity.getY() - player.getY();
             return dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS;
+        });
+
+        staticEntities.removeIf(entity -> {
+            double dx = entity.getX() - player.getX();
+            double dy = entity.getY() - player.getY();
+            return dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS * 12;
         });
     }
 
@@ -161,6 +216,18 @@ public class GameScreen {
         root.requestFocus();
         gameEngine.start();
         spawnTimer.play();
+
+        Canvas backgroundCanvas = new Canvas();
+        backgroundCanvas.widthProperty().bind(root.widthProperty());
+        backgroundCanvas.heightProperty().bind(root.heightProperty());
+        backgroundCanvas.getStyleClass().add("background-canvas");
+        
+        // Draw static elements on background canvas
+        backgroundCanvas.getGraphicsContext2D().drawImage(ResourceManager.getWaterTexture(), 0, 0);
+        root.getChildren().add(0, backgroundCanvas); // Add behind game canvas
+        
+        // Add rendering logic to GameEngine
+        gameEngine.setStaticEntities(staticEntities);
 
         return new Scene(root);
     }

@@ -61,7 +61,7 @@ public class ResourceManager {
         return loadImage(path);
     }
 
-    public static Image getSeaWeedsImage(int seaweedNumber) {
+    public static Image getSeaweedImage(int seaweedNumber) {
         String path = String.format("/images/environment/seaweeds-%d.png", seaweedNumber);
         return loadImage(path);
     }

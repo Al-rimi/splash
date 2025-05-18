@@ -21,7 +21,8 @@ public class Boat extends Fish {
             double sizeMultiplier,
             double detectionRadius,
             double movementSpeed,
-            double directionChangeInterval) {
+            double directionChangeInterval,
+            int value) {
         super(player.getSize() * sizeMultiplier);
         this.player = player;
         this.behavior = behavior;
@@ -30,6 +31,7 @@ public class Boat extends Fish {
         this.directionChangeInterval = directionChangeInterval;
         this.leftTexture = leftTexture;
         this.rightTexture = rightTexture;
+        this.value = value;
         setPosition(x, y);
 
         addTag(behavior == BehaviorType.FOOD ? "food" : "enemy");
@@ -38,8 +40,10 @@ public class Boat extends Fish {
     // Factory methods for specific entity types
     public static Boat createEnemy(Player player, double x, double y,
             Image leftTexture, Image rightTexture) {
-        double sizeMultiplier = Math.random() * (Config.ENEMY_MAX_SIZE_MULTIPLIER - Config.ENEMY_MIN_SIZE_MULTIPLIER) + Config.ENEMY_MIN_SIZE_MULTIPLIER;
-        
+        double sizeMultiplier = Math.random() * (Config.ENEMY_MAX_SIZE_MULTIPLIER - Config.ENEMY_MIN_SIZE_MULTIPLIER)
+                + Config.ENEMY_MIN_SIZE_MULTIPLIER;
+        int value = (int) (sizeMultiplier * 10) + 5;
+
         return new Boat(
                 player,
                 BehaviorType.ENEMY,
@@ -48,12 +52,15 @@ public class Boat extends Fish {
                 sizeMultiplier,
                 Config.ENEMY_DETECTION_RADIUS,
                 Config.ENEMY_MOVEMENT_SPEED,
-                Config.ENEMY_DIRECTION_CHANGE_INTERVAL);
+                Config.ENEMY_DIRECTION_CHANGE_INTERVAL,
+                value);
     }
 
     public static Boat createFood(Player player, double x, double y,
             Image leftTexture, Image rightTexture) {
-        double sizeMultiplier = Math.random() * (Config.FOOD_MAX_SIZE_MULTIPLIER - Config.FOOD_MIN_SIZE_MULTIPLIER) + Config.FOOD_MIN_SIZE_MULTIPLIER;
+        double sizeMultiplier = Math.random() * (Config.FOOD_MAX_SIZE_MULTIPLIER - Config.FOOD_MIN_SIZE_MULTIPLIER)
+                + Config.FOOD_MIN_SIZE_MULTIPLIER;
+        int value = (int) (sizeMultiplier * 10) + 5;
 
         Boat food = new Boat(
                 player,
@@ -63,9 +70,9 @@ public class Boat extends Fish {
                 sizeMultiplier,
                 Config.FOOD_DETECTION_RADIUS,
                 Config.FOOD_MOVEMENT_SPEED,
-                Config.FOOD_DIRECTION_CHANGE_INTERVAL);
-                
-        food.value = (int) (sizeMultiplier * 10) + 5;
+                Config.FOOD_DIRECTION_CHANGE_INTERVAL,
+                value);
+
         return food;
     }
 
