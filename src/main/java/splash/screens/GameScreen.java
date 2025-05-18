@@ -17,13 +17,12 @@ import javafx.util.Duration;
 import splash.core.GameEngine;
 import splash.core.GameManager;
 import splash.core.ResourceManager;
+import splash.core.Config;
 import splash.entities.*;
 
 import java.util.stream.Stream;
 
 public class GameScreen {
-    private static final double SPAWN_RADIUS = 1000;
-    private static final double DESPAWN_RADIUS = 4000;
 
     private final Player player;
     private final World world = new World();
@@ -35,7 +34,7 @@ public class GameScreen {
 
     public GameScreen(Player player) {
         this.player = player;
-        this.gameCanvas = new Canvas(GameManager.getGameWidth(), GameManager.getGameHeight());
+        this.gameCanvas = new Canvas(Config.GAME_WIDTH, Config.GAME_HEIGHT);
         this.gameEngine = new GameEngine(player, world, gameCanvas);
         this.spawnTimer = createSpawnTimer();
     }
@@ -95,7 +94,7 @@ public class GameScreen {
         double dx = player.getVelocityX();
         double dy = player.getVelocityY();
         double length = Math.hypot(dx, dy);
-        double distance = 200 + Math.random() * SPAWN_RADIUS;
+        double distance = 200 + Math.random() * Config.SPAWN_RADIUS;
         double angle = Math.random() * 2 * Math.PI;
 
         double dirX = (length == 0) ? Math.cos(angle) : dx / length;
@@ -125,7 +124,7 @@ public class GameScreen {
             if (entity instanceof Player) return false;
             double dx = entity.getX() - player.getX();
             double dy = entity.getY() - player.getY();
-            return dx * dx + dy * dy > DESPAWN_RADIUS * DESPAWN_RADIUS;
+            return dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS;
         });
     }
 

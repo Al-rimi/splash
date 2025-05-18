@@ -15,7 +15,7 @@ public class ResourceManager {
     private static final ObjectProperty<Locale> currentLocale = new SimpleObjectProperty<>(Locale.ENGLISH);
 
     static {
-        loadLanguage("en");
+        loadLanguage(Config.DEFAULT_LANGUAGE);
     }
 
     public static void loadLanguage(String lang) {
@@ -43,11 +43,19 @@ public class ResourceManager {
     }
 
     public static Image getFishImage(int fishNumber, boolean isLeft) {
+        if (fishNumber < 1 || fishNumber > Config.FISH_IMAGE_COUNT) {
+            System.err.println("Fish number must be between 1 and " + Config.FISH_IMAGE_COUNT);
+            return null;
+        }
         String path = String.format("/images/characters/fish-%d-%s.png", fishNumber, isLeft ? "left" : "right");
         return loadImage(path);
     }
 
     public static Image getBackgroundImage(int backgroundNumber) {
+        if (backgroundNumber < 1 || backgroundNumber > Config.BACKGROUND_IMAGE_COUNT) {
+            System.err.println("Background number must be between 1 and " + Config.BACKGROUND_IMAGE_COUNT);
+            return null;
+        }
         String path = String.format("/images/environment/background-%d.png", backgroundNumber);
         return loadImage(path);
     }

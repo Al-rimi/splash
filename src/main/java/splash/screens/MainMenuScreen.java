@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
+import splash.core.Config;
 import splash.core.GameManager;
 import splash.core.ResourceManager;
 
@@ -14,7 +15,7 @@ public class MainMenuScreen {
         VBox layout = new VBox(20);
         layout.setAlignment(Pos.CENTER);
         layout.getStyleClass().add("menu-container");
-        layout.setPrefSize(GameManager.getGameWidth(), GameManager.getGameHeight());
+        layout.setPrefSize(Config.GAME_WIDTH, Config.GAME_HEIGHT);
 
         Button btnStart = createMenuButton("start_game", GameManager::startGame);
         Button btnSettings = createMenuButton("settings", GameManager::showSettingsScreen);

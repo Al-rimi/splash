@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import splash.core.Config;
 import splash.core.GameManager;
 import splash.core.ResourceManager;
 
@@ -19,6 +20,7 @@ public class SettingsScreen {
         mainLayout.setAlignment(Pos.TOP_CENTER);
         mainLayout.setPadding(new Insets(40, 20, 20, 20));
         mainLayout.getStyleClass().add("settings-container");
+        mainLayout.setPrefSize(Config.GAME_WIDTH, Config.GAME_HEIGHT);
 
         VBox volumeControl = createVolumeControl();
         VBox languageSelector = createLanguageSelector();

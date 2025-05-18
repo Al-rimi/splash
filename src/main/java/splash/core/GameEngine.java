@@ -10,9 +10,6 @@ import splash.entities.*;
 import java.util.*;
 
 public class GameEngine extends AnimationTimer {
-    private static final double DEPTH_DIVISOR = 10000.0;
-    private static final double MAX_DEPTH_ALPHA = 0.95;
-
     private final double baseWidth;
     private final double baseHeight;
     private final Canvas canvas;
@@ -38,8 +35,8 @@ public class GameEngine extends AnimationTimer {
         this.world = world;
         this.canvas = canvas;
         this.gc = canvas.getGraphicsContext2D();
-        this.baseWidth = GameManager.getGameWidth();
-        this.baseHeight = GameManager.getGameHeight();
+        this.baseWidth = Config.GAME_WIDTH;
+        this.baseHeight = Config.GAME_HEIGHT;
         this.camX = baseWidth;
         this.camY = baseHeight;
         this.scaleX = baseWidth;
@@ -148,8 +145,8 @@ public class GameEngine extends AnimationTimer {
     }
 
     private void updateDepthEffect() {
-        double depth = (camY * 2 - baseHeight) / DEPTH_DIVISOR;
-        depthEffectAlpha = depth <= 0 ? 0 : (Math.min(depth, 1.0) * MAX_DEPTH_ALPHA);
+        double depth = (camY * 2 - baseHeight) / Config.DEPTH_DIVISOR;
+        depthEffectAlpha = depth <= 0 ? 0 : (Math.min(depth, 1.0) * Config.MAX_DEPTH_ALPHA);
     }
 
     public void setupInputHandling() {

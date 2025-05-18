@@ -1,16 +1,14 @@
 package splash.entities;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import splash.core.Config;
 
 public class World {
-    private static final double MIN_WORLD_SCALE = 1.0;
-    private static final double SCALE_DIVIDER = 10.0;
-
     private final ConcurrentLinkedQueue<Fish> entities = new ConcurrentLinkedQueue<>();
-    private double worldScale = MIN_WORLD_SCALE;
+    private double worldScale = Config.MIN_WORLD_SCALE;
 
     public void updateWorldScale(double playerSize) {
-        worldScale = Math.max(MIN_WORLD_SCALE, playerSize / SCALE_DIVIDER);
+        worldScale = Math.max(Config.MIN_WORLD_SCALE, playerSize / Config.WORLD_SCALE_DIVIDER);
         updateEntityScales();
     }
 

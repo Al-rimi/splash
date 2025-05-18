@@ -1,17 +1,16 @@
 package splash.entities;
 
 import javafx.scene.image.Image;
+import splash.core.Config;
 
 public class Food extends Fish {
-    private static final double FLEE_RADIUS = 400;
-    private static final double FLEE_SPEED = 200;
     private static final double DIRECTION_CHANGE_INTERVAL = 3.0;
 
     private final Player player;
     private final int value;
 
     public Food(Player player, double x, double y, Image leftTexture, Image rightTexture) {
-        super(player.getSize() * 0.5);
+        super(player.getSize() * Config.FOOD_SIZE_MULTIPLIER);
         this.player = player;
         this.leftTexture = leftTexture;
         this.rightTexture = rightTexture;
@@ -26,10 +25,10 @@ public class Food extends Fish {
         double dy = player.getY() - y;
         double distance = Math.hypot(dx, dy);
 
-        if (distance <= FLEE_RADIUS) {
-            fleeFrom(player.getX(), player.getY(), FLEE_SPEED, 0.1);
+        if (distance <= Config.FOOD_DETECTION_RADIUS) {
+            fleeFrom(player.getX(), player.getY(), Config.FOOD_SPEED, 0.1);
         } else {
-            wander(deltaTime, DIRECTION_CHANGE_INTERVAL, FLEE_SPEED * 0.6, 0.05);
+            wander(deltaTime, DIRECTION_CHANGE_INTERVAL, Config.FOOD_SPEED * 0.6, 0.05);
         }
 
         updatePosition(deltaTime);

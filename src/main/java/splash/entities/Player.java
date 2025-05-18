@@ -2,9 +2,9 @@ package splash.entities;
 
 import javafx.beans.property.*;
 import javafx.scene.image.Image;
+import splash.core.Config;
 
 public class Player extends Fish {
-    private static final double MAX_SPEED = 300;
 
     private final IntegerProperty health = new SimpleIntegerProperty(100);
     private final IntegerProperty level = new SimpleIntegerProperty(1);
@@ -17,7 +17,7 @@ public class Player extends Fish {
     private final BooleanProperty movingRight = new SimpleBooleanProperty();
 
     public Player(Image leftTexture, Image rightTexture, double baseWidth, double baseHeight) {
-        super(50);
+        super(Config.PLAYER_BASE_SIZE);
         this.leftTexture = leftTexture;
         this.rightTexture = rightTexture;
         setPosition(baseWidth / 2, baseHeight / 2);
@@ -40,7 +40,7 @@ public class Player extends Fish {
     }
 
     private double calculateVelocity(boolean negativeDirection, boolean positiveDirection) {
-        return (negativeDirection ? -MAX_SPEED : 0) + (positiveDirection ? MAX_SPEED : 0);
+        return (negativeDirection ? -Config.PLAYER_MAX_SPEED : 0) + (positiveDirection ? Config.PLAYER_MAX_SPEED : 0);
     }
 
     private void updatePosition(double deltaTime) {

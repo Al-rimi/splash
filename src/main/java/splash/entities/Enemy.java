@@ -1,16 +1,14 @@
 package splash.entities;
 
 import javafx.scene.image.Image;
-
+import splash.core.Config;
 public class Enemy extends Fish {
-    private static final double SPEED = 200;
-    private static final double CHASE_RADIUS = 400;
     private static final double DIRECTION_CHANGE_INTERVAL = 2.0;
 
     private final Player player;
 
     public Enemy(Player player, double x, double y, Image leftTexture, Image rightTexture) {
-        super(player.getSize() * 2);
+        super(player.getSize() * Config.ENEMY_BASE_SIZE_MULTIPLIER);
         this.player = player;
         this.leftTexture = leftTexture;
         this.rightTexture = rightTexture;
@@ -24,10 +22,10 @@ public class Enemy extends Fish {
         double dy = player.getY() - y;
         double distance = Math.hypot(dx, dy);
 
-        if (distance <= CHASE_RADIUS) {
-            pursue(player.getX(), player.getY(), SPEED, 0.1);
+        if (distance <= Config.ENEMY_DETECTION_RADIUS) {
+            pursue(player.getX(), player.getY(), Config.ENEMY_SPEED, 0.1);
         } else {
-            wander(deltaTime, DIRECTION_CHANGE_INTERVAL, SPEED, 0.05);
+            wander(deltaTime, DIRECTION_CHANGE_INTERVAL, Config.ENEMY_SPEED, 0.05);
         }
 
         updatePosition(deltaTime);
