@@ -1,32 +1,32 @@
 package splash.entities;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import splash.core.Config;
 
 public class World {
     private final ConcurrentLinkedQueue<Fish> entities = new ConcurrentLinkedQueue<>();
-    private double worldScale = Config.MIN_WORLD_SCALE;
-
-    public void updateWorldScale(double playerSize) {
-        worldScale = Math.max(Config.MIN_WORLD_SCALE, playerSize / Config.WORLD_SCALE_DIVIDER);
-        updateEntityScales();
-    }
+    private final ConcurrentLinkedQueue<StaticEntity> staticEntities = new ConcurrentLinkedQueue<>();
 
     public void spawnEntity(Fish entity) {
         entities.add(entity);
+    }
+
+    public void spawnStaticEntity(StaticEntity entity) {
+        staticEntities.add(entity);
     }
 
     public ConcurrentLinkedQueue<Fish> getEntities() {
         return entities;
     }
 
+    public ConcurrentLinkedQueue<StaticEntity> getStaticEntities() {
+        return staticEntities;
+    }
+
     public void removeEntity(Fish entity) {
         entities.remove(entity);
     }
 
-    private void updateEntityScales() {
-        for (Fish entity : entities) {
-            entity.updateScale(worldScale);
-        }
+    public void removeStaticEntity(StaticEntity entity) {
+        staticEntities.remove(entity);
     }
 }

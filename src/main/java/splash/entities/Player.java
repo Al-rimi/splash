@@ -15,7 +15,7 @@ public class Player extends Fish {
     private final IntegerProperty level = new SimpleIntegerProperty(1);
     private final IntegerProperty points = new SimpleIntegerProperty(0);
     private final IntegerProperty coins = new SimpleIntegerProperty(0);
-        private final BooleanProperty invulnerable = new SimpleBooleanProperty(false);
+    private final BooleanProperty invulnerable = new SimpleBooleanProperty(false);
     private final DoubleProperty opacity = new SimpleDoubleProperty(1.0);
     private final int character;
 
@@ -38,16 +38,16 @@ public class Player extends Fish {
         updatePosition(deltaTime);
     }
 
-        public void startDamageAnimation() {
-        if (invulnerable.get()) return;
+    public void startDamageAnimation() {
+        if (invulnerable.get())
+            return;
         invulnerable.set(true);
         opacity.set(0.5);
 
         Timeline timeline = new Timeline(
-            new KeyFrame(Duration.seconds(0.15), e -> {
-                opacity.set(opacity.get() == 0.5 ? 1.0 : 0.5);
-            })
-        );
+                new KeyFrame(Duration.seconds(0.15), e -> {
+                    opacity.set(opacity.get() == 0.5 ? 1.0 : 0.5);
+                }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
 

@@ -15,14 +15,16 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+
 import splash.core.GameEngine;
 import splash.core.GameManager;
 import splash.core.ResourceManager;
 import splash.core.Config;
-import splash.entities.*;
+import splash.entities.Player;
+import splash.entities.World;
+import splash.entities.StaticEntity;
+import splash.entities.Boat;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -36,7 +38,6 @@ public class GameScreen {
     private final Image[] mountains = new Image[Config.MOUNTAIN_IMAGE_COUNT];
     private final Image[] seaweeds = new Image[Config.SEAWEED_IMAGE_COUNT];
     private final Image[] rocks = new Image[Config.ROCK_IMAGE_COUNT];
-    private final List<StaticEntity> staticEntities = new ArrayList<>();
     private final Random random = new Random();
 
     private Canvas gameCanvas;
@@ -147,7 +148,7 @@ public class GameScreen {
 
         if (random.nextDouble() < Config.SPAWN_MUNTION_PROBABILITY) {
             Image mountain = mountains[random.nextInt(Config.MOUNTAIN_IMAGE_COUNT)];
-            staticEntities.add(new StaticEntity(
+            world.spawnStaticEntity(new StaticEntity(
                 spawnX, spawnY, 
                 mountain, 
                 random.nextDouble() * 2 + 1.2,
@@ -157,7 +158,7 @@ public class GameScreen {
 
         if (random.nextDouble() < Config.SPAWN_ROCK_PROBABILITY) {
             Image rock = rocks[random.nextInt(Config.ROCK_IMAGE_COUNT)];
-            staticEntities.add(new StaticEntity(
+            world.spawnStaticEntity(new StaticEntity(
                 spawnX + random.nextDouble() * 200 - 100, 
                 spawnY + random.nextDouble() * 200 - 100,
                 rock,
@@ -168,7 +169,7 @@ public class GameScreen {
 
         if (random.nextDouble() < Config.SPAWN_SEAWEED_PROBABILITY) {
             Image seaweed = seaweeds[random.nextInt(Config.SEAWEED_IMAGE_COUNT)];
-            staticEntities.add(new StaticEntity(
+            world.spawnStaticEntity(new StaticEntity(
                 spawnX + random.nextDouble() * 300 - 150,
                 spawnY + random.nextDouble() * 300 - 150,
                 seaweed,
@@ -189,7 +190,7 @@ public class GameScreen {
             return dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS;
         });
 
-        staticEntities.removeIf(entity -> {
+        world.getStaticEntities().removeIf(entity -> {
             double dx = entity.getX() - player.getX();
             double dy = entity.getY() - player.getY();
             return dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS * 12;
@@ -221,9 +222,6 @@ public class GameScreen {
         // Draw static elements on background canvas
         backgroundCanvas.getGraphicsContext2D().drawImage(ResourceManager.getWaterTexture(), 0, 0);
         root.getChildren().add(0, backgroundCanvas); // Add behind game canvas
-        
-        // Add rendering logic to GameEngine
-        gameEngine.setStaticEntities(staticEntities);
 
         return new Scene(root);
     }

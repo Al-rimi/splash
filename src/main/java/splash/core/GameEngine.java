@@ -16,7 +16,6 @@ public class GameEngine extends AnimationTimer {
     private final Canvas canvas;
     private final GraphicsContext gc;
     private final Image waterTexture;
-    private List<StaticEntity> staticEntities;
 
     private final World world;
     private final Player player;
@@ -48,10 +47,6 @@ public class GameEngine extends AnimationTimer {
 
         initializeCollisionLayers();
         bindCanvasResize();
-    }
-
-    public void setStaticEntities(List<StaticEntity> staticEntities) {
-        this.staticEntities = staticEntities;
     }
 
     private void initializeCollisionLayers() {
@@ -108,7 +103,7 @@ public class GameEngine extends AnimationTimer {
 
                 if (entity instanceof Boat boat) {
                     if (boat.getBehaviorType() == Boat.BehaviorType.ENEMY) {
-                        if (!player.isInvulnerable()) { // Check invulnerability
+                        if (!player.isInvulnerable()) {
                             player.healthProperty().set(player.healthProperty().get() - boat.getValue());
                             player.startDamageAnimation();
                         }
@@ -133,7 +128,7 @@ public class GameEngine extends AnimationTimer {
         double offsetX = (canvas.getWidth() / scale - baseWidth) / 2;
         double offsetY = (canvas.getHeight() / scale - baseHeight) / 2;
 
-        staticEntities.forEach(e -> e.render(gc, camX, camY, baseWidth, baseHeight, offsetX, offsetY));
+        world.getStaticEntities().forEach(e -> e.render(gc, camX, camY, baseWidth, baseHeight, offsetX, offsetY));
 
         gc.translate(translateX + offsetX, translateY + offsetY);
 
@@ -155,7 +150,7 @@ public class GameEngine extends AnimationTimer {
         }
 
         final double tileSize = 1024;
-        final double renderRadius = 1400;
+        final double renderRadius = 1600;
 
         double playerX = player.getX();
         double playerY = player.getY();
