@@ -198,7 +198,7 @@ public class GameScreen {
                     fishImages[fishType]));
         }
 
-        if (random.nextDouble() < Config.SPAWN_MUNTION_PROBABILITY) {
+        if (random.nextDouble() < Config.SPAWN_MOUNTAIN_PROBABILITY) {
             Image mountain = mountains[random.nextInt(Config.MOUNTAIN_IMAGE_COUNT)];
             world.spawnStaticEntity(new StaticEntity(
                     spawnX * 10, spawnY * 10,

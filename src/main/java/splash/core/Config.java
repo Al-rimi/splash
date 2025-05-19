@@ -10,7 +10,7 @@ public class Config {
     public static final double SPAWN_DURATION_SECONDS = 0.1;
     public static final double SPAWN_FOOD_PROBABILITY = 0.9;
     public static final double SPAWN_ENEMY_PROBABILITY = 0.1;
-    public static final double SPAWN_MUNTION_PROBABILITY = 0.4;
+    public static final double SPAWN_MOUNTAIN_PROBABILITY = 0.4;
     public static final double SPAWN_SEAWEED_PROBABILITY = 1.0;
     public static final double SPAWN_ROCK_PROBABILITY = 0.3;
     

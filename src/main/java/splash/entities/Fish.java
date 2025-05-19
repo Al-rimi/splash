@@ -3,6 +3,7 @@ package splash.entities;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import splash.utils.Vector2D;
 
 public abstract class Fish {
@@ -28,7 +29,7 @@ public abstract class Fish {
 
     public Fish(double size) {
         this.size = size;
-        setHitboxOffset(-size / 2, -size / 2);
+        setHitboxOffset(0, 0);
     }
 
     public abstract void update(double deltaTime);
@@ -56,6 +57,16 @@ public abstract class Fish {
 
         gc.drawImage(texture, drawX, drawY, renderSize, renderSize);
 
+        gc.restore();
+        debugDrawHitbox(gc);
+    }
+
+    public void debugDrawHitbox(GraphicsContext gc) {
+        gc.save();
+        gc.setStroke(Color.BLUE);
+        gc.setLineWidth(1);
+        double radius = getRadius();
+        gc.strokeOval(x - radius, y - radius, radius * 2, radius * 2);
         gc.restore();
     }
 
@@ -132,16 +143,19 @@ public abstract class Fish {
     }
 
     protected void updateHitbox() {
-        double scaledSize = getScaledSize();
+        double scaledSize = getScaledSize() * 0.8;
         hitbox = new Rectangle2D(
-                x - scaledSize / 2 + hitboxOffsetX,
-                y - scaledSize / 2 + hitboxOffsetY,
-                scaledSize,
-                scaledSize);
+            x - scaledSize / 2 + hitboxOffsetX,
+            y - scaledSize / 2 + hitboxOffsetY,
+            scaledSize, scaledSize);
     }
 
     public Rectangle2D getBounds() {
         return hitbox;
+    }
+
+    public double getRadius() {
+        return getScaledSize() * 0.4; // Adjust scale as needed for tighter/looser collision
     }
 
     public boolean isFacingLeft() {

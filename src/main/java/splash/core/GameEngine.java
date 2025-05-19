@@ -5,10 +5,10 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import splash.entities.*;
-
-import java.util.*;
+import splash.systems.CameraSystem;
+import splash.systems.CollisionSystem;
+import splash.systems.RenderSystem;
 
 public class GameEngine extends AnimationTimer {
     private final double baseWidth;
@@ -22,17 +22,14 @@ public class GameEngine extends AnimationTimer {
 
     private double scaleX;
     private double scaleY;
-    private double camX;
-    private double camY;
-    private double depthEffectAlpha = 0;
     private long lastUpdate = 0;
     private boolean isPaused = false;
     private final Runnable onPausePressed;
+    private final CameraSystem cameraSystem;
+    private final CollisionSystem collisionSystem;
+    private final RenderSystem renderSystem;
 
     private StackPane rootContainer;
-
-    private final Map<String, List<Fish>> collisionLayers = new HashMap<>();
-    private final Set<String> playerCollisionLayers = Set.of("bot");
 
     public GameEngine(Player player, World world, Canvas canvas, Runnable onPausePressed) {
         this.player = player;
@@ -41,19 +38,15 @@ public class GameEngine extends AnimationTimer {
         this.gc = canvas.getGraphicsContext2D();
         this.baseWidth = Config.GAME_WIDTH;
         this.baseHeight = Config.GAME_HEIGHT;
-        this.camX = baseWidth;
-        this.camY = baseHeight;
         this.scaleX = baseWidth;
         this.scaleY = baseHeight;
         this.waterTexture = ResourceManager.getWaterTexture();
         this.onPausePressed = onPausePressed;
+        this.cameraSystem = new CameraSystem(baseWidth, baseHeight);
+        this.collisionSystem = new CollisionSystem(player, world);
+        this.renderSystem = new RenderSystem(gc, canvas, world, waterTexture, baseWidth, baseHeight);
 
-        initializeCollisionLayers();
         bindCanvasResize();
-    }
-
-    private void initializeCollisionLayers() {
-        collisionLayers.put("bot", new ArrayList<>());
     }
 
     private void bindCanvasResize() {
@@ -78,135 +71,21 @@ public class GameEngine extends AnimationTimer {
 
     private void update(double deltaTime) {
         player.update(deltaTime);
-        setupInputHandling();
         world.getEntities().forEach(e -> e.update(deltaTime));
 
-        updateCameraPosition(deltaTime);
-        updateDepthEffect();
-        checkCollisions();
-        renderFrame();
-    }
-
-    private void checkCollisions() {
-        collisionLayers.values().forEach(List::clear);
-
-        for (Fish entity : world.getEntities()) {
-            collisionLayers.getOrDefault(entity.getTag(), new ArrayList<>()).add(entity);
-        }
-
-        for (String layer : playerCollisionLayers) {
-            List<Fish> entities = collisionLayers.get(layer);
-            if (entities == null)
-                continue;
-
-            for (Fish entity : entities) {
-                if (!player.getBounds().intersects(entity.getBounds()))
-                    continue;
-
-                if (entity instanceof Bot bot) {
-                    if (bot.getSize() > player.getSize()) {
-                        if (!player.isInvulnerable()) {
-                            player.healthProperty().set(player.healthProperty().get() - bot.getValue());
-                            player.startDamageAnimation();
-                        }
-                    } else{
-                        player.pointsProperty().set(player.pointsProperty().get() + bot.getValue());
-                        player.addSize(bot.getValue() / 4);
-                        world.removeEntity(bot);
-                    }
-                }
-            }
-        }
-    }
-
-    private void renderFrame() {
-        if (isPaused)
-        clear();
-        gc.save();
-
-        double scale = Math.min(scaleX, scaleY);
-        gc.scale(scale, scale);
-
-        double translateX = -camX + baseWidth / 2;
-        double translateY = -camY + baseHeight / 2;
-        double offsetX = (canvas.getWidth() / scale - baseWidth) / 2;
-        double offsetY = (canvas.getHeight() / scale - baseHeight) / 2;
-
-        world.getStaticEntities().forEach(e -> e.render(gc, camX, camY, baseWidth, baseHeight, offsetX, offsetY));
-
-        gc.translate(translateX + offsetX, translateY + offsetY);
-
-        drawWaterTiles();
-
-        world.getEntities().forEach(this::renderEntity);
-        renderEntity(player);
-
-        gc.restore();
-
-        gc.setFill(Color.rgb(0, 0, 0, depthEffectAlpha));
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-    }
-
-    private void drawWaterTiles() {
-        if (waterTexture == null) {
-            return;
-        }
-
-        final double tileSize = 1024;
-        final double renderRadius = 1600;
-
-        double playerX = player.getX();
-        double playerY = player.getY();
-
-        int minTileX = (int) Math.floor((playerX - renderRadius) / tileSize);
-        int maxTileX = (int) Math.ceil((playerX + renderRadius) / tileSize);
-        int minTileY = (int) Math.floor((playerY - renderRadius) / tileSize);
-        int maxTileY = (int) Math.ceil((playerY + renderRadius) / tileSize);
-
-        for (int xTile = minTileX; xTile <= maxTileX; xTile++) {
-            for (int yTile = minTileY; yTile <= maxTileY; yTile++) {
-                double tileWorldX = xTile * tileSize;
-                double tileWorldY = yTile * tileSize;
-
-                double closestX = Math.max(tileWorldX, Math.min(playerX, tileWorldX + tileSize));
-                double closestY = Math.max(tileWorldY, Math.min(playerY, tileWorldY + tileSize));
-                double dx = playerX - closestX;
-                double dy = playerY - closestY;
-                double distanceSq = dx * dx + dy * dy;
-
-                if (distanceSq <= renderRadius * renderRadius) {
-                    gc.drawImage(waterTexture, tileWorldX, tileWorldY);
-                }
-            }
-        }
-    }
-
-    private void renderEntity(Fish entity) {
-        if (entity instanceof Player p) {
-            p.render(gc);
-        } else if (entity instanceof Bot b) {
-            b.render(gc);
-        }
-    }
-
-    private void clear() {
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-    }
-
-    private void updateCameraPosition(double deltaTime) {
-        camX += (player.getX() - camX) * deltaTime;
-        camY += (player.getY() - camY) * deltaTime * 2;
-    }
-
-    private void updateDepthEffect() {
-        double depth = (camY * 2 - baseHeight) / Config.DEPTH_DIVISOR;
-        depthEffectAlpha = depth <= 0 ? 0 : (Math.min(depth, 1.0) * Config.MAX_DEPTH_ALPHA);
+        cameraSystem.update(deltaTime, player);
+        collisionSystem.checkCollisions();
+        renderSystem.renderFrame(
+            cameraSystem.getCamX(), 
+            cameraSystem.getCamY(),
+            scaleX, scaleY,
+            cameraSystem.getDepthEffectAlpha(),
+            player
+        );
     }
 
     public void setupInputHandling() {
-        if (rootContainer == null)
-            return;
+        if (rootContainer == null) return;
 
         rootContainer.setOnKeyPressed(e -> {
             switch (e.getCode()) {
@@ -215,8 +94,7 @@ public class GameEngine extends AnimationTimer {
                 case A, LEFT -> player.moveLeft(true);
                 case D, RIGHT -> player.moveRight(true);
                 case ESCAPE -> onPausePressed.run();
-                default -> {
-                }
+                default -> {}
             }
         });
 
@@ -226,8 +104,7 @@ public class GameEngine extends AnimationTimer {
                 case S, DOWN -> player.moveDown(false);
                 case A, LEFT -> player.moveLeft(false);
                 case D, RIGHT -> player.moveRight(false);
-                default -> {
-                }
+                default -> {}
             }
         });
     }
@@ -235,29 +112,12 @@ public class GameEngine extends AnimationTimer {
     private void updateScale() {
         scaleX = canvas.getWidth() / baseWidth;
         scaleY = canvas.getHeight() / baseHeight;
-
         player.updateScale(scaleY);
-    }
-
-    public void setScale(double scaleX, double scaleY) {
-        this.scaleX = scaleX;
-        this.scaleY = scaleY;
-    }
-
-    public StackPane getRootContainer() {
-        return rootContainer;
     }
 
     public void setRootContainer(StackPane rootContainer) {
         this.rootContainer = rootContainer;
-    }
-
-    public double getBaseWidth() {
-        return baseWidth;
-    }
-
-    public double getBaseHeight() {
-        return baseHeight;
+        setupInputHandling();
     }
 
     public void setPaused(boolean paused) {
