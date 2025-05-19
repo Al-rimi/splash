@@ -26,13 +26,15 @@ public class GameEngine extends AnimationTimer {
     private double camY;
     private double depthEffectAlpha = 0;
     private long lastUpdate = 0;
+    private boolean isPaused = false;
+    private final Runnable onPausePressed;
 
     private StackPane rootContainer;
 
     private final Map<String, List<Fish>> collisionLayers = new HashMap<>();
     private final Set<String> playerCollisionLayers = Set.of("enemy", "block", "food");
 
-    public GameEngine(Player player, World world, Canvas canvas) {
+    public GameEngine(Player player, World world, Canvas canvas, Runnable onPausePressed) {
         this.player = player;
         this.world = world;
         this.canvas = canvas;
@@ -44,6 +46,7 @@ public class GameEngine extends AnimationTimer {
         this.scaleX = baseWidth;
         this.scaleY = baseHeight;
         this.waterTexture = ResourceManager.getWaterTexture();
+        this.onPausePressed = onPausePressed;
 
         initializeCollisionLayers();
         bindCanvasResize();
@@ -69,6 +72,9 @@ public class GameEngine extends AnimationTimer {
 
         double deltaTime = (now - lastUpdate) / 1_000_000_000.0;
         lastUpdate = now;
+
+        if (isPaused) return;
+        
         update(deltaTime);
     }
 
@@ -117,6 +123,7 @@ public class GameEngine extends AnimationTimer {
     }
 
     private void renderFrame() {
+        if (isPaused)
         clear();
         gc.save();
 
@@ -210,6 +217,7 @@ public class GameEngine extends AnimationTimer {
                 case S, DOWN -> player.moveDown(true);
                 case A, LEFT -> player.moveLeft(true);
                 case D, RIGHT -> player.moveRight(true);
+                case ESCAPE -> onPausePressed.run();
                 default -> {
                 }
             }
@@ -253,5 +261,9 @@ public class GameEngine extends AnimationTimer {
 
     public double getBaseHeight() {
         return baseHeight;
+    }
+
+    public void setPaused(boolean paused) {
+        this.isPaused = paused;
     }
 }

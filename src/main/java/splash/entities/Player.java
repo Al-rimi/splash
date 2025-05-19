@@ -10,7 +10,6 @@ import javafx.util.Duration;
 import splash.core.Config;
 
 public class Player extends Fish {
-
     private final IntegerProperty health = new SimpleIntegerProperty(100);
     private final IntegerProperty level = new SimpleIntegerProperty(1);
     private final IntegerProperty points = new SimpleIntegerProperty(0);

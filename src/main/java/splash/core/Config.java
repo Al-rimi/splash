@@ -5,7 +5,7 @@ public class Config {
     public static final int GAME_WIDTH = 1920;
     public static final int GAME_HEIGHT = 1080;
     public static final String GAME_TITLE = "Splash";
-    public static final double SPAWN_DURATION_SECONDS = 2.0;
+    public static final double SPAWN_DURATION_SECONDS = 0.5;
     public static final double SPAWN_FOOD_PROBABILITY = 0.9;
     public static final double SPAWN_ENEMY_PROBABILITY = 0.4;
     public static final double SPAWN_MUNTION_PROBABILITY = 0.2;
@@ -24,7 +24,7 @@ public class Config {
     // Enemy configuration
     public static final double ENEMY_MAX_SIZE_MULTIPLIER = 4;
     public static final double ENEMY_MIN_SIZE_MULTIPLIER = 2;
-    public static final double ENEMY_DETECTION_RADIUS = 400;
+    public static final double ENEMY_DETECTION_RADIUS = 700;
     public static final double ENEMY_MOVEMENT_SPEED = 300;
     public static final double ENEMY_DIRECTION_CHANGE_INTERVAL = 2.0;
 

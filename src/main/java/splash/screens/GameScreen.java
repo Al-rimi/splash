@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -39,14 +40,17 @@ public class GameScreen {
     private final Image[] seaweeds = new Image[Config.SEAWEED_IMAGE_COUNT];
     private final Image[] rocks = new Image[Config.ROCK_IMAGE_COUNT];
     private final Random random = new Random();
+    private StackPane root;
+    private boolean isPaused = false;
 
     private Canvas gameCanvas;
+    private Canvas backgroundCanvas;
     private HBox hud;
 
     public GameScreen(Player player) {
         this.player = player;
         this.gameCanvas = new Canvas(Config.GAME_WIDTH, Config.GAME_HEIGHT);
-        this.gameEngine = new GameEngine(player, world, gameCanvas);
+        this.gameEngine = new GameEngine(player, world, gameCanvas, this::togglePause);
         this.spawnTimer = createSpawnTimer();
         for (int i = 0; i < Config.FISH_IMAGE_COUNT; i++) {
             fishImages[i] = ResourceManager.getFishImage(i + 1);
@@ -63,7 +67,8 @@ public class GameScreen {
     }
 
     private Timeline createSpawnTimer() {
-        Timeline timer = new Timeline(new KeyFrame(Duration.seconds(Config.SPAWN_DURATION_SECONDS), e -> spawnEntities()));
+        Timeline timer = new Timeline(
+                new KeyFrame(Duration.seconds(Config.SPAWN_DURATION_SECONDS), e -> spawnEntities()));
         timer.setCycleCount(Animation.INDEFINITE);
         return timer;
     }
@@ -82,9 +87,8 @@ public class GameScreen {
         Stream.of(healthLabel, levelLabel, pointsLabel, coinsLabel)
                 .forEach(label -> label.getStyleClass().add("hud-label"));
 
-        Button stopButton = createStopButton();
-
-        hud.getChildren().addAll(healthLabel, levelLabel, pointsLabel, coinsLabel, stopButton);
+        Button pauseButton = createPauseButton();
+        hud.getChildren().addAll(healthLabel, levelLabel, pointsLabel, coinsLabel, pauseButton);
     }
 
     private Label createBoundLabel(String key, IntegerProperty property) {
@@ -97,18 +101,66 @@ public class GameScreen {
         return label;
     }
 
-    private Button createStopButton() {
-        Button stopButton = new Button();
-        stopButton.textProperty().bind(
+    private Button createPauseButton() {
+        Button pauseButton = new Button();
+        pauseButton.textProperty().bind(
                 Bindings.createStringBinding(
-                        () -> ResourceManager.getString("stop"),
+                        () -> ResourceManager.getString("pause"),
                         ResourceManager.currentLocaleProperty()));
-        stopButton.setOnAction(e -> {
-            gameEngine.stop();
-            GameManager.showMainMenu();
-        });
-        stopButton.getStyleClass().add("nav-button");
-        return stopButton;
+        pauseButton.setOnAction(e -> togglePause());
+        pauseButton.getStyleClass().add("nav-button");
+        return pauseButton;
+    }
+
+    private void togglePause() {
+        if (isPaused) {
+            resumeGame();
+        } else {
+            pauseGame();
+        }
+    }
+
+    private void pauseGame() {
+        isPaused = true;
+        gameEngine.setPaused(isPaused);
+        spawnTimer.pause();
+        applyBlurEffect(isPaused);
+        showPauseScreen();
+    }
+
+    private void resumeGame() {
+        isPaused = false;
+        gameEngine.setPaused(isPaused);
+        spawnTimer.play();
+        applyBlurEffect(isPaused);
+        hidePauseScreen();
+    }
+
+    private void applyBlurEffect(boolean apply) {
+        GaussianBlur blur = new GaussianBlur(10);
+        if (apply) {
+            gameCanvas.setEffect(blur);
+            backgroundCanvas.setEffect(blur);
+        } else {
+            gameCanvas.setEffect(null);
+            backgroundCanvas.setEffect(null);
+        }
+    }
+
+    private void showPauseScreen() {
+        PauseScreen pauseScreen = new PauseScreen(
+                this::resumeGame,
+                () -> GameManager.showSettingsScreen(),
+                () -> {
+                    gameEngine.stop();
+                    spawnTimer.stop();
+                    GameManager.showMainMenu();
+                });
+        root.getChildren().add(pauseScreen);
+    }
+
+    private void hidePauseScreen() {
+        root.getChildren().removeIf(node -> node instanceof PauseScreen);
     }
 
     private void spawnEntities() {
@@ -149,33 +201,30 @@ public class GameScreen {
         if (random.nextDouble() < Config.SPAWN_MUNTION_PROBABILITY) {
             Image mountain = mountains[random.nextInt(Config.MOUNTAIN_IMAGE_COUNT)];
             world.spawnStaticEntity(new StaticEntity(
-                spawnX, spawnY, 
-                mountain, 
-                random.nextDouble() * 2 + 1.2,
-                random.nextDouble() * 0.2 + 0.1 
-            ));
+                    spawnX, spawnY,
+                    mountain,
+                    random.nextDouble() * 2 + 1.2,
+                    random.nextDouble() * 0.2 + 0.1));
         }
 
         if (random.nextDouble() < Config.SPAWN_ROCK_PROBABILITY) {
             Image rock = rocks[random.nextInt(Config.ROCK_IMAGE_COUNT)];
             world.spawnStaticEntity(new StaticEntity(
-                spawnX + random.nextDouble() * 200 - 100, 
-                spawnY + random.nextDouble() * 200 - 100,
-                rock,
-                random.nextDouble() * 0.3 + 0.1,
-                random.nextDouble() * 0.6 + 0.3
-            ));
+                    spawnX + random.nextDouble() * 200 - 100,
+                    spawnY + random.nextDouble() * 200 - 100,
+                    rock,
+                    random.nextDouble() * 0.3 + 0.1,
+                    random.nextDouble() * 0.6 + 0.3));
         }
 
         if (random.nextDouble() < Config.SPAWN_SEAWEED_PROBABILITY) {
             Image seaweed = seaweeds[random.nextInt(Config.SEAWEED_IMAGE_COUNT)];
             world.spawnStaticEntity(new StaticEntity(
-                spawnX + random.nextDouble() * 300 - 150,
-                spawnY + random.nextDouble() * 300 - 150,
-                seaweed,
-                random.nextDouble() * 0.4 + 0.2,
-                random.nextDouble() * 0.8 + 0.2
-            ));
+                    spawnX + random.nextDouble() * 300 - 150,
+                    spawnY + random.nextDouble() * 300 - 150,
+                    seaweed,
+                    random.nextDouble() * 0.4 + 0.2,
+                    random.nextDouble() * 0.8 + 0.2));
         }
 
         cleanupDistantEntities();
@@ -198,7 +247,7 @@ public class GameScreen {
     }
 
     public Scene createScene() {
-        StackPane root = new StackPane();
+        root = new StackPane();
         root.getStyleClass().add("game-container");
 
         gameCanvas.getStyleClass().add("game-canvas");
@@ -214,11 +263,11 @@ public class GameScreen {
         gameEngine.start();
         spawnTimer.play();
 
-        Canvas backgroundCanvas = new Canvas();
+        backgroundCanvas = new Canvas();
         backgroundCanvas.widthProperty().bind(root.widthProperty());
         backgroundCanvas.heightProperty().bind(root.heightProperty());
         backgroundCanvas.getStyleClass().add("background-canvas");
-        
+
         // Draw static elements on background canvas
         backgroundCanvas.getGraphicsContext2D().drawImage(ResourceManager.getWaterTexture(), 0, 0);
         root.getChildren().add(0, backgroundCanvas); // Add behind game canvas

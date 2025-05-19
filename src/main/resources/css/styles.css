@@ -198,3 +198,22 @@
     -fx-effect: dropshadow(gaussian, rgba(0,150,255,0.2), 20, 0.5, 0, 0);
     -fx-cursor: crosshair;
 }
+
+.pause-menu {
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+    -fx-padding: 40px;
+    -fx-background-radius: 15px;
+    -fx-spacing: 20px;
+}
+
+.pause-button {
+    -fx-font-size: 1.2em;
+    -fx-padding: 15px 30px;
+    -fx-background-color: -fx-primary-color;
+    -fx-text-fill: white;
+    -fx-background-radius: 25px;
+}
+
+.pause-button:hover {
+    -fx-background-color: derive(-fx-primary-color, -15%);
+}
