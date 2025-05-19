@@ -4,18 +4,14 @@ import javafx.scene.image.Image;
 import splash.core.Config;
 
 public class Bot extends Fish {
-    public enum BehaviorType {
-        ENEMY, FOOD
-    }
 
     private final Player player;
-    private final BehaviorType behavior;
     private final double detectionRadius;
     private final double movementSpeed;
     private int value;
     private final double directionChangeInterval;
 
-    public Bot(Player player, BehaviorType behavior,
+    public Bot(Player player,
             double x, double y,
             Image texture,
             double sizeMultiplier,
@@ -24,16 +20,15 @@ public class Bot extends Fish {
             double directionChangeInterval,
             int value) {
         super(player.getSize() * sizeMultiplier);
+        
         this.player = player;
-        this.behavior = behavior;
         this.detectionRadius = detectionRadius;
         this.movementSpeed = movementSpeed;
         this.directionChangeInterval = directionChangeInterval;
         this.texture = texture;
         this.value = value;
         setPosition(x, y);
-
-        addTag(behavior == BehaviorType.FOOD ? "food" : "enemy");
+        setTag("bot");
     }
 
     // Factory methods for specific entity types
@@ -45,7 +40,6 @@ public class Bot extends Fish {
 
         return new Bot(
                 player,
-                BehaviorType.ENEMY,
                 x, y,
                 texture,
                 sizeMultiplier,
@@ -63,7 +57,6 @@ public class Bot extends Fish {
 
         return new Bot(
                 player,
-                BehaviorType.FOOD,
                 x, y,
                 texture,
                 sizeMultiplier,
@@ -89,13 +82,10 @@ public class Bot extends Fish {
     }
 
     private void handleTargetBehavior() {
-        switch (behavior) {
-            case FOOD:
-                fleeFrom(player.getX(), player.getY(), movementSpeed, 0.1);
-                break;
-            case ENEMY:
-                pursue(player.getX(), player.getY(), movementSpeed, 0.1);
-                break;
+        if (this.size <= player.getSize()) {
+            fleeFrom(player.getX(), player.getY(), movementSpeed, 0.1);
+        } else {
+            pursue(player.getX(), player.getY(), movementSpeed, 0.1);
         }
     }
 
@@ -107,9 +97,5 @@ public class Bot extends Fish {
 
     public int getValue() {
         return value;
-    }
-
-    public BehaviorType getBehaviorType() {
-        return behavior;
     }
 }

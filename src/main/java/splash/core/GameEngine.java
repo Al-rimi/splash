@@ -32,7 +32,7 @@ public class GameEngine extends AnimationTimer {
     private StackPane rootContainer;
 
     private final Map<String, List<Fish>> collisionLayers = new HashMap<>();
-    private final Set<String> playerCollisionLayers = Set.of("enemy", "block", "food");
+    private final Set<String> playerCollisionLayers = Set.of("bot");
 
     public GameEngine(Player player, World world, Canvas canvas, Runnable onPausePressed) {
         this.player = player;
@@ -53,9 +53,7 @@ public class GameEngine extends AnimationTimer {
     }
 
     private void initializeCollisionLayers() {
-        collisionLayers.put("enemy", new ArrayList<>());
-        collisionLayers.put("food", new ArrayList<>());
-        collisionLayers.put("block", new ArrayList<>());
+        collisionLayers.put("bot", new ArrayList<>());
     }
 
     private void bindCanvasResize() {
@@ -74,7 +72,7 @@ public class GameEngine extends AnimationTimer {
         lastUpdate = now;
 
         if (isPaused) return;
-        
+
         update(deltaTime);
     }
 
@@ -93,9 +91,7 @@ public class GameEngine extends AnimationTimer {
         collisionLayers.values().forEach(List::clear);
 
         for (Fish entity : world.getEntities()) {
-            for (String tag : entity.getTags()) {
-                collisionLayers.getOrDefault(tag, new ArrayList<>()).add(entity);
-            }
+            collisionLayers.getOrDefault(entity.getTag(), new ArrayList<>()).add(entity);
         }
 
         for (String layer : playerCollisionLayers) {
@@ -108,13 +104,14 @@ public class GameEngine extends AnimationTimer {
                     continue;
 
                 if (entity instanceof Bot bot) {
-                    if (bot.getBehaviorType() == Bot.BehaviorType.ENEMY) {
+                    if (bot.getSize() > player.getSize()) {
                         if (!player.isInvulnerable()) {
                             player.healthProperty().set(player.healthProperty().get() - bot.getValue());
                             player.startDamageAnimation();
                         }
-                    } else if (bot.getBehaviorType() == Bot.BehaviorType.FOOD) {
+                    } else{
                         player.pointsProperty().set(player.pointsProperty().get() + bot.getValue());
+                        player.addSize(bot.getValue() / 4);
                         world.removeEntity(bot);
                     }
                 }

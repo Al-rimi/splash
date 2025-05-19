@@ -5,9 +5,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import splash.utils.Vector2D;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public abstract class Fish {
     protected double size;
     protected double scale = 1.0;
@@ -27,7 +24,7 @@ public abstract class Fish {
 
     protected Image texture;
 
-    protected Set<String> tags = new HashSet<>();
+    protected String tag;
 
     public Fish(double size) {
         this.size = size;
@@ -147,28 +144,17 @@ public abstract class Fish {
         return hitbox;
     }
 
-    public Set<String> getTags() {
-        return tags;
-    }
-
-    public void addTag(String tag) {
-        tags.add(tag);
-    }
-
-    public void removeTag(String tag) {
-        tags.remove(tag);
-    }
-
-    public boolean hasTag(String tag) {
-        return tags.contains(tag);
-    }
-
     public boolean isFacingLeft() {
         return facingLeft;
     }
 
     public double getSize() {
         return size;
+    }
+
+    public void addSize(double delta) {
+        size += delta;
+        updateHitbox();
     }
 
     public double getX() {
@@ -185,5 +171,13 @@ public abstract class Fish {
 
     public double getOpacity() {
         return 1.0;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String getTag() {
+        return tag;
     }
 }

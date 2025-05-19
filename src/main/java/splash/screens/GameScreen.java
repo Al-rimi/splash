@@ -167,7 +167,7 @@ public class GameScreen {
         double dx = player.getVelocityX();
         double dy = player.getVelocityY();
         double length = Math.hypot(dx, dy);
-        double distance = 200 + Math.random() * Config.SPAWN_RADIUS;
+        double distance = 1500 + Math.random() * Config.SPAWN_RADIUS;
         double angle = Math.random() * 2 * Math.PI;
 
         double dirX = (length == 0) ? Math.cos(angle) : dx / length;
@@ -201,7 +201,7 @@ public class GameScreen {
         if (random.nextDouble() < Config.SPAWN_MUNTION_PROBABILITY) {
             Image mountain = mountains[random.nextInt(Config.MOUNTAIN_IMAGE_COUNT)];
             world.spawnStaticEntity(new StaticEntity(
-                    spawnX, spawnY,
+                    spawnX * 10, spawnY * 10,
                     mountain,
                     random.nextDouble() * 2 + 1.2,
                     random.nextDouble() * 0.2 + 0.1));

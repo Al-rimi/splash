@@ -28,7 +28,7 @@ public class Player extends Fish {
         this.texture = texture;
         this.character = character;
         setPosition(baseWidth / 2, baseHeight / 2);
-        addTag("player");
+        setTag("player");
     }
 
     @Override

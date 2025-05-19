@@ -5,10 +5,12 @@ public class Config {
     public static final int GAME_WIDTH = 1920;
     public static final int GAME_HEIGHT = 1080;
     public static final String GAME_TITLE = "Splash";
-    public static final double SPAWN_DURATION_SECONDS = 0.5;
+    public static final double SPAWN_RADIUS = 10000;
+    public static final double DESPAWN_RADIUS = 40000;
+    public static final double SPAWN_DURATION_SECONDS = 0.1;
     public static final double SPAWN_FOOD_PROBABILITY = 0.9;
-    public static final double SPAWN_ENEMY_PROBABILITY = 0.4;
-    public static final double SPAWN_MUNTION_PROBABILITY = 0.2;
+    public static final double SPAWN_ENEMY_PROBABILITY = 0.1;
+    public static final double SPAWN_MUNTION_PROBABILITY = 0.4;
     public static final double SPAWN_SEAWEED_PROBABILITY = 1.0;
     public static final double SPAWN_ROCK_PROBABILITY = 0.3;
     
@@ -38,8 +40,6 @@ public class Config {
     // World Configuration
     public static final double MIN_WORLD_SCALE = 1.0;
     public static final double WORLD_SCALE_DIVIDER = 10.0;
-    public static final double SPAWN_RADIUS = 1000;
-    public static final double DESPAWN_RADIUS = 4000;
 
     // Resource Configuration
     public static final String DEFAULT_LANGUAGE = "en";
