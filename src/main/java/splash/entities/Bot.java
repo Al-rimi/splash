@@ -3,7 +3,7 @@ package splash.entities;
 import javafx.scene.image.Image;
 import splash.core.Config;
 
-public class Boat extends Fish {
+public class Bot extends Fish {
     public enum BehaviorType {
         ENEMY, FOOD
     }
@@ -15,7 +15,7 @@ public class Boat extends Fish {
     private int value;
     private final double directionChangeInterval;
 
-    public Boat(Player player, BehaviorType behavior,
+    public Bot(Player player, BehaviorType behavior,
             double x, double y,
             Image texture,
             double sizeMultiplier,
@@ -37,13 +37,13 @@ public class Boat extends Fish {
     }
 
     // Factory methods for specific entity types
-    public static Boat createEnemy(Player player, double x, double y,
+    public static Bot createEnemy(Player player, double x, double y,
             Image texture) {
         double sizeMultiplier = Math.random() * (Config.ENEMY_MAX_SIZE_MULTIPLIER - Config.ENEMY_MIN_SIZE_MULTIPLIER)
                 + Config.ENEMY_MIN_SIZE_MULTIPLIER;
         int value = (int) (sizeMultiplier * 10) + 5;
 
-        return new Boat(
+        return new Bot(
                 player,
                 BehaviorType.ENEMY,
                 x, y,
@@ -55,13 +55,13 @@ public class Boat extends Fish {
                 value);
     }
 
-    public static Boat createFood(Player player, double x, double y,
+    public static Bot createFood(Player player, double x, double y,
             Image texture) {
         double sizeMultiplier = Math.random() * (Config.FOOD_MAX_SIZE_MULTIPLIER - Config.FOOD_MIN_SIZE_MULTIPLIER)
                 + Config.FOOD_MIN_SIZE_MULTIPLIER;
         int value = (int) (sizeMultiplier * 10) + 5;
 
-        return new Boat(
+        return new Bot(
                 player,
                 BehaviorType.FOOD,
                 x, y,

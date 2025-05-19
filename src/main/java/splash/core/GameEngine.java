@@ -101,15 +101,15 @@ public class GameEngine extends AnimationTimer {
                 if (!player.getBounds().intersects(entity.getBounds()))
                     continue;
 
-                if (entity instanceof Boat boat) {
-                    if (boat.getBehaviorType() == Boat.BehaviorType.ENEMY) {
+                if (entity instanceof Bot bot) {
+                    if (bot.getBehaviorType() == Bot.BehaviorType.ENEMY) {
                         if (!player.isInvulnerable()) {
-                            player.healthProperty().set(player.healthProperty().get() - boat.getValue());
+                            player.healthProperty().set(player.healthProperty().get() - bot.getValue());
                             player.startDamageAnimation();
                         }
-                    } else if (boat.getBehaviorType() == Boat.BehaviorType.FOOD) {
-                        player.pointsProperty().set(player.pointsProperty().get() + boat.getValue());
-                        world.removeEntity(boat);
+                    } else if (bot.getBehaviorType() == Bot.BehaviorType.FOOD) {
+                        player.pointsProperty().set(player.pointsProperty().get() + bot.getValue());
+                        world.removeEntity(bot);
                     }
                 }
             }
@@ -181,7 +181,7 @@ public class GameEngine extends AnimationTimer {
     private void renderEntity(Fish entity) {
         if (entity instanceof Player p) {
             p.render(gc);
-        } else if (entity instanceof Boat b) {
+        } else if (entity instanceof Bot b) {
             b.render(gc);
         }
     }

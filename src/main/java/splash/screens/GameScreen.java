@@ -23,7 +23,7 @@ import splash.core.Config;
 import splash.entities.Player;
 import splash.entities.World;
 import splash.entities.StaticEntity;
-import splash.entities.Boat;
+import splash.entities.Bot;
 
 import java.util.Random;
 import java.util.stream.Stream;
@@ -133,14 +133,14 @@ public class GameScreen {
         }
 
         if (random.nextDouble() < Config.SPAWN_ENEMY_PROBABILITY) {
-            world.spawnEntity(Boat.createEnemy(
+            world.spawnEntity(Bot.createEnemy(
                     player,
                     spawnX, spawnY,
                     fishImages[fishType]));
         }
 
         if (random.nextDouble() < Config.SPAWN_FOOD_PROBABILITY) {
-            world.spawnEntity(Boat.createFood(
+            world.spawnEntity(Bot.createFood(
                     player,
                     spawnX, spawnY,
                     fishImages[fishType]));

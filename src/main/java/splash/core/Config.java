@@ -14,7 +14,7 @@ public class Config {
     
     // Player Configuration
     public static final double PLAYER_BASE_SIZE = 60;
-    public static final double PLAYER_MAX_SPEED = 600;
+    public static final double PLAYER_MAX_SPEED = 500;
     
     // Camera Configuration
     public static final double DEPTH_DIVISOR = 10000.0;
@@ -25,7 +25,7 @@ public class Config {
     public static final double ENEMY_MAX_SIZE_MULTIPLIER = 4;
     public static final double ENEMY_MIN_SIZE_MULTIPLIER = 2;
     public static final double ENEMY_DETECTION_RADIUS = 400;
-    public static final double ENEMY_MOVEMENT_SPEED = 200;
+    public static final double ENEMY_MOVEMENT_SPEED = 300;
     public static final double ENEMY_DIRECTION_CHANGE_INTERVAL = 2.0;
 
     // Food configuration
