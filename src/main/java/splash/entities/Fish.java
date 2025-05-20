@@ -73,7 +73,6 @@ public abstract class Fish {
         gc.drawImage(texture, drawX, drawY, renderSize, renderSize);
 
         gc.restore();
-        debugDrawHitbox(gc);
     }
 
     public void debugDrawHitbox(GraphicsContext gc) {
