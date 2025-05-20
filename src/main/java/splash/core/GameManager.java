@@ -32,7 +32,7 @@ public final class GameManager {
         int selectedCharacter = profile.getSelectedCharacter();
 
         Image image = ResourceManager.getFishImage(selectedCharacter);
-        player = new Player(selectedCharacter, image, primaryStage.getWidth(), primaryStage.getHeight());
+        player = new Player(selectedCharacter, primaryStage.getWidth(), primaryStage.getHeight(), image);
         gameScreen = new GameScreen(player);
 
         primaryStage.setScene(gameScreen.createScene());

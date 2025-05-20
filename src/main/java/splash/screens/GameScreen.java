@@ -24,7 +24,7 @@ import splash.core.Config;
 import splash.entities.Player;
 import splash.entities.World;
 import splash.entities.StaticEntity;
-import splash.entities.Bot;
+import splash.entities.NPC;
 
 import java.util.Random;
 import java.util.stream.Stream;
@@ -64,6 +64,8 @@ public class GameScreen {
         for (int i = 0; i < Config.ROCK_IMAGE_COUNT; i++) {
             rocks[i] = ResourceManager.getRockImage(i + 1);
         }
+
+        this.world.spawnEntity(player);
     }
 
     private Timeline createSpawnTimer() {
@@ -80,15 +82,14 @@ public class GameScreen {
         hud.getStyleClass().add("hud");
 
         Label healthLabel = createBoundLabel("health", player.healthProperty());
-        Label levelLabel = createBoundLabel("level", player.levelProperty());
-        Label pointsLabel = createBoundLabel("points", player.pointsProperty());
+        Label scoreLabel = createBoundLabel("score", player.scoreProperty());
         Label coinsLabel = createBoundLabel("coins", player.coinsProperty());
 
-        Stream.of(healthLabel, levelLabel, pointsLabel, coinsLabel)
+        Stream.of(healthLabel, scoreLabel, coinsLabel)
                 .forEach(label -> label.getStyleClass().add("hud-label"));
 
         Button pauseButton = createPauseButton();
-        hud.getChildren().addAll(healthLabel, levelLabel, pointsLabel, coinsLabel, pauseButton);
+        hud.getChildren().addAll(healthLabel, scoreLabel, coinsLabel, pauseButton);
     }
 
     private Label createBoundLabel(String key, IntegerProperty property) {
@@ -185,17 +186,15 @@ public class GameScreen {
         }
 
         if (random.nextDouble() < Config.SPAWN_ENEMY_PROBABILITY) {
-            world.spawnEntity(Bot.createEnemy(
-                    player,
-                    spawnX, spawnY,
-                    fishImages[fishType]));
+            NPC enemy = new NPC(world, spawnX, spawnY,
+                    fishImages[fishType], random.nextDouble() * player.getSize() * 1.5 + player.getSize());
+            world.spawnEntity(enemy);
         }
 
         if (random.nextDouble() < Config.SPAWN_FOOD_PROBABILITY) {
-            world.spawnEntity(Bot.createFood(
-                    player,
-                    spawnX, spawnY,
-                    fishImages[fishType]));
+            NPC food = new NPC(world, spawnX, spawnY,
+                    fishImages[fishType], random.nextDouble() * player.getSize() * 0.8 + player.getSize() * 0.2);
+            world.spawnEntity(food);
         }
 
         if (random.nextDouble() < Config.SPAWN_MOUNTAIN_PROBABILITY) {

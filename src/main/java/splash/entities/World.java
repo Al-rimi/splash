@@ -22,6 +22,15 @@ public class World {
         return staticEntities;
     }
 
+    public Fish getPlayer() {
+        for (Fish entity : entities) {
+            if (entity.isPlayer) {
+                return entity;
+            }
+        }
+        return null;
+    }
+
     public void removeEntity(Fish entity) {
         entities.remove(entity);
     }

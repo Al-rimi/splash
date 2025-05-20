@@ -1,34 +1,26 @@
 package splash.entities;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
-import javafx.animation.Timeline;
-import javafx.beans.property.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.Image;
-import javafx.util.Duration;
 import splash.core.Config;
 
 public class Player extends Fish {
-    private final IntegerProperty health = new SimpleIntegerProperty(100);
-    private final IntegerProperty level = new SimpleIntegerProperty(1);
-    private final IntegerProperty points = new SimpleIntegerProperty(0);
-    private final IntegerProperty coins = new SimpleIntegerProperty(0);
-    private final BooleanProperty invulnerable = new SimpleBooleanProperty(false);
-    private final DoubleProperty opacity = new SimpleDoubleProperty(1.0);
     private final int character;
+    private final IntegerProperty score;
+    private final IntegerProperty coins;
 
-    private final BooleanProperty movingUp = new SimpleBooleanProperty();
-    private final BooleanProperty movingDown = new SimpleBooleanProperty();
-    private final BooleanProperty movingLeft = new SimpleBooleanProperty();
-    private final BooleanProperty movingRight = new SimpleBooleanProperty();
+    private boolean movingUp;
+    private boolean movingDown;
+    private boolean movingLeft;
+    private boolean movingRight;
 
-    public Player(int character, Image texture, double baseWidth, double baseHeight) {
-        super(Config.PLAYER_BASE_SIZE);
-        this.texture = texture;
+    public Player(int character, double baseWidth, double baseHeight, Image texture) {
+        super(Config.PLAYER_BASE_SIZE, 100, baseWidth / 2, baseHeight / 2, texture);
+        this.isPlayer = true;
         this.character = character;
-        setPosition(baseWidth / 2, baseHeight / 2);
-        setTag("player");
+        this.score = new SimpleIntegerProperty(0);
+        this.coins = new SimpleIntegerProperty(0);
     }
 
     @Override
@@ -37,31 +29,9 @@ public class Player extends Fish {
         updatePosition(deltaTime);
     }
 
-    public void startDamageAnimation() {
-        if (invulnerable.get())
-            return;
-        invulnerable.set(true);
-        opacity.set(0.5);
-
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.seconds(0.15), e -> {
-                    opacity.set(opacity.get() == 0.5 ? 1.0 : 0.5);
-                }));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
-
-        PauseTransition delay = new PauseTransition(Duration.seconds(3));
-        delay.setOnFinished(e -> {
-            timeline.stop();
-            invulnerable.set(false);
-            opacity.set(1.0);
-        });
-        delay.play();
-    }
-
     private void updateVelocity() {
-        velocityX = calculateVelocity(movingLeft.get(), movingRight.get());
-        velocityY = calculateVelocity(movingUp.get(), movingDown.get());
+        velocityX = calculateVelocity(movingLeft, movingRight);
+        velocityY = calculateVelocity(movingUp, movingDown);
 
         if (velocityX != 0) {
             facingLeft = velocityX < 0;
@@ -78,40 +48,36 @@ public class Player extends Fish {
         setPosition(x, y);
     }
 
-    public IntegerProperty healthProperty() {
-        return health;
-    }
-
-    public IntegerProperty levelProperty() {
-        return level;
-    }
-
-    public IntegerProperty pointsProperty() {
-        return points;
-    }
-
     public IntegerProperty coinsProperty() {
         return coins;
     }
 
-    public void addPoints(int points) {
-        this.points.set(this.points.get() + points);
+    public void addCoins(int coins) {
+        this.coins.set(this.coins.get() + coins);
+    }
+
+    public IntegerProperty scoreProperty() {
+        return score;
+    }
+
+    public void addScore(int score) {
+        this.score.set(this.score.get() + score);
     }
 
     public void moveUp(boolean moving) {
-        movingUp.set(moving);
+        movingUp = moving;
     }
 
     public void moveDown(boolean moving) {
-        movingDown.set(moving);
+        movingDown = moving;
     }
 
     public void moveLeft(boolean moving) {
-        movingLeft.set(moving);
+        movingLeft = moving;
     }
 
     public void moveRight(boolean moving) {
-        movingRight.set(moving);
+        movingRight = moving;
     }
 
     public double getVelocityX() {
@@ -124,14 +90,5 @@ public class Player extends Fish {
 
     public int getCharacter() {
         return character;
-    }
-
-    @Override
-    public double getOpacity() {
-        return opacity.get();
-    }
-
-    public boolean isInvulnerable() {
-        return invulnerable.get();
     }
 }

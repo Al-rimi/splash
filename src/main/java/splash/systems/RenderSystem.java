@@ -82,7 +82,7 @@ public class RenderSystem {
 
     private void renderEntity(Fish entity) {
         if (entity instanceof Player p) p.render(gc);
-        else if (entity instanceof Bot b) b.render(gc);
+        else if (entity instanceof NPC n) n.render(gc);
     }
 
     public void clear() {

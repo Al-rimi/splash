@@ -1,9 +1,16 @@
 package splash.entities;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import splash.utils.Vector2D;
 
 public abstract class Fish {
@@ -22,13 +29,20 @@ public abstract class Fish {
 
     protected Vector2D randomDirection = new Vector2D();
     protected double timeSinceLastDirectionChange = 0;
+    private double opacity = 1.0;
+    private boolean invulnerable = false;
+    private final IntegerProperty health;
 
     protected Image texture;
+    public boolean isPlayer;
 
-    protected String tag;
-
-    public Fish(double size) {
+    public Fish(double size, int health, double x, double y, Image texture) {
         this.size = size;
+        this.health = new SimpleIntegerProperty(health);
+        this.x = x;
+        this.y = y;
+        this.texture = texture;
+        this.isPlayer = false;
         setHitboxOffset(0, 0);
     }
 
@@ -68,6 +82,38 @@ public abstract class Fish {
         double radius = getRadius();
         gc.strokeOval(x - radius, y - radius, radius * 2, radius * 2);
         gc.restore();
+    }
+
+        public void takeDamage(double damage) {
+        if (invulnerable)
+            return;
+
+        health.set(health.get() - (int) damage);
+        if (health.get() <= 0) {
+            die();
+        }
+        invulnerable = true;
+        opacity = 0.5;
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.seconds(0.15), e -> {
+                    opacity = (opacity == 0.5 ? 1.0 : 0.5);
+                }));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+
+        PauseTransition delay = new PauseTransition(Duration.seconds(3));
+        delay.setOnFinished(e -> {
+            timeline.stop();
+            invulnerable = false;
+            opacity = 1.0;
+        });
+        delay.play();
+    }
+
+    public void die() {
+        // TODO: Implement player death logic
+        health.set(0);
     }
 
     protected double calculateTargetAngle() {
@@ -155,7 +201,7 @@ public abstract class Fish {
     }
 
     public double getRadius() {
-        return getScaledSize() * 0.4; // Adjust scale as needed for tighter/looser collision
+        return getScaledSize() * 0.4;
     }
 
     public boolean isFacingLeft() {
@@ -187,11 +233,16 @@ public abstract class Fish {
         return 1.0;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public boolean isInvulnerable() {
+        return invulnerable;
     }
 
-    public String getTag() {
-        return tag;
+    
+    public IntegerProperty healthProperty() {
+        return health;
+    }
+
+    public void addhealth(int health) {
+        this.health.set(this.health.get() + health);
     }
 }
