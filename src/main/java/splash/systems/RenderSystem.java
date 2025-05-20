@@ -38,8 +38,8 @@ public class RenderSystem {
         gc.translate(translateX + offsetX, translateY + offsetY);
 
         drawWaterTiles(player);
-        world.getEntities().forEach(this::renderEntity);
-        renderEntity(player);
+        world.getNpcs().forEach(this::renderEntity);
+        world.getPlayers().forEach(this::renderEntity);
 
         gc.restore();
         gc.setFill(Color.rgb(0, 0, 0, depthEffectAlpha));

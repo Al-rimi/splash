@@ -33,8 +33,15 @@ public class NPC extends Fish {
     }
 
     private void basic(double deltaTime) {
+        Fish player = findNearestPlayer();
         Fish nearestEnemy = findNearestEntity(true);
         Fish nearestFood = findNearestEntity(false);
+
+        if (player != null && player.size < size) {
+            pursue(player.getX(), player.getY(), movementSpeed, 0.1);
+        } else if (player != null) {
+            fleeFrom(player.getX(), player.getY(), movementSpeed, 0.1);
+        }
 
         if (nearestEnemy != null) {
             fleeFrom(nearestEnemy.getX(), nearestEnemy.getY(), movementSpeed, 0.1);
@@ -46,8 +53,15 @@ public class NPC extends Fish {
     }
 
     private void intermediate(double deltaTime) {
+        Fish player = findNearestPlayer();
         Fish nearestEnemy = findNearestEntity(true);
         Fish bestFood = findBestFood();
+
+        if (player != null && player.size < size) {
+            pursue(player.getX(), player.getY(), movementSpeed * 1.1, 0.1);
+        } else if (player != null) {
+            fleeFrom(player.getX(), player.getY(), movementSpeed * 1.1, 0.1);
+        }
 
         if (nearestEnemy != null) {
             fleeFrom(nearestEnemy.getX(), nearestEnemy.getY(), movementSpeed * 1.1, 0.1);
@@ -60,18 +74,16 @@ public class NPC extends Fish {
 
     private void advanced(double deltaTime) {
         Fish nearestEnemy = findNearestEntity(true);
-        Fish bestFood = findBestFood();
-        Fish player = world.getPlayer();
+        Fish player = findNearestPlayer();
 
-
-        if (player != null && player.getSize() > size) {
-            fleeFrom(player.getX(), player.getY(), movementSpeed * 1.2, 0.1);
-        } else if (player != null && player.getSize() < size) {
+        if (player != null && player.size < size) {
             pursue(player.getX(), player.getY(), movementSpeed * 1.2, 0.1);
-        } else if (nearestEnemy != null) {
+        } else if (player != null) {
+            fleeFrom(player.getX(), player.getY(), movementSpeed * 1.2, 0.1);
+        }
+
+        if (nearestEnemy != null) {
             fleeFrom(nearestEnemy.getX(), nearestEnemy.getY(), movementSpeed * 1.2, 0.1);
-        } else if (bestFood != null) {
-            pursue(bestFood.getX(), bestFood.getY(), movementSpeed * 1.2, 0.1);
         } else {
             wander(deltaTime, directionChangeInterval * 0.5, movementSpeed, 0.05);
         }
@@ -81,7 +93,7 @@ public class NPC extends Fish {
         Fish bestFood = null;
         double bestValue = Double.MIN_VALUE;
         
-        for (Fish entity : world.getEntities()) {
+        for (Fish entity : world.getNpcs()) {
             if (entity == this || entity.getSize() >= this.size) continue;
             
             double dx = entity.getX() - x;
@@ -101,7 +113,7 @@ public class NPC extends Fish {
         Fish nearest = null;
         double nearestDistance = Double.MAX_VALUE;
         
-        for (Fish entity : world.getEntities()) {
+        for (Fish entity : world.getNpcs()) {
             if (entity == this) continue;
             
             double dx = entity.getX() - x;
@@ -115,6 +127,26 @@ public class NPC extends Fish {
                 }
             }
         }
+        return nearest;
+    }
+
+    private Fish findNearestPlayer() {
+        Fish nearest = null;
+        double nearestDistance = Double.MAX_VALUE;
+
+        for (Fish player : world.getPlayers()) {
+            double dx = player.getX() - x;
+            double dy = player.getY() - y;
+            double distance = Math.hypot(dx, dy);
+
+            if (distance < detectionRadius) {
+                if (distance < nearestDistance) {
+                    nearest = player;
+                    nearestDistance = distance;
+                }
+            }
+        }
+
         return nearest;
     }
 

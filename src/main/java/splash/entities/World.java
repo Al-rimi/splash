@@ -3,39 +3,49 @@ package splash.entities;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class World {
-    private final ConcurrentLinkedQueue<Fish> entities = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Player> players = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<NPC> npcs = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<StaticEntity> staticEntities = new ConcurrentLinkedQueue<>();
 
-    public void spawnEntity(Fish entity) {
-        entities.add(entity);
+    public void spawnPlayer(Player player) {
+        players.add(player);
+    }
+
+    public void spawnNpc(NPC npc) {
+        npcs.add(npc);
     }
 
     public void spawnStaticEntity(StaticEntity entity) {
         staticEntities.add(entity);
     }
+    
+    public ConcurrentLinkedQueue<Player> getPlayers() {
+        return players;
+    }
 
-    public ConcurrentLinkedQueue<Fish> getEntities() {
-        return entities;
+    public ConcurrentLinkedQueue<NPC> getNpcs() {
+        return npcs;
     }
 
     public ConcurrentLinkedQueue<StaticEntity> getStaticEntities() {
         return staticEntities;
     }
 
-    public Fish getPlayer() {
-        for (Fish entity : entities) {
-            if (entity.isPlayer()) {
-                return entity;
-            }
-        }
-        return null;
+    public void removePlayer(Player player) {
+        players.remove(player);
     }
 
-    public void removeEntity(Fish entity) {
-        entities.remove(entity);
+    public void removeEntity(NPC npc) {
+        npcs.remove(npc);
     }
 
     public void removeStaticEntity(StaticEntity entity) {
         staticEntities.remove(entity);
+    }
+
+    public void clear() {
+        players.clear();
+        npcs.clear();
+        staticEntities.clear();
     }
 }

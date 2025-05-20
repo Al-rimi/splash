@@ -43,7 +43,7 @@ public class GameEngine extends AnimationTimer {
         this.waterTexture = ResourceManager.getWaterTexture();
         this.onPausePressed = onPausePressed;
         this.cameraSystem = new CameraSystem(baseWidth, baseHeight);
-        this.collisionSystem = new CollisionSystem(player, world);
+        this.collisionSystem = new CollisionSystem(world);
         this.renderSystem = new RenderSystem(gc, canvas, world, waterTexture, baseWidth, baseHeight);
 
         bindCanvasResize();
@@ -70,8 +70,8 @@ public class GameEngine extends AnimationTimer {
     }
 
     private void update(double deltaTime) {
-        player.update(deltaTime);
-        world.getEntities().forEach(e -> e.update(deltaTime));
+        world.getPlayers().forEach(p -> p.update(deltaTime));
+        world.getNpcs().forEach(npc -> npc.update(deltaTime));
 
         cameraSystem.update(deltaTime, player);
         collisionSystem.checkCollisions();

@@ -65,7 +65,7 @@ public class GameScreen {
             rocks[i] = ResourceManager.getRockImage(i + 1);
         }
 
-        this.world.spawnEntity(player);
+        this.world.spawnPlayer(player);
     }
 
     private Timeline createSpawnTimer() {
@@ -188,13 +188,13 @@ public class GameScreen {
         if (random.nextDouble() < Config.SPAWN_ENEMY_PROBABILITY) {
             NPC enemy = new NPC(world, spawnX, spawnY,
                     fishImages[fishType], random.nextDouble() * player.getSize() * 1.5 + player.getSize());
-            world.spawnEntity(enemy);
+            world.spawnNpc(enemy);
         }
 
         if (random.nextDouble() < Config.SPAWN_FOOD_PROBABILITY) {
             NPC food = new NPC(world, spawnX, spawnY,
                     fishImages[fishType], random.nextDouble() * player.getSize() * 0.8 + player.getSize() * 0.2);
-            world.spawnEntity(food);
+            world.spawnNpc(food);
         }
 
         if (random.nextDouble() < Config.SPAWN_MOUNTAIN_PROBABILITY) {
@@ -230,10 +230,14 @@ public class GameScreen {
     }
 
     private void cleanupDistantEntities() {
-        world.getEntities().removeIf(entity -> {
-            double dx = entity.getX() - player.getX();
-            double dy = entity.getY() - player.getY();
-            return (dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS) || entity.isDead();
+        world.getPlayers().removeIf(p -> {
+            return p.isDead();
+        });
+
+        world.getNpcs().removeIf(npc -> {
+            double dx = npc.getX() - player.getX();
+            double dy = npc.getY() - player.getY();
+            return (dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS) || npc.isDead();
         });
 
         world.getStaticEntities().removeIf(entity -> {

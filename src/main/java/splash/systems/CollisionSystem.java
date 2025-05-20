@@ -1,44 +1,49 @@
 package splash.systems;
 
 import splash.entities.Fish;
+import splash.entities.NPC;
 import splash.entities.Player;
 import splash.entities.World;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CollisionSystem {
-    private final Player player;
     private final World world;
 
-    public CollisionSystem(Player player, World world) {
-        this.player = player;
+    public CollisionSystem(World world) {
         this.world = world;
     }
 
     public void checkCollisions() {
-        checkPlayerCollisions();
-        checkAICollisions();
-    }
+        List<Player> players = new ArrayList<>(world.getPlayers());
+        List<NPC> npcs = new ArrayList<>(world.getNpcs());
 
-    private void checkPlayerCollisions() {
-        world.getEntities().forEach(entity -> {
-            if (checkCollision(player, entity)) {
-                handleCollision(player, entity);
+        for (int i = 0; i < players.size(); i++) {
+            Player a = players.get(i);
+            for (int j = i + 1; j < players.size(); j++) {
+                Player b = players.get(j);
+                if (checkCollision(a, b)) {
+                    handleCollision(a, b);
+                }
             }
-        });
-    }
-
-    private void checkAICollisions() {
-        List<Fish> entities = new ArrayList<>(world.getEntities());
-        for (int i = 0; i < entities.size(); i++) {
-            Fish a = entities.get(i);
-            for (int j = i + 1; j < entities.size(); j++) {
-                Fish b = entities.get(j);
+            for (int j = 0; j < npcs.size(); j++) {
+                NPC b = npcs.get(j);
                 if (checkCollision(a, b)) {
                     handleCollision(a, b);
                 }
             }
         }
+
+        for (int i = 0; i < npcs.size(); i++) {
+            NPC a = npcs.get(i);
+            for (int j = i + 1; j < npcs.size(); j++) {
+                NPC b = npcs.get(j);
+                if (checkCollision(a, b)) {
+                    handleCollision(a, b);
+                }
+            }
+        }
+
     }
 
     private boolean checkCollision(Fish a, Fish b) {
@@ -50,36 +55,31 @@ public class CollisionSystem {
     }
 
     private void handleCollision(Fish a, Fish b) {
-        if (a.isInvulnerable() || b.isInvulnerable()) {
-            return;
-        }
-        if (a instanceof Player) {
-            handlePlayerCollision((Player) a, b);
-        } else if (b instanceof Player) {
-            handlePlayerCollision((Player) b, a);
-        } else {
-            handleAICollision(a, b);
-        }
-    }
-
-    private void handlePlayerCollision(Player player, Fish other) {
-        if (player.getSize() > other.getSize()) {
-            player.addScore((int) other.getSize());
-            player.addSize(other.getSize() * 0.01);
-            other.die();
-        } else if (other.getSize() > player.getSize()) {
-            player.takeDamage(other.getSize() * 0.2);
-            other.takeDamage(player.getSize() * 2);
-        }
-    }
-
-    private void handleAICollision(Fish a, Fish b) {
         if (a.getSize() > b.getSize()) {
-            a.addSize(1);
-            b.die();
-        } else if (b.getSize() > a.getSize()) {
-            b.addSize(1);
-            a.die();
+            executeCollision(a, b);
+        } else if (a.getSize() < b.getSize()) {
+            executeCollision(b, a);
         }
+    }
+
+    private void executeCollision(Fish large, Fish small) {
+        if (large instanceof Player && small instanceof Player) {
+            Player player = (Player) large;
+            player.addScore((int) small.getSize());
+            player.addSize(small.getSize() * 0.01);
+            small.takeDamage(player.getSize() * 0.01);
+        } else if (large instanceof Player) {
+            Player player = (Player) large;
+            player.addScore((int) small.getSize());
+            player.addSize(small.getSize() * 0.01);
+            small.die();
+        } else if (small instanceof Player) {
+            Player player = (Player) small;
+            player.takeDamage(large.getSize() * 0.1);
+            large.takeDamage(player.getSize() * 1.1);
+        } else {
+            large.addSize(1);
+            small.die();
+        }    
     }
 }
