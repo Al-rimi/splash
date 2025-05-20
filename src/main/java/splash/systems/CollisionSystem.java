@@ -50,6 +50,9 @@ public class CollisionSystem {
     }
 
     private void handleCollision(Fish a, Fish b) {
+        if (a.isInvulnerable() || b.isInvulnerable()) {
+            return;
+        }
         if (a instanceof Player) {
             handlePlayerCollision((Player) a, b);
         } else if (b instanceof Player) {
@@ -62,9 +65,9 @@ public class CollisionSystem {
     private void handlePlayerCollision(Player player, Fish other) {
         if (player.getSize() > other.getSize()) {
             player.addScore((int) other.getSize());
-            player.addSize(other.getSize() * 0.1);
+            player.addSize(other.getSize() * 0.01);
             other.die();
-        } else if (other.getSize() > player.getSize() && !player.isInvulnerable()) {
+        } else if (other.getSize() > player.getSize()) {
             player.takeDamage(other.getSize() * 0.2);
             other.takeDamage(player.getSize() * 2);
         }
@@ -72,10 +75,10 @@ public class CollisionSystem {
 
     private void handleAICollision(Fish a, Fish b) {
         if (a.getSize() > b.getSize()) {
-            a.addSize(b.getSize() / 4);
+            a.addSize(1);
             b.die();
         } else if (b.getSize() > a.getSize()) {
-            b.addSize(a.getSize() / 4);
+            b.addSize(1);
             a.die();
         }
     }

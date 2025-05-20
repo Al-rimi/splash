@@ -24,7 +24,7 @@ public class World {
 
     public Fish getPlayer() {
         for (Fish entity : entities) {
-            if (entity.isPlayer) {
+            if (entity.isPlayer()) {
                 return entity;
             }
         }

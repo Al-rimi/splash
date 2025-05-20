@@ -29,12 +29,13 @@ public abstract class Fish {
 
     protected Vector2D randomDirection = new Vector2D();
     protected double timeSinceLastDirectionChange = 0;
-    private double opacity = 1.0;
-    private boolean invulnerable = false;
-    private final IntegerProperty health;
+    protected double opacity = 1.0;
+    protected boolean invulnerable = false;
+    protected final IntegerProperty health;
 
     protected Image texture;
-    public boolean isPlayer;
+    protected boolean isPlayer;
+    protected boolean isDead = false;
 
     public Fish(double size, int health, double x, double y, Image texture) {
         this.size = size;
@@ -84,15 +85,15 @@ public abstract class Fish {
         gc.restore();
     }
 
-        public void takeDamage(double damage) {
+    public void takeDamage(double damage) {
         if (invulnerable)
             return;
 
         health.set(health.get() - (int) damage);
+        invulnerable = true;
         if (health.get() <= 0) {
             die();
         }
-        invulnerable = true;
         opacity = 0.5;
 
         Timeline timeline = new Timeline(
@@ -112,8 +113,8 @@ public abstract class Fish {
     }
 
     public void die() {
-        // TODO: Implement player death logic
         health.set(0);
+        isDead = true;
     }
 
     protected double calculateTargetAngle() {
@@ -191,9 +192,9 @@ public abstract class Fish {
     protected void updateHitbox() {
         double scaledSize = getScaledSize() * 0.8;
         hitbox = new Rectangle2D(
-            x - scaledSize / 2 + hitboxOffsetX,
-            y - scaledSize / 2 + hitboxOffsetY,
-            scaledSize, scaledSize);
+                x - scaledSize / 2 + hitboxOffsetX,
+                y - scaledSize / 2 + hitboxOffsetY,
+                scaledSize, scaledSize);
     }
 
     public Rectangle2D getBounds() {
@@ -212,8 +213,8 @@ public abstract class Fish {
         return size;
     }
 
-    public void addSize(double delta) {
-        size += delta;
+    public void addSize(double size) {
+        this.size += size;
         updateHitbox();
     }
 
@@ -237,12 +238,19 @@ public abstract class Fish {
         return invulnerable;
     }
 
-    
     public IntegerProperty healthProperty() {
         return health;
     }
 
     public void addhealth(int health) {
         this.health.set(this.health.get() + health);
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public boolean isPlayer() {
+        return isPlayer;
     }
 }

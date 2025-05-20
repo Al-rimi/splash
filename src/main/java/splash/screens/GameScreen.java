@@ -231,11 +231,9 @@ public class GameScreen {
 
     private void cleanupDistantEntities() {
         world.getEntities().removeIf(entity -> {
-            if (entity instanceof Player)
-                return false;
             double dx = entity.getX() - player.getX();
             double dy = entity.getY() - player.getY();
-            return dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS;
+            return (dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS) || entity.isDead();
         });
 
         world.getStaticEntities().removeIf(entity -> {
