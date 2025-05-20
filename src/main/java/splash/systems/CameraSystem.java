@@ -1,7 +1,7 @@
 package splash.systems;
 
-import splash.entities.Player;
 import splash.core.Config;
+import splash.entities.Player;
 
 public class CameraSystem {
     private double camX;

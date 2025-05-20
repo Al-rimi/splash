@@ -12,11 +12,10 @@ import javafx.scene.effect.GaussianBlur;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-
+import splash.core.Config;
 import splash.core.GameEngine;
 import splash.core.GameManager;
 import splash.core.ResourceManager;
-import splash.core.Config;
 import splash.entities.Player;
 
 import java.util.stream.Stream;

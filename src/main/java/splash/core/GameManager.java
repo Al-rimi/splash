@@ -4,7 +4,9 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import splash.data.PlayerProfile;
 import splash.entities.Player;
-import splash.screens.*;
+import splash.screens.GameScreen;
+import splash.screens.MainMenuScreen;
+import splash.screens.SettingsScreen;
 
 public final class GameManager {
     private static Stage primaryStage;
@@ -13,7 +15,7 @@ public final class GameManager {
 
     public static void init(Stage stage) {
         primaryStage = stage;
-        primaryStage.setTitle("Splash");
+        primaryStage.setTitle(ResourceManager.getString("title"));
         primaryStage.setMaximized(true);
     }
 
@@ -34,7 +36,6 @@ public final class GameManager {
         Image image = ResourceManager.getFishImage(selectedCharacter);
         player = new Player(selectedCharacter, primaryStage.getWidth(), primaryStage.getHeight(), image);
         gameScreen = new GameScreen(player);
-
         primaryStage.setScene(gameScreen.createScene());
         primaryStage.show();
     }
