@@ -7,15 +7,15 @@ public class World {
     private final ConcurrentLinkedQueue<NPC> npcs = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<StaticEntity> staticEntities = new ConcurrentLinkedQueue<>();
 
-    public void spawnPlayer(Player player) {
+    public void addPlayer(Player player) {
         players.add(player);
     }
 
-    public void spawnNpc(NPC npc) {
+    public void addNpc(NPC npc) {
         npcs.add(npc);
     }
 
-    public void spawnStaticEntity(StaticEntity entity) {
+    public void addStaticEntity(StaticEntity entity) {
         staticEntities.add(entity);
     }
     

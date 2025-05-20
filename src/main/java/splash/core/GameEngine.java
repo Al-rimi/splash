@@ -9,6 +9,7 @@ import splash.entities.*;
 import splash.systems.CameraSystem;
 import splash.systems.CollisionSystem;
 import splash.systems.RenderSystem;
+import splash.systems.SpawnSystem;
 
 public class GameEngine extends AnimationTimer {
     private final double baseWidth;
@@ -28,12 +29,13 @@ public class GameEngine extends AnimationTimer {
     private final CameraSystem cameraSystem;
     private final CollisionSystem collisionSystem;
     private final RenderSystem renderSystem;
+    private final SpawnSystem spawnSystem;
 
     private StackPane rootContainer;
 
-    public GameEngine(Player player, World world, Canvas canvas, Runnable onPausePressed) {
+    public GameEngine(Player player, Canvas canvas, Runnable onPausePressed) {
         this.player = player;
-        this.world = world;
+        this.world = new World();
         this.canvas = canvas;
         this.gc = canvas.getGraphicsContext2D();
         this.baseWidth = Config.GAME_WIDTH;
@@ -42,11 +44,14 @@ public class GameEngine extends AnimationTimer {
         this.scaleY = baseHeight;
         this.waterTexture = ResourceManager.getWaterTexture();
         this.onPausePressed = onPausePressed;
+        this.spawnSystem = new SpawnSystem(world);
         this.cameraSystem = new CameraSystem(baseWidth, baseHeight);
         this.collisionSystem = new CollisionSystem(world);
         this.renderSystem = new RenderSystem(gc, canvas, world, waterTexture, baseWidth, baseHeight);
 
         bindCanvasResize();
+        spawnSystem.spawnPlayer(player);
+        spawnSystem.start();
     }
 
     private void bindCanvasResize() {
@@ -120,7 +125,12 @@ public class GameEngine extends AnimationTimer {
         setupInputHandling();
     }
 
-    public void setPaused(boolean paused) {
+    public void pause(boolean paused) {
         this.isPaused = paused;
+        if (paused) {
+            spawnSystem.pause();
+        } else {
+            spawnSystem.start();
+        }
     }
 }
