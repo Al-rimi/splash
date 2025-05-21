@@ -21,11 +21,11 @@ public class ResourceManager {
     public static void loadLanguage(String lang) {
         Locale locale = Locale.forLanguageTag(lang);
         try {
-            bundle = ResourceBundle.getBundle("splash/lang/messages", locale);
+            bundle = ResourceBundle.getBundle("lang/messages", locale);
             currentLocale.set(locale);
         } catch (MissingResourceException e) {
             System.err.println("Language file not found: " + lang);
-            bundle = ResourceBundle.getBundle("splash/lang/messages", Locale.ENGLISH);
+            bundle = ResourceBundle.getBundle("lang/messages", Locale.ENGLISH);
             currentLocale.set(Locale.ENGLISH);
         }
     }
