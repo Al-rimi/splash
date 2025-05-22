@@ -1,4 +1,4 @@
 dependency-reduced-pom.xml
-.vscode
-target
+/.vscode
+/target
 **.jar
