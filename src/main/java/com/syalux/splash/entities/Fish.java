@@ -1,4 +1,6 @@
-package splash.entities;
+package com.syalux.splash.entities;
+
+import com.syalux.splash.utils.Vector2D;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -11,7 +13,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
-import splash.utils.Vector2D;
 
 public abstract class Fish {
     protected double size;

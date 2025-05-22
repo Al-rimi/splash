@@ -1,4 +1,4 @@
-package splash.core;
+package com.syalux.splash.core;
 
 import java.io.IOException;
 import java.io.InputStream;

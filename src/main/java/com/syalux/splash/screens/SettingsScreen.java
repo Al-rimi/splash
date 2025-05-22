@@ -1,4 +1,8 @@
-package splash.screens;
+package com.syalux.splash.screens;
+
+import com.syalux.splash.core.Config;
+import com.syalux.splash.core.GameManager;
+import com.syalux.splash.core.ResourceManager;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
@@ -9,9 +13,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import splash.core.Config;
-import splash.core.GameManager;
-import splash.core.ResourceManager;
 
 public class SettingsScreen {
 

@@ -1,13 +1,14 @@
-package splash.screens;
+package com.syalux.splash.screens;
+
+import com.syalux.splash.core.Config;
+import com.syalux.splash.core.GameManager;
+import com.syalux.splash.core.ResourceManager;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
-import splash.core.Config;
-import splash.core.GameManager;
-import splash.core.ResourceManager;
 
 public class MainMenuScreen {
 

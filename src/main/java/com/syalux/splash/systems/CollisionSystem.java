@@ -1,11 +1,12 @@
-package splash.systems;
+package com.syalux.splash.systems;
 
-import splash.entities.Fish;
-import splash.entities.NPC;
-import splash.entities.Player;
-import splash.entities.World;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.syalux.splash.entities.Fish;
+import com.syalux.splash.entities.NPC;
+import com.syalux.splash.entities.Player;
+import com.syalux.splash.entities.World;
 
 public class CollisionSystem {
     private final World world;

@@ -1,15 +1,16 @@
-package splash.core;
+package com.syalux.splash.core;
+
+import com.syalux.splash.entities.*;
+import com.syalux.splash.systems.CameraSystem;
+import com.syalux.splash.systems.CollisionSystem;
+import com.syalux.splash.systems.RenderSystem;
+import com.syalux.splash.systems.SpawnSystem;
 
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
-import splash.entities.*;
-import splash.systems.CameraSystem;
-import splash.systems.CollisionSystem;
-import splash.systems.RenderSystem;
-import splash.systems.SpawnSystem;
 
 public class GameEngine extends AnimationTimer {
     private final double baseWidth;

@@ -1,4 +1,4 @@
-package splash.entities;
+package com.syalux.splash.entities;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;

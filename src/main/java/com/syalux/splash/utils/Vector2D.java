@@ -1,4 +1,4 @@
-package splash.utils;
+package com.syalux.splash.utils;
 
 public class Vector2D {
     public double x;

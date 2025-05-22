@@ -1,8 +1,9 @@
-package splash.application;
+package com.syalux.splash.application;
+
+import com.syalux.splash.core.GameManager;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import splash.core.GameManager;
 
 public class App extends Application {
     @Override

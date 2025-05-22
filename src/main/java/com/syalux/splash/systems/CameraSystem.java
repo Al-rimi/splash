@@ -1,7 +1,7 @@
-package splash.systems;
+package com.syalux.splash.systems;
 
-import splash.core.Config;
-import splash.entities.Player;
+import com.syalux.splash.core.Config;
+import com.syalux.splash.entities.Player;
 
 public class CameraSystem {
     private double camX;

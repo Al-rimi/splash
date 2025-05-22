@@ -1,4 +1,4 @@
-package splash.screens;
+package com.syalux.splash.screens;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
@@ -12,13 +12,14 @@ import javafx.scene.effect.GaussianBlur;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import splash.core.Config;
-import splash.core.GameEngine;
-import splash.core.GameManager;
-import splash.core.ResourceManager;
-import splash.entities.Player;
 
 import java.util.stream.Stream;
+
+import com.syalux.splash.core.Config;
+import com.syalux.splash.core.GameEngine;
+import com.syalux.splash.core.GameManager;
+import com.syalux.splash.core.ResourceManager;
+import com.syalux.splash.entities.Player;
 
 public class GameScreen {
 

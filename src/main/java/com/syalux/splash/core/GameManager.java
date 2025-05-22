@@ -1,12 +1,13 @@
-package splash.core;
+package com.syalux.splash.core;
+
+import com.syalux.splash.data.PlayerProfile;
+import com.syalux.splash.entities.Player;
+import com.syalux.splash.screens.GameScreen;
+import com.syalux.splash.screens.MainMenuScreen;
+import com.syalux.splash.screens.SettingsScreen;
 
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import splash.data.PlayerProfile;
-import splash.entities.Player;
-import splash.screens.GameScreen;
-import splash.screens.MainMenuScreen;
-import splash.screens.SettingsScreen;
 
 public final class GameManager {
     private static Stage primaryStage;

@@ -1,4 +1,4 @@
-package splash.data;
+package com.syalux.splash.data;
 
 public class PlayerProfile {
     private String playerName;

@@ -1,9 +1,10 @@
-package splash.entities;
+package com.syalux.splash.entities;
+
+import com.syalux.splash.core.Config;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.Image;
-import splash.core.Config;
 
 public class Player extends Fish {
     private final int character;

@@ -1,7 +1,9 @@
-module splash {
-    requires javafx.base;
+module com.syalux.splash {
     requires javafx.controls;
-    requires transitive javafx.graphics;
+    requires transitive javafx.media;
+    requires javafx.graphics;
+    requires javafx.base;
     
-    exports splash.application;
+    opens com.syalux.splash.application to javafx.graphics;
+    exports com.syalux.splash.application;
 }

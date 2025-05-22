@@ -1,18 +1,19 @@
-package splash.systems;
+package com.syalux.splash.systems;
 
 import java.util.Random;
+
+import com.syalux.splash.core.Config;
+import com.syalux.splash.core.ResourceManager;
+import com.syalux.splash.entities.NPC;
+import com.syalux.splash.entities.Player;
+import com.syalux.splash.entities.StaticEntity;
+import com.syalux.splash.entities.World;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
-import splash.core.Config;
-import splash.core.ResourceManager;
-import splash.entities.World;
-import splash.entities.Player;
-import splash.entities.NPC;
-import splash.entities.StaticEntity;
 
 public class SpawnSystem {
 
@@ -102,7 +103,7 @@ public class SpawnSystem {
         if (random.nextDouble() < Config.SPAWN_MOUNTAIN_PROBABILITY) {
             Image mountain = mountains[random.nextInt(Config.MOUNTAIN_IMAGE_COUNT)];
             world.addStaticEntity(new StaticEntity(
-                    spawnX * 10, spawnY * 10,
+                    spawnX * 4, spawnY * 4,
                     mountain,
                     random.nextDouble() * 2 + 1.2,
                     random.nextDouble() * 0.2 + 0.1));

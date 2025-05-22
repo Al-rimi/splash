@@ -1,11 +1,13 @@
-package splash.screens;
+package com.syalux.splash.screens;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+
+import com.syalux.splash.core.ResourceManager;
+
 import javafx.beans.binding.Bindings;
-import splash.core.ResourceManager;
 
 public class PauseScreen extends StackPane {
 

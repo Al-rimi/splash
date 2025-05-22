@@ -1,10 +1,11 @@
-package splash.systems;
+package com.syalux.splash.systems;
+
+import com.syalux.splash.entities.*;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import splash.entities.*;
 
 public class RenderSystem {
     private final GraphicsContext gc;
