@@ -1,5 +1,4 @@
 dependency-reduced-pom.xml
 .vscode
-.gitignore
 target
 **.jar
