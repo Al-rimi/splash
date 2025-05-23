@@ -4,10 +4,10 @@ import java.util.Random;
 
 import com.syalux.splash.data.Config;
 import com.syalux.splash.data.Resource;
-import com.syalux.splash.entities.NPC;
-import com.syalux.splash.entities.Player;
+import com.syalux.splash.data.World;
+import com.syalux.splash.entities.NPCEntity;
+import com.syalux.splash.entities.PlayerEntity;
 import com.syalux.splash.entities.StaticEntity;
-import com.syalux.splash.entities.World;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -38,7 +38,7 @@ public class SpawnSystem {
         spawnTimer.pause();
     }
 
-    public void spawnPlayer(Player player) {
+    public void spawnPlayer(PlayerEntity player) {
         this.world.addPlayer(player);
     }
 
@@ -49,7 +49,7 @@ public class SpawnSystem {
         });
     }
 
-    private void spawnEntities(Player player) {
+    private void spawnEntities(PlayerEntity player) {
         double dx = player.getVelocityX();
         double dy = player.getVelocityY();
         double length = Math.hypot(dx, dy);
@@ -67,12 +67,12 @@ public class SpawnSystem {
         }
 
         if (random.nextDouble() < Config.SPAWN_ENEMY_PROBABILITY) {
-            NPC enemy = new NPC(world, spawnX, spawnY, fishType, random.nextDouble() * player.getSize() * 1.5 + player.getSize());
+            NPCEntity enemy = new NPCEntity(world, spawnX, spawnY, fishType, random.nextDouble() * player.getSize() * 1.5 + player.getSize());
             world.addNpc(enemy);
         }
 
         if (random.nextDouble() < Config.SPAWN_FOOD_PROBABILITY) {
-            NPC food = new NPC(world, spawnX, spawnY, fishType, random.nextDouble() * player.getSize() * 0.8 + player.getSize() * 0.2);
+            NPCEntity food = new NPCEntity(world, spawnX, spawnY, fishType, random.nextDouble() * player.getSize() * 0.8 + player.getSize() * 0.2);
             world.addNpc(food);
         }
 
@@ -102,7 +102,7 @@ public class SpawnSystem {
     }
 
     
-    private void cleanupDistantEntities(Player player) {
+    private void cleanupDistantEntities(PlayerEntity player) {
         world.getPlayers().removeIf(p -> {
             return p.isDead();
         });

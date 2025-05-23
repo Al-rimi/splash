@@ -1,7 +1,7 @@
 package com.syalux.splash.systems;
 
 import com.syalux.splash.data.Config;
-import com.syalux.splash.entities.Player;
+import com.syalux.splash.entities.PlayerEntity;
 
 public class CameraSystem {
     private double camX;
@@ -15,7 +15,7 @@ public class CameraSystem {
         this.camY = baseHeight;
     }
 
-    public void update(double deltaTime, Player player) {
+    public void update(double deltaTime, PlayerEntity player) {
         camX += (player.getX() - camX) * deltaTime;
         camY += (player.getY() - camY) * deltaTime * 2;
         updateDepthEffect();

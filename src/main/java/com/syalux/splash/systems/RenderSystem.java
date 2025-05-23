@@ -1,7 +1,8 @@
 package com.syalux.splash.systems;
 
 import com.syalux.splash.data.Resource;
-import com.syalux.splash.entities.*;
+import com.syalux.splash.data.World;
+import com.syalux.splash.entities.PlayerEntity;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -23,7 +24,7 @@ public class RenderSystem {
     }
 
     public void renderFrame(double camX, double camY, double scaleX, double scaleY, 
-                           double depthEffectAlpha, Player player) {
+                           double depthEffectAlpha, PlayerEntity player) {
         gc.save();
         gc.scale(Math.min(scaleX, scaleY), Math.min(scaleX, scaleY));
 
@@ -44,7 +45,7 @@ public class RenderSystem {
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
-    private void drawWaterTiles(Player player) {
+    private void drawWaterTiles(PlayerEntity player) {
 
         final double tileSize = 1024;
         final double renderRadius = 1600;

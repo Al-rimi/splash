@@ -19,12 +19,12 @@ import com.syalux.splash.core.Engine;
 import com.syalux.splash.data.Profile;
 import com.syalux.splash.data.Config;
 import com.syalux.splash.data.Resource;
-import com.syalux.splash.entities.Player;
+import com.syalux.splash.entities.PlayerEntity;
 
 public class GameScreen {
 
     private final Profile profile;
-    private final Player player;
+    private final PlayerEntity player;
     private final Engine engine;
     private StackPane root;
     private boolean isPaused = false;
@@ -36,7 +36,7 @@ public class GameScreen {
     public GameScreen() {
         profile = new Profile();
         int selectedCharacter = profile.getSelectedCharacter();
-        player = new Player(selectedCharacter);
+        player = new PlayerEntity(selectedCharacter);
 
         this.gameCanvas = new Canvas(Config.GAME_WIDTH, Config.GAME_HEIGHT);
         this.engine = new Engine(player, gameCanvas, this::togglePause);

@@ -2,14 +2,16 @@ package com.syalux.splash.entities;
 
 import java.util.Random;
 
-public class NPC extends Fish {
+import com.syalux.splash.data.World;
+
+public class NPCEntity extends FishEntity {
     private final World world;
     private int detectionRadius;
     private int movementSpeed;
     private double directionChangeInterval;
     private int intelligenceLevel;
 
-    public NPC(World world, double x, double y, int fishType, double size) {
+    public NPCEntity(World world, double x, double y, int fishType, double size) {
         super(size, new Random().nextInt((int) size) + 10, x, y, fishType);
 
         this.world = world;
@@ -37,9 +39,9 @@ public class NPC extends Fish {
     }
 
     private void basic(double deltaTime) {
-        Fish player = findNearestPlayer();
-        Fish nearestEnemy = findNearestEntity(true);
-        Fish nearestFood = findNearestEntity(false);
+        FishEntity player = findNearestPlayer();
+        FishEntity nearestEnemy = findNearestEntity(true);
+        FishEntity nearestFood = findNearestEntity(false);
 
         if (player != null && player.size < size) {
             pursue(player.getX(), player.getY(), movementSpeed, 0.1);
@@ -57,9 +59,9 @@ public class NPC extends Fish {
     }
 
     private void intermediate(double deltaTime) {
-        Fish player = findNearestPlayer();
-        Fish nearestEnemy = findNearestEntity(true);
-        Fish bestFood = findBestFood();
+        FishEntity player = findNearestPlayer();
+        FishEntity nearestEnemy = findNearestEntity(true);
+        FishEntity bestFood = findBestFood();
 
         if (player != null && player.size < size) {
             pursue(player.getX(), player.getY(), movementSpeed * 1.1, 0.1);
@@ -77,8 +79,8 @@ public class NPC extends Fish {
     }
 
     private void advanced(double deltaTime) {
-        Fish nearestEnemy = findNearestEntity(true);
-        Fish player = findNearestPlayer();
+        FishEntity nearestEnemy = findNearestEntity(true);
+        FishEntity player = findNearestPlayer();
 
         if (player != null && player.size < size) {
             pursue(player.getX(), player.getY(), movementSpeed * 1.2, 0.1);
@@ -93,11 +95,11 @@ public class NPC extends Fish {
         }
     }
 
-    private Fish findBestFood() {
-        Fish bestFood = null;
+    private FishEntity findBestFood() {
+        FishEntity bestFood = null;
         double bestValue = Double.MIN_VALUE;
         
-        for (Fish entity : world.getNpcs()) {
+        for (FishEntity entity : world.getNpcs()) {
             if (entity == this || entity.getSize() >= this.size) continue;
             
             double dx = entity.getX() - x;
@@ -113,11 +115,11 @@ public class NPC extends Fish {
         return bestFood;
     }
 
-    private Fish findNearestEntity(boolean larger) {
-        Fish nearest = null;
+    private FishEntity findNearestEntity(boolean larger) {
+        FishEntity nearest = null;
         double nearestDistance = Double.MAX_VALUE;
         
-        for (Fish entity : world.getNpcs()) {
+        for (FishEntity entity : world.getNpcs()) {
             if (entity == this) continue;
             
             double dx = entity.getX() - x;
@@ -134,11 +136,11 @@ public class NPC extends Fish {
         return nearest;
     }
 
-    private Fish findNearestPlayer() {
-        Fish nearest = null;
+    private FishEntity findNearestPlayer() {
+        FishEntity nearest = null;
         double nearestDistance = Double.MAX_VALUE;
 
-        for (Fish player : world.getPlayers()) {
+        for (FishEntity player : world.getPlayers()) {
             double dx = player.getX() - x;
             double dy = player.getY() - y;
             double distance = Math.hypot(dx, dy);

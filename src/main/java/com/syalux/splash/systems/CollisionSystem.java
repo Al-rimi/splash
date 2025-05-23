@@ -3,10 +3,10 @@ package com.syalux.splash.systems;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.syalux.splash.entities.Fish;
-import com.syalux.splash.entities.NPC;
-import com.syalux.splash.entities.Player;
-import com.syalux.splash.entities.World;
+import com.syalux.splash.data.World;
+import com.syalux.splash.entities.FishEntity;
+import com.syalux.splash.entities.NPCEntity;
+import com.syalux.splash.entities.PlayerEntity;
 
 public class CollisionSystem {
     private final World world;
@@ -16,19 +16,19 @@ public class CollisionSystem {
     }
 
     public void checkCollisions() {
-        List<Player> players = new ArrayList<>(world.getPlayers());
-        List<NPC> npcs = new ArrayList<>(world.getNpcs());
+        List<PlayerEntity> players = new ArrayList<>(world.getPlayers());
+        List<NPCEntity> npcs = new ArrayList<>(world.getNpcs());
 
         for (int i = 0; i < players.size(); i++) {
-            Player a = players.get(i);
+            PlayerEntity a = players.get(i);
             for (int j = i + 1; j < players.size(); j++) {
-                Player b = players.get(j);
+                PlayerEntity b = players.get(j);
                 if (checkCollision(a, b)) {
                     handleCollision(a, b);
                 }
             }
             for (int j = 0; j < npcs.size(); j++) {
-                NPC b = npcs.get(j);
+                NPCEntity b = npcs.get(j);
                 if (checkCollision(a, b)) {
                     handleCollision(a, b);
                 }
@@ -36,9 +36,9 @@ public class CollisionSystem {
         }
 
         for (int i = 0; i < npcs.size(); i++) {
-            NPC a = npcs.get(i);
+            NPCEntity a = npcs.get(i);
             for (int j = i + 1; j < npcs.size(); j++) {
-                NPC b = npcs.get(j);
+                NPCEntity b = npcs.get(j);
                 if (checkCollision(a, b)) {
                     handleCollision(a, b);
                 }
@@ -47,7 +47,7 @@ public class CollisionSystem {
 
     }
 
-    private boolean checkCollision(Fish a, Fish b) {
+    private boolean checkCollision(FishEntity a, FishEntity b) {
         double dx = a.getX() - b.getX();
         double dy = a.getY() - b.getY();
         double distanceSq = dx * dx + dy * dy;
@@ -55,7 +55,7 @@ public class CollisionSystem {
         return distanceSq <= combinedRadius * combinedRadius;
     }
 
-    private void handleCollision(Fish a, Fish b) {
+    private void handleCollision(FishEntity a, FishEntity b) {
         if (a.getSize() > b.getSize()) {
             executeCollision(a, b);
         } else if (a.getSize() < b.getSize()) {
@@ -63,19 +63,19 @@ public class CollisionSystem {
         }
     }
 
-    private void executeCollision(Fish large, Fish small) {
-        if (large instanceof Player && small instanceof Player) {
-            Player player = (Player) large;
+    private void executeCollision(FishEntity large, FishEntity small) {
+        if (large instanceof PlayerEntity && small instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) large;
             player.addScore((int) small.getSize());
             player.addSize(small.getSize() * 0.01);
             small.takeDamage(player.getSize() * 0.01);
-        } else if (large instanceof Player) {
-            Player player = (Player) large;
+        } else if (large instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) large;
             player.addScore((int) small.getSize());
             player.addSize(small.getSize() * 0.01);
             small.die();
-        } else if (small instanceof Player) {
-            Player player = (Player) small;
+        } else if (small instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) small;
             player.takeDamage(large.getSize() * 0.1);
             large.takeDamage(player.getSize() * 1.1);
         } else {

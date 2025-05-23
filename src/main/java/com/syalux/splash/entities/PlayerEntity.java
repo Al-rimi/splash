@@ -5,7 +5,7 @@ import com.syalux.splash.data.Config;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
-public class Player extends Fish {
+public class PlayerEntity extends FishEntity {
     private final IntegerProperty score;
     private final IntegerProperty coins;
 
@@ -14,7 +14,7 @@ public class Player extends Fish {
     private boolean movingLeft;
     private boolean movingRight;
 
-    public Player(int fishType) {
+    public PlayerEntity(int fishType) {
         super(Config.PLAYER_BASE_SIZE, 100, Config.GAME_HEIGHT / 2, Config.GAME_HEIGHT / 2, fishType);
         this.isPlayer = true;
         this.score = new SimpleIntegerProperty(0);

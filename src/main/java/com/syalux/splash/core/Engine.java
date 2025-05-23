@@ -1,7 +1,8 @@
 package com.syalux.splash.core;
 
 import com.syalux.splash.data.Config;
-import com.syalux.splash.entities.*;
+import com.syalux.splash.data.World;
+import com.syalux.splash.entities.PlayerEntity;
 import com.syalux.splash.systems.CameraSystem;
 import com.syalux.splash.systems.CollisionSystem;
 import com.syalux.splash.systems.RenderSystem;
@@ -19,7 +20,7 @@ public class Engine extends AnimationTimer {
     private final GraphicsContext gc;
 
     private final World world;
-    private final Player player;
+    private final PlayerEntity player;
 
     private double scaleX;
     private double scaleY;
@@ -33,7 +34,7 @@ public class Engine extends AnimationTimer {
 
     private StackPane rootContainer;
 
-    public Engine(Player player, Canvas canvas, Runnable onPausePressed) {
+    public Engine(PlayerEntity player, Canvas canvas, Runnable onPausePressed) {
         this.player = player;
         this.world = new World();
         this.canvas = canvas;

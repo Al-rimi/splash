@@ -14,7 +14,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
-public abstract class Fish {
+public abstract class FishEntity {
     protected double size;
     protected double scale = 1.0;
     protected boolean facingLeft = false;
@@ -38,7 +38,7 @@ public abstract class Fish {
     protected boolean isPlayer;
     protected boolean isDead = false;
 
-    public Fish(double size, int health, double x, double y, int fishType) {
+    public FishEntity(double size, int health, double x, double y, int fishType) {
         this.size = size;
         this.health = new SimpleIntegerProperty(health);
         this.x = x;
