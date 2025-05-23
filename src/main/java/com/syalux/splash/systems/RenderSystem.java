@@ -39,8 +39,8 @@ public class RenderSystem {
         gc.translate(translateX + offsetX, translateY + offsetY);
 
         drawWaterTiles(player);
-        world.getNpcs().forEach(this::renderEntity);
-        world.getPlayers().forEach(this::renderEntity);
+        world.getNpcs().forEach(e -> e.render(gc));
+        world.getPlayers().forEach(e -> e.render(gc));
 
         gc.restore();
         gc.setFill(Color.rgb(0, 0, 0, depthEffectAlpha));
@@ -79,11 +79,6 @@ public class RenderSystem {
                 }
             }
         }
-    }
-
-    private void renderEntity(Fish entity) {
-        if (entity instanceof Player p) p.render(gc);
-        else if (entity instanceof NPC n) n.render(gc);
     }
 
     public void clear() {

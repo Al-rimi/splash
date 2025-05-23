@@ -25,9 +25,14 @@ public class NPC extends Fish {
     @Override
     public void update(double deltaTime) {
         switch (intelligenceLevel) {
-            case 3 -> advanced(deltaTime);
-            case 2 -> intermediate(deltaTime);
-            default -> basic(deltaTime);
+            case 3: 
+                advanced(deltaTime);
+                break;
+            case 2: intermediate(deltaTime);
+                break;
+            default: 
+                basic(deltaTime);
+                break;
         }
         updatePosition(deltaTime);
     }

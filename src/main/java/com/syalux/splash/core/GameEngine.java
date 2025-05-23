@@ -95,22 +95,42 @@ public class GameEngine extends AnimationTimer {
 
         rootContainer.setOnKeyPressed(e -> {
             switch (e.getCode()) {
-                case W, UP -> player.moveUp(true);
-                case S, DOWN -> player.moveDown(true);
-                case A, LEFT -> player.moveLeft(true);
-                case D, RIGHT -> player.moveRight(true);
-                case ESCAPE -> onPausePressed.run();
-                default -> {}
+                case W: 
+                    player.moveUp(true);
+                    break;
+                case S:
+                    player.moveDown(true);
+                    break;
+                case A:
+                    player.moveLeft(true);
+                    break;
+                case D:
+                    player.moveRight(true);
+                    break;
+                case ESCAPE:
+                    onPausePressed.run();
+                    break;
+                default:
+                    break;
             }
         });
 
         rootContainer.setOnKeyReleased(e -> {
             switch (e.getCode()) {
-                case W, UP -> player.moveUp(false);
-                case S, DOWN -> player.moveDown(false);
-                case A, LEFT -> player.moveLeft(false);
-                case D, RIGHT -> player.moveRight(false);
-                default -> {}
+                case W: 
+                    player.moveUp(false);
+                    break;
+                case S:
+                    player.moveDown(false);
+                    break;
+                case A:
+                    player.moveLeft(false);
+                    break;
+                case D:
+                    player.moveRight(false);
+                    break;
+                default:
+                    break;
             }
         });
     }

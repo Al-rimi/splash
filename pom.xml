@@ -8,6 +8,19 @@
     <version>0.0.1</version>
     <packaging>jar</packaging>
 
+    <name>Splash</name>
+    <description>Splash Game</description>
+
+    <developers>
+        <developer>
+            <name>Al Raimi Abdullah</name>
+            <email>abdullah@syalux.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
@@ -18,63 +31,48 @@
 
     <build>
         <plugins>
-            <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.4.2</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>${main.class}</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-jar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>./</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>target</directory>
-                                    <includes>
-                                        <include>*.jar</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin> -->
-
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
                     <mainClass>${main.class}</mainClass>
-                    <launcher>splash</launcher>
-                    <jlinkImageName>splash-image</jlinkImageName>
-                    <jlinkZipName>splash-bundle</jlinkZipName>
-                    <compress>2</compress>
-                    <noManPages>true</noManPages>
-                    <stripDebug>true</stripDebug>
-                    <options>
-                        <option>--add-modules</option>
-                        <option>javafx.controls,javafx.media,javafx.graphics,javafx.base</option>
-                    </options>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>io.github.fvarrui</groupId>
+                <artifactId>javapackager</artifactId>
+                <version>1.7.6</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>${main.class}</mainClass>
+                            <version>${project.version}</version>
+
+                            <platform>windows</platform>
+                            <bundleJre>true</bundleJre>
+                            <generateInstaller>true</generateInstaller>
+                            <administratorRequired>true</administratorRequired>
+                            <arch>x64</arch>
+                            <winConfig>
+                                <exeCreationTool>launch4j</exeCreationTool>
+                            </winConfig>
+                            <vmArgs>
+                                <vmArg>--module-path ${project.basedir}/target/Splash/libs</vmArg>
+                                <vmArg>--add-modules javafx.controls,javafx.media,javafx.graphics,javafx.base</vmArg>
+                            </vmArgs>
+
+                            <additionalResources>
+                                <additionalResource>src/main/resources</additionalResource>
+                            </additionalResources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -82,12 +80,12 @@
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-base</artifactId>
+            <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
+            <artifactId>javafx-media</artifactId>
             <version>${javafx.version}</version>
         </dependency>
         <dependency>
@@ -97,9 +95,8 @@
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-media</artifactId>
+            <artifactId>javafx-base</artifactId>
             <version>${javafx.version}</version>
         </dependency>
     </dependencies>
-
 </project>
