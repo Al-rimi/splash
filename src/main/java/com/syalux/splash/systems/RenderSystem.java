@@ -1,26 +1,23 @@
 package com.syalux.splash.systems;
 
+import com.syalux.splash.core.ResourceManager;
 import com.syalux.splash.entities.*;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class RenderSystem {
     private final GraphicsContext gc;
     private final Canvas canvas;
     private final World world;
-    private final Image waterTexture;
     private final double baseWidth;
     private final double baseHeight;
 
-    public RenderSystem(GraphicsContext gc, Canvas canvas, World world, 
-                       Image waterTexture, double baseWidth, double baseHeight) {
+    public RenderSystem(GraphicsContext gc, Canvas canvas, World world, double baseWidth, double baseHeight) {
         this.gc = gc;
         this.canvas = canvas;
         this.world = world;
-        this.waterTexture = waterTexture;
         this.baseWidth = baseWidth;
         this.baseHeight = baseHeight;
     }
@@ -48,9 +45,6 @@ public class RenderSystem {
     }
 
     private void drawWaterTiles(Player player) {
-        if (waterTexture == null) {
-            return;
-        }
 
         final double tileSize = 1024;
         final double renderRadius = 1600;
@@ -75,7 +69,7 @@ public class RenderSystem {
                 double distanceSq = dx * dx + dy * dy;
 
                 if (distanceSq <= renderRadius * renderRadius) {
-                    gc.drawImage(waterTexture, tileWorldX, tileWorldY);
+                    gc.drawImage(ResourceManager.getWaterTexture(), tileWorldX, tileWorldY);
                 }
             }
         }

@@ -6,7 +6,6 @@ import com.syalux.splash.screens.GameScreen;
 import com.syalux.splash.screens.MainMenuScreen;
 import com.syalux.splash.screens.SettingsScreen;
 
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public final class GameManager {
@@ -15,6 +14,7 @@ public final class GameManager {
     private static Player player;
 
     public static void init(Stage stage) {
+        ResourceManager.load();
         primaryStage = stage;
         primaryStage.setTitle(ResourceManager.getString("title"));
         primaryStage.setMaximized(true);
@@ -34,8 +34,7 @@ public final class GameManager {
         PlayerProfile profile = new PlayerProfile();
         int selectedCharacter = profile.getSelectedCharacter();
 
-        Image image = ResourceManager.getFishImage(selectedCharacter);
-        player = new Player(selectedCharacter, primaryStage.getWidth(), primaryStage.getHeight(), image);
+        player = new Player(primaryStage.getWidth(), primaryStage.getHeight(), selectedCharacter);
         gameScreen = new GameScreen(player);
         primaryStage.setScene(gameScreen.createScene());
         primaryStage.show();

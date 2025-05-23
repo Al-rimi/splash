@@ -9,7 +9,6 @@ import com.syalux.splash.systems.SpawnSystem;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 
 public class GameEngine extends AnimationTimer {
@@ -17,7 +16,6 @@ public class GameEngine extends AnimationTimer {
     private final double baseHeight;
     private final Canvas canvas;
     private final GraphicsContext gc;
-    private final Image waterTexture;
 
     private final World world;
     private final Player player;
@@ -43,12 +41,11 @@ public class GameEngine extends AnimationTimer {
         this.baseHeight = Config.GAME_HEIGHT;
         this.scaleX = baseWidth;
         this.scaleY = baseHeight;
-        this.waterTexture = ResourceManager.getWaterTexture();
         this.onPausePressed = onPausePressed;
         this.spawnSystem = new SpawnSystem(world);
         this.cameraSystem = new CameraSystem(baseWidth, baseHeight);
         this.collisionSystem = new CollisionSystem(world);
-        this.renderSystem = new RenderSystem(gc, canvas, world, waterTexture, baseWidth, baseHeight);
+        this.renderSystem = new RenderSystem(gc, canvas, world, baseWidth, baseHeight);
 
         bindCanvasResize();
         spawnSystem.spawnPlayer(player);

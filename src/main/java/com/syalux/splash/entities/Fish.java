@@ -1,6 +1,7 @@
 package com.syalux.splash.entities;
 
 import com.syalux.splash.utils.Vector2D;
+import com.syalux.splash.core.ResourceManager;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -10,7 +11,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
@@ -34,16 +34,16 @@ public abstract class Fish {
     protected boolean invulnerable = false;
     protected final IntegerProperty health;
 
-    protected Image texture;
+    protected int fishType;
     protected boolean isPlayer;
     protected boolean isDead = false;
 
-    public Fish(double size, int health, double x, double y, Image texture) {
+    public Fish(double size, int health, double x, double y, int fishType) {
         this.size = size;
         this.health = new SimpleIntegerProperty(health);
         this.x = x;
         this.y = y;
-        this.texture = texture;
+        this.fishType = fishType;
         this.isPlayer = false;
         setHitboxOffset(0, 0);
     }
@@ -71,7 +71,7 @@ public abstract class Fish {
             drawX = -drawX - renderSize;
         }
 
-        gc.drawImage(texture, drawX, drawY, renderSize, renderSize);
+        gc.drawImage(ResourceManager.getFishImage(fishType), drawX, drawY, renderSize, renderSize);
 
         gc.restore();
     }
@@ -127,10 +127,6 @@ public abstract class Fish {
     protected double angleDiff(double target, double current) {
         double delta = (target - current + 540) % 360 - 180;
         return delta;
-    }
-
-    protected Image getCurrentTexture() {
-        return texture;
     }
 
     protected void applyVelocity(double targetVx, double targetVy, double smoothFactor) {
@@ -252,5 +248,18 @@ public abstract class Fish {
 
     public boolean isPlayer() {
         return isPlayer;
+    }
+
+    
+    public double getVelocityX() {
+        return velocityX;
+    }
+
+    public double getVelocityY() {
+        return velocityY;
+    }
+
+    public int getFishType() {
+        return fishType;
     }
 }

@@ -12,16 +12,11 @@ import com.syalux.splash.entities.World;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.image.Image;
 import javafx.util.Duration;
 
 public class SpawnSystem {
 
     private final Random random = new Random();
-    private final Image[] fishImages = new Image[Config.FISH_IMAGE_COUNT];
-    private final Image[] mountains = new Image[Config.MOUNTAIN_IMAGE_COUNT];
-    private final Image[] seaweeds = new Image[Config.SEAWEED_IMAGE_COUNT];
-    private final Image[] rocks = new Image[Config.ROCK_IMAGE_COUNT];
     private final Timeline spawnTimer;
     private final World world;
 
@@ -29,19 +24,6 @@ public class SpawnSystem {
         this.world = world;
         this.spawnTimer = new Timeline(new KeyFrame(Duration.seconds(Config.SPAWN_DURATION_SECONDS), e -> spawn()));
         this.spawnTimer.setCycleCount(Animation.INDEFINITE);
-
-        for (int i = 0; i < Config.FISH_IMAGE_COUNT; i++) {
-            fishImages[i] = ResourceManager.getFishImage(i + 1);
-        }
-        for (int i = 0; i < Config.MOUNTAIN_IMAGE_COUNT; i++) {
-            mountains[i] = ResourceManager.getMountainImage(i + 1);
-        }
-        for (int i = 0; i < Config.SEAWEED_IMAGE_COUNT; i++) {
-            seaweeds[i] = ResourceManager.getSeaweedImage(i + 1);
-        }
-        for (int i = 0; i < Config.ROCK_IMAGE_COUNT; i++) {
-            rocks[i] = ResourceManager.getRockImage(i + 1);
-        }
     }
 
     public void start() {
@@ -79,54 +61,43 @@ public class SpawnSystem {
         double spawnX = player.getX() + dirX * distance;
         double spawnY = player.getY() + dirY * distance;
 
-        int fishType = (int) (random.nextDouble() * Config.FISH_IMAGE_COUNT);
-        if (fishType == player.getCharacter()) {
-            if (fishType >= Config.FISH_IMAGE_COUNT) {
-                fishType -= 2;
-            } else {
-                fishType++;
-            }
+        int fishType = random.nextInt(Config.FISH_IMAGE_COUNT) + 1;
+        if (fishType == player.getFishType()) {
+            fishType = random.nextInt(Config.FISH_IMAGE_COUNT) + 1;
         }
 
         if (random.nextDouble() < Config.SPAWN_ENEMY_PROBABILITY) {
-            NPC enemy = new NPC(world, spawnX, spawnY,
-                    fishImages[fishType], random.nextDouble() * player.getSize() * 1.5 + player.getSize());
+            NPC enemy = new NPC(world, spawnX, spawnY, fishType, random.nextDouble() * player.getSize() * 1.5 + player.getSize());
             world.addNpc(enemy);
         }
 
         if (random.nextDouble() < Config.SPAWN_FOOD_PROBABILITY) {
-            NPC food = new NPC(world, spawnX, spawnY,
-                    fishImages[fishType], random.nextDouble() * player.getSize() * 0.8 + player.getSize() * 0.2);
+            NPC food = new NPC(world, spawnX, spawnY, fishType, random.nextDouble() * player.getSize() * 0.8 + player.getSize() * 0.2);
             world.addNpc(food);
         }
 
         if (random.nextDouble() < Config.SPAWN_MOUNTAIN_PROBABILITY) {
-            Image mountain = mountains[random.nextInt(Config.MOUNTAIN_IMAGE_COUNT)];
             world.addStaticEntity(new StaticEntity(
-                    spawnX * 4, spawnY * 4,
-                    mountain,
-                    random.nextDouble() * 2 + 1.2,
-                    random.nextDouble() * 0.2 + 0.1));
+                    ResourceManager.Environment.MOUNTAIN,
+                    spawnX * 2, 
+                    spawnY * 2,
+                    random.nextInt(Config.MOUNTAIN_IMAGE_COUNT) + 1,
+                    random.nextInt(4000) + 2000));
         }
 
         if (random.nextDouble() < Config.SPAWN_ROCK_PROBABILITY) {
-            Image rock = rocks[random.nextInt(Config.ROCK_IMAGE_COUNT)];
             world.addStaticEntity(new StaticEntity(
-                    spawnX + random.nextDouble() * 200 - 100,
-                    spawnY + random.nextDouble() * 200 - 100,
-                    rock,
-                    random.nextDouble() * 0.3 + 0.1,
-                    random.nextDouble() * 0.6 + 0.3));
+                    ResourceManager.Environment.ROCK,
+                    spawnX,
+                    spawnY,
+                    random.nextInt(Config.ROCK_IMAGE_COUNT) + 1,
+                    random.nextInt(100) + 50));
         }
 
         if (random.nextDouble() < Config.SPAWN_SEAWEED_PROBABILITY) {
-            Image seaweed = seaweeds[random.nextInt(Config.SEAWEED_IMAGE_COUNT)];
-            world.addStaticEntity(new StaticEntity(
-                    spawnX + random.nextDouble() * 300 - 150,
-                    spawnY + random.nextDouble() * 300 - 150,
-                    seaweed,
-                    random.nextDouble() * 0.4 + 0.2,
-                    random.nextDouble() * 0.8 + 0.2));
+            world.addStaticEntity(new StaticEntity(ResourceManager.Environment.SEAWEED, spawnX, spawnY,
+                    random.nextInt(Config.SEAWEED_IMAGE_COUNT) + 1,
+                    random.nextInt(200) + 50));
         }
     }
 

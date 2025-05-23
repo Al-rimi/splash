@@ -2,7 +2,9 @@ package com.syalux.splash.core;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -13,21 +15,27 @@ import javafx.scene.image.Image;
 public class ResourceManager {
     private static ResourceBundle bundle;
     private static final ObjectProperty<Locale> currentLocale = new SimpleObjectProperty<>(Locale.ENGLISH);
+    private static final Map<Integer, Image> fishImages = new HashMap<>();
+    private static final Map<Integer, Image> mountainImages = new HashMap<>();
+    private static final Map<Integer, Image> rockImages = new HashMap<>();
+    private static final Map<Integer, Image> seaweedImages = new HashMap<>();
+    private static Image waterTexture;
+    private static String styles;
 
-    static {
-        loadLanguage(Config.DEFAULT_LANGUAGE);
+    public enum Environment {
+        MOUNTAIN,
+        ROCK,
+        SEAWEED
     }
 
-    public static void loadLanguage(String lang) {
-        Locale locale = Locale.forLanguageTag(lang);
-        try {
-            bundle = ResourceBundle.getBundle("lang/messages", locale);
-            currentLocale.set(locale);
-        } catch (MissingResourceException e) {
-            System.err.println("Language file not found: " + lang);
-            bundle = ResourceBundle.getBundle("lang/messages", Locale.ENGLISH);
-            currentLocale.set(Locale.ENGLISH);
-        }
+    public static void load() {
+        loadLanguage(Config.DEFAULT_LANGUAGE);
+        loadStyles();
+        loadFishImages();
+        loadMountainImages();
+        loadRockImages();
+        loadSeaweedImages();
+        loadWaterTexture();
     }
 
     public static ObjectProperty<Locale> currentLocaleProperty() {
@@ -44,42 +52,119 @@ public class ResourceManager {
 
     public static Image getFishImage(int fishNumber) {
         if (fishNumber < 1 || fishNumber > Config.FISH_IMAGE_COUNT) {
-            System.err.println("Fish number must be between 1 and " + Config.FISH_IMAGE_COUNT);
+            System.err.println("Fish number must be between 1 and " + Config.FISH_IMAGE_COUNT + ": " + fishNumber);
             return null;
         }
-        String path = String.format("/images/characters/fish-%d.png", fishNumber);
-        return loadImage(path);
+        return fishImages.get(fishNumber);
     }
 
-    public static Image getMountainImage(int mountainNumber) {
-        String path = String.format("/images/environment/mountain-%d.png", mountainNumber);
-        return loadImage(path);
-    }
+    public static Image getEnvironmentImage(Environment type, int imageNumber) {
+        if (imageNumber < 1) {
+            System.err.println("Image number must be at least 1");
+            return null;
+        }
 
-    public static Image getRockImage(int rockNumber) {
-        String path = String.format("/images/environment/rock-%d.png", rockNumber);
-        return loadImage(path);
-    }
-
-    public static Image getSeaweedImage(int seaweedNumber) {
-        String path = String.format("/images/environment/seaweeds-%d.png", seaweedNumber);
-        return loadImage(path);
+        switch (type) {
+            case MOUNTAIN:
+                return mountainImages.get(imageNumber);
+            case ROCK:
+                return rockImages.get(imageNumber);
+            case SEAWEED:
+                return seaweedImages.get(imageNumber);
+            default:
+                return null;
+        }
     }
 
     public static Image getWaterTexture() {
-        return loadImage("/images/environment/texture-water.png");
+        return waterTexture;
     }
 
     private static Image loadImage(String path) {
         try (InputStream is = ResourceManager.class.getResourceAsStream(path)) {
             return new Image(is);
         } catch (IOException | NullPointerException e) {
-            System.err.println("Error loading " + " image: " + path);
+            System.err.println("Error loading image: " + path);
             return null;
         }
     }
 
     public static String getStyleSheet() {
-        return ResourceManager.class.getResource("/css/styles.css").toExternalForm();
+        return styles;
+    }
+
+    public static void loadLanguage(String lang) {
+        Locale locale = Locale.forLanguageTag(lang);
+        try {
+            bundle = ResourceBundle.getBundle("lang/messages", locale);
+            currentLocale.set(locale);
+        } catch (MissingResourceException e) {
+            System.err.println("Language file not found: " + lang);
+            bundle = ResourceBundle.getBundle("lang/messages", Locale.ENGLISH);
+            currentLocale.set(Locale.ENGLISH);
+        }
+    }
+
+    private static void loadStyles() {
+        try {
+            styles = ResourceManager.class.getResource("/css/styles.css").toExternalForm();
+        } catch (NullPointerException e) {
+            System.err.println("Error loading styles.css");
+        }
+    }
+
+    private static void loadFishImages() {
+        for (int i = 1; i <= Config.FISH_IMAGE_COUNT; i++) {
+            String path = String.format("/images/characters/fish-%d.png", i);
+            Image image = loadImage(path);
+            if (image != null) {
+                fishImages.put(i, image);
+            } else {
+                System.err.println("Failed to load fish image: " + i);
+            }
+        }
+    }
+
+    private static void loadMountainImages() {
+        for (int i = 1; i <= Config.MOUNTAIN_IMAGE_COUNT; i++) {
+            String path = String.format("/images/environment/mountain-%d.png", i);
+            Image image = loadImage(path);
+            if (image != null) {
+                mountainImages.put(i, image);
+            } else {
+                System.err.println("Failed to load mountain image: " + i);
+            }
+        }
+    }
+
+    private static void loadRockImages() {
+        for (int i = 1; i <= Config.ROCK_IMAGE_COUNT; i++) {
+            String path = String.format("/images/environment/rock-%d.png", i);
+            Image image = loadImage(path);
+            if (image != null) {
+                rockImages.put(i, image);
+            } else {
+                System.err.println("Failed to load rock image: " + i);
+            }
+        }
+    }
+
+    private static void loadSeaweedImages() {
+        for (int i = 1; i <= Config.SEAWEED_IMAGE_COUNT; i++) {
+            String path = String.format("/images/environment/seaweeds-%d.png", i);
+            Image image = loadImage(path);
+            if (image != null) {
+                seaweedImages.put(i, image);
+            } else {
+                System.err.println("Failed to load seaweed image: " + i);
+            }
+        }
+    }
+
+    private static void loadWaterTexture() {
+        waterTexture = loadImage("/images/environment/texture-water.png");
+        if (waterTexture == null) {
+            System.err.println("Failed to load water texture.");
+        }
     }
 }

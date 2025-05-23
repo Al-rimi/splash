@@ -1,6 +1,5 @@
 package com.syalux.splash.entities;
 
-import javafx.scene.image.Image;
 import java.util.Random;
 
 public class NPC extends Fish {
@@ -10,8 +9,8 @@ public class NPC extends Fish {
     private double directionChangeInterval;
     private int intelligenceLevel;
 
-    public NPC(World world, double x, double y, Image texture, double size) {
-        super(size, new Random().nextInt((int) size) + 10, x, y, texture);
+    public NPC(World world, double x, double y, int fishType, double size) {
+        super(size, new Random().nextInt((int) size) + 10, x, y, fishType);
 
         this.world = world;
         this.intelligenceLevel = new Random().nextInt(3) + 1;
