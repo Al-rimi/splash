@@ -1,6 +1,6 @@
 package com.syalux.splash.entities;
 
-import com.syalux.splash.core.Config;
+import com.syalux.splash.data.Config;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;

@@ -1,6 +1,6 @@
 package com.syalux.splash.systems;
 
-import com.syalux.splash.core.Config;
+import com.syalux.splash.data.Config;
 import com.syalux.splash.entities.Player;
 
 public class CameraSystem {

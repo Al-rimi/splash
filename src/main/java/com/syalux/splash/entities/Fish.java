@@ -1,7 +1,7 @@
 package com.syalux.splash.entities;
 
+import com.syalux.splash.data.Resource;
 import com.syalux.splash.utils.Vector2D;
-import com.syalux.splash.core.ResourceManager;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -71,7 +71,7 @@ public abstract class Fish {
             drawX = -drawX - renderSize;
         }
 
-        gc.drawImage(ResourceManager.getFishImage(fishType), drawX, drawY, renderSize, renderSize);
+        gc.drawImage(Resource.getFishImage(fishType), drawX, drawY, renderSize, renderSize);
 
         gc.restore();
     }

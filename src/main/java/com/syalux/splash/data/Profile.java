@@ -1,19 +1,19 @@
 package com.syalux.splash.data;
 
-public class PlayerProfile {
+public class Profile {
     private String playerName;
     private int highScore;
     private int coins;
     private int selectedCharacter;
 
-    public PlayerProfile() {
+    public Profile() {
         this.playerName = "Player";
         this.highScore = 0;
         this.coins = 0;
-        this.selectedCharacter = 19;
+        this.selectedCharacter = 1;
     }
     
-    public PlayerProfile(String playerName, int highScore, int coins, int selectedCharacter) {
+    public Profile(String playerName, int highScore, int coins, int selectedCharacter) {
         this.playerName = playerName;
         this.highScore = highScore;
         this.coins = coins;

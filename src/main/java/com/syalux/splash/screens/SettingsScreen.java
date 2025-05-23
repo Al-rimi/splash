@@ -1,8 +1,8 @@
 package com.syalux.splash.screens;
 
-import com.syalux.splash.core.Config;
-import com.syalux.splash.core.GameManager;
-import com.syalux.splash.core.ResourceManager;
+import com.syalux.splash.core.Manager;
+import com.syalux.splash.data.Config;
+import com.syalux.splash.data.Resource;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
@@ -41,7 +41,7 @@ public class SettingsScreen {
 
         Scene scene = new Scene(mainLayout);
         scene.setFill(Color.TRANSPARENT);
-        scene.getStylesheets().add(ResourceManager.getStyleSheet());
+        scene.getStylesheets().add(Resource.getStyleSheet());
 
         mainLayout.prefWidthProperty().bind(scene.widthProperty());
         mainLayout.prefHeightProperty().bind(scene.heightProperty());
@@ -92,7 +92,7 @@ public class SettingsScreen {
     private Button createLanguageButton(String text, String langCode) {
         Button btn = new Button(text);
         btn.getStyleClass().add("lang-button");
-        btn.setOnAction(e -> ResourceManager.loadLanguage(langCode));
+        btn.setOnAction(e -> Resource.loadLanguage(langCode));
 
         btn.prefWidthProperty().bind(btn.heightProperty().multiply(3));
         btn.setMinWidth(120);
@@ -108,11 +108,11 @@ public class SettingsScreen {
         btnBack.getStyleClass().add("nav-button");
         btnBack.textProperty().bind(
             Bindings.createStringBinding(() ->
-                ResourceManager.getString("back"),
-                ResourceManager.currentLocaleProperty()
+                Resource.getString("back"),
+                Resource.currentLocaleProperty()
             )
         );
-        btnBack.setOnAction(e -> GameManager.showMainMenu());
+        btnBack.setOnAction(e -> Manager.showMainMenu());
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -125,8 +125,8 @@ public class SettingsScreen {
         Label label = new Label();
         label.textProperty().bind(
             Bindings.createStringBinding(() ->
-                ResourceManager.getString(resourceKey),
-                ResourceManager.currentLocaleProperty()
+                Resource.getString(resourceKey),
+                Resource.currentLocaleProperty()
             )
         );
         label.getStyleClass().add("section-title");

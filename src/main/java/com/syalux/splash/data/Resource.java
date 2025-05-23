@@ -1,4 +1,4 @@
-package com.syalux.splash.core;
+package com.syalux.splash.data;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 
-public class ResourceManager {
+public class Resource {
     private static ResourceBundle bundle;
     private static final ObjectProperty<Locale> currentLocale = new SimpleObjectProperty<>(Locale.ENGLISH);
     private static final Map<Integer, Image> fishImages = new HashMap<>();
@@ -81,7 +81,7 @@ public class ResourceManager {
     }
 
     private static Image loadImage(String path) {
-        try (InputStream is = ResourceManager.class.getResourceAsStream(path)) {
+        try (InputStream is = Resource.class.getResourceAsStream(path)) {
             return new Image(is);
         } catch (IOException | NullPointerException e) {
             System.err.println("Error loading image: " + path);
@@ -107,7 +107,7 @@ public class ResourceManager {
 
     private static void loadStyles() {
         try {
-            styles = ResourceManager.class.getResource("/css/styles.css").toExternalForm();
+            styles = Resource.class.getResource("/css/styles.css").toExternalForm();
         } catch (NullPointerException e) {
             System.err.println("Error loading styles.css");
         }

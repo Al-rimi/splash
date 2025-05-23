@@ -1,6 +1,6 @@
 package com.syalux.splash.systems;
 
-import com.syalux.splash.core.ResourceManager;
+import com.syalux.splash.data.Resource;
 import com.syalux.splash.entities.*;
 
 import javafx.scene.canvas.Canvas;
@@ -69,7 +69,7 @@ public class RenderSystem {
                 double distanceSq = dx * dx + dy * dy;
 
                 if (distanceSq <= renderRadius * renderRadius) {
-                    gc.drawImage(ResourceManager.getWaterTexture(), tileWorldX, tileWorldY);
+                    gc.drawImage(Resource.getWaterTexture(), tileWorldX, tileWorldY);
                 }
             }
         }

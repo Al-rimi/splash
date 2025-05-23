@@ -2,8 +2,8 @@ package com.syalux.splash.systems;
 
 import java.util.Random;
 
-import com.syalux.splash.core.Config;
-import com.syalux.splash.core.ResourceManager;
+import com.syalux.splash.data.Config;
+import com.syalux.splash.data.Resource;
 import com.syalux.splash.entities.NPC;
 import com.syalux.splash.entities.Player;
 import com.syalux.splash.entities.StaticEntity;
@@ -78,7 +78,7 @@ public class SpawnSystem {
 
         if (random.nextDouble() < Config.SPAWN_MOUNTAIN_PROBABILITY) {
             world.addStaticEntity(new StaticEntity(
-                    ResourceManager.Environment.MOUNTAIN,
+                    Resource.Environment.MOUNTAIN,
                     spawnX * 2, 
                     spawnY * 2,
                     random.nextInt(Config.MOUNTAIN_IMAGE_COUNT) + 1,
@@ -87,7 +87,7 @@ public class SpawnSystem {
 
         if (random.nextDouble() < Config.SPAWN_ROCK_PROBABILITY) {
             world.addStaticEntity(new StaticEntity(
-                    ResourceManager.Environment.ROCK,
+                    Resource.Environment.ROCK,
                     spawnX,
                     spawnY,
                     random.nextInt(Config.ROCK_IMAGE_COUNT) + 1,
@@ -95,7 +95,7 @@ public class SpawnSystem {
         }
 
         if (random.nextDouble() < Config.SPAWN_SEAWEED_PROBABILITY) {
-            world.addStaticEntity(new StaticEntity(ResourceManager.Environment.SEAWEED, spawnX, spawnY,
+            world.addStaticEntity(new StaticEntity(Resource.Environment.SEAWEED, spawnX, spawnY,
                     random.nextInt(Config.SEAWEED_IMAGE_COUNT) + 1,
                     random.nextInt(200) + 50));
         }

@@ -1,4 +1,4 @@
-package com.syalux.splash.core;
+package com.syalux.splash.data;
 
 public class Config {
     // Window Configuration

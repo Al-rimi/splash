@@ -1,17 +1,18 @@
 package com.syalux.splash.entities;
 
-import com.syalux.splash.core.ResourceManager;
+import com.syalux.splash.data.Resource;
+
 import javafx.scene.canvas.GraphicsContext;
 
 public class StaticEntity {
-    private final ResourceManager.Environment type;
+    private final Resource.Environment type;
     private final double x;
     private final double y;
     private final int imageNumber;
     private final int size;
     private final double parallaxFactor;
 
-    public StaticEntity(ResourceManager.Environment type, 
+    public StaticEntity(Resource.Environment type, 
                         double x, 
                         double y, 
                         int imageNumber, 
@@ -21,7 +22,7 @@ public class StaticEntity {
         this.y = y;
         this.imageNumber = imageNumber;
         this.size = size;
-        if (type == ResourceManager.Environment.MOUNTAIN) {
+        if (type == Resource.Environment.MOUNTAIN) {
             this.parallaxFactor = 1000.0/size;
         } else {
             this.parallaxFactor = size / 200.0;
@@ -39,7 +40,7 @@ public class StaticEntity {
         double screenX = (x - camX * parallaxFactor) + baseWidth/2 + offsetX;
         double screenY = (y - camY * parallaxFactor) + baseHeight/2 + offsetY;
         
-        gc.drawImage(ResourceManager.getEnvironmentImage(type, imageNumber), 
+        gc.drawImage(Resource.getEnvironmentImage(type, imageNumber), 
             screenX - size, 
             screenY - size, 
             size, 

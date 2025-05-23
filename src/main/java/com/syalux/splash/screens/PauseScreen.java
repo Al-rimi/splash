@@ -5,7 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-import com.syalux.splash.core.ResourceManager;
+import com.syalux.splash.data.Resource;
 
 import javafx.beans.binding.Bindings;
 
@@ -31,8 +31,8 @@ public class PauseScreen extends StackPane {
         Button button = new Button();
         button.textProperty().bind(
             Bindings.createStringBinding(
-                () -> ResourceManager.getString(resourceKey),
-                ResourceManager.currentLocaleProperty()
+                () -> Resource.getString(resourceKey),
+                Resource.currentLocaleProperty()
             )
         );
         button.getStyleClass().add("pause-button");

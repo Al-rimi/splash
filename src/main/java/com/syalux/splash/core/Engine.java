@@ -1,5 +1,6 @@
 package com.syalux.splash.core;
 
+import com.syalux.splash.data.Config;
 import com.syalux.splash.entities.*;
 import com.syalux.splash.systems.CameraSystem;
 import com.syalux.splash.systems.CollisionSystem;
@@ -11,7 +12,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 
-public class GameEngine extends AnimationTimer {
+public class Engine extends AnimationTimer {
     private final double baseWidth;
     private final double baseHeight;
     private final Canvas canvas;
@@ -32,7 +33,7 @@ public class GameEngine extends AnimationTimer {
 
     private StackPane rootContainer;
 
-    public GameEngine(Player player, Canvas canvas, Runnable onPausePressed) {
+    public Engine(Player player, Canvas canvas, Runnable onPausePressed) {
         this.player = player;
         this.world = new World();
         this.canvas = canvas;

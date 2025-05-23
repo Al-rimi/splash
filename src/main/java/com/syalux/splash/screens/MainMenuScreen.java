@@ -1,8 +1,8 @@
 package com.syalux.splash.screens;
 
-import com.syalux.splash.core.Config;
-import com.syalux.splash.core.GameManager;
-import com.syalux.splash.core.ResourceManager;
+import com.syalux.splash.core.Manager;
+import com.syalux.splash.data.Config;
+import com.syalux.splash.data.Resource;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
@@ -18,22 +18,22 @@ public class MainMenuScreen {
         layout.getStyleClass().add("menu-container");
         layout.setPrefSize(Config.GAME_WIDTH, Config.GAME_HEIGHT);
 
-        Button btnStart = createMenuButton("start_game", GameManager::startGame);
-        Button btnSettings = createMenuButton("settings", GameManager::showSettingsScreen);
+        Button btnStart = createMenuButton("start_game", Manager::startGame);
+        Button btnSettings = createMenuButton("settings", Manager::showSettingsScreen);
         Button btnExit = createMenuButton("exit", () -> System.exit(0));
 
         layout.getChildren().addAll(btnSettings, btnStart, btnExit);
 
         Scene scene = new Scene(layout);
-        scene.getStylesheets().add(ResourceManager.getStyleSheet());
+        scene.getStylesheets().add(Resource.getStyleSheet());
         return scene;
     }
 
     private Button createMenuButton(String resourceKey, Runnable action) {
         Button button = new Button();
         button.textProperty().bind(Bindings.createStringBinding(
-            () -> ResourceManager.getString(resourceKey),
-            ResourceManager.currentLocaleProperty()
+            () -> Resource.getString(resourceKey),
+            Resource.currentLocaleProperty()
         ));
         button.getStyleClass().add("menu-button");
         button.setMaxWidth(Double.MAX_VALUE);

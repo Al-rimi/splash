@@ -15,16 +15,16 @@ import javafx.scene.layout.StackPane;
 
 import java.util.stream.Stream;
 
-import com.syalux.splash.core.Config;
-import com.syalux.splash.core.GameEngine;
-import com.syalux.splash.core.GameManager;
-import com.syalux.splash.core.ResourceManager;
+import com.syalux.splash.core.Engine;
+import com.syalux.splash.core.Manager;
+import com.syalux.splash.data.Config;
+import com.syalux.splash.data.Resource;
 import com.syalux.splash.entities.Player;
 
 public class GameScreen {
 
     private final Player player;
-    private final GameEngine gameEngine;
+    private final Engine engine;
     private StackPane root;
     private boolean isPaused = false;
 
@@ -35,7 +35,7 @@ public class GameScreen {
     public GameScreen(Player player) {
         this.player = player;
         this.gameCanvas = new Canvas(Config.GAME_WIDTH, Config.GAME_HEIGHT);
-        this.gameEngine = new GameEngine(player, gameCanvas, this::togglePause);
+        this.engine = new Engine(player, gameCanvas, this::togglePause);
     }
 
     private void createHUD() {
@@ -59,9 +59,9 @@ public class GameScreen {
         Label label = new Label();
         label.textProperty().bind(
                 Bindings.createStringBinding(
-                        () -> ResourceManager.getString(key) + ": " + property.get(),
+                        () -> Resource.getString(key) + ": " + property.get(),
                         property,
-                        ResourceManager.currentLocaleProperty()));
+                        Resource.currentLocaleProperty()));
         return label;
     }
 
@@ -69,8 +69,8 @@ public class GameScreen {
         Button pauseButton = new Button();
         pauseButton.textProperty().bind(
                 Bindings.createStringBinding(
-                        () -> ResourceManager.getString("pause"),
-                        ResourceManager.currentLocaleProperty()));
+                        () -> Resource.getString("pause"),
+                        Resource.currentLocaleProperty()));
         pauseButton.setOnAction(e -> togglePause());
         pauseButton.getStyleClass().add("nav-button");
         return pauseButton;
@@ -86,14 +86,14 @@ public class GameScreen {
 
     private void pauseGame() {
         isPaused = true;
-        gameEngine.pause(isPaused);
+        engine.pause(isPaused);
         applyBlurEffect(isPaused);
         showPauseScreen();
     }
 
     private void resumeGame() {
         isPaused = false;
-        gameEngine.pause(isPaused);
+        engine.pause(isPaused);
         applyBlurEffect(isPaused);
         hidePauseScreen();
     }
@@ -112,10 +112,10 @@ public class GameScreen {
     private void showPauseScreen() {
         PauseScreen pauseScreen = new PauseScreen(
                 this::resumeGame,
-                () -> GameManager.showSettingsScreen(),
+                () -> Manager.showSettingsScreen(),
                 () -> {
-                    gameEngine.stop();
-                    GameManager.showMainMenu();
+                    engine.stop();
+                    Manager.showMainMenu();
                 });
         root.getChildren().add(pauseScreen);
     }
@@ -134,11 +134,11 @@ public class GameScreen {
 
         createHUD();
         root.getChildren().addAll(gameCanvas, hud);
-        root.getStylesheets().add(ResourceManager.getStyleSheet());
+        root.getStylesheets().add(Resource.getStyleSheet());
 
-        gameEngine.setRootContainer(root);
+        engine.setRootContainer(root);
         root.requestFocus();
-        gameEngine.start();
+        engine.start();
         
         backgroundCanvas = new Canvas();
         backgroundCanvas.widthProperty().bind(root.widthProperty());
@@ -146,7 +146,7 @@ public class GameScreen {
         backgroundCanvas.getStyleClass().add("background-canvas");
 
         // Draw static elements on background canvas
-        backgroundCanvas.getGraphicsContext2D().drawImage(ResourceManager.getWaterTexture(), 0, 0);
+        backgroundCanvas.getGraphicsContext2D().drawImage(Resource.getWaterTexture(), 0, 0);
         root.getChildren().add(0, backgroundCanvas); // Add behind game canvas
 
         return new Scene(root);
