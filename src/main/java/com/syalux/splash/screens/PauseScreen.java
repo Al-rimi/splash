@@ -5,13 +5,14 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+import com.syalux.splash.core.Manager;
 import com.syalux.splash.data.Resource;
 
 import javafx.beans.binding.Bindings;
 
 public class PauseScreen extends StackPane {
 
-    public PauseScreen(Runnable onResume, Runnable onSettings, Runnable onExit) {
+    public PauseScreen(Runnable onResume) {
         this.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
         this.setAlignment(Pos.CENTER);
 
@@ -20,8 +21,8 @@ public class PauseScreen extends StackPane {
         menu.getStyleClass().add("pause-menu");
 
         Button resumeButton = createPauseButton("resume", onResume);
-        Button settingsButton = createPauseButton("settings", onSettings);
-        Button exitButton = createPauseButton("exit_to_menu", onExit);
+        Button settingsButton = createPauseButton("settings", Manager::showSettingsScreen);
+        Button exitButton = createPauseButton("exit_to_menu", Manager::showMainMenu);
 
         menu.getChildren().addAll(resumeButton, settingsButton, exitButton);
         this.getChildren().add(menu);

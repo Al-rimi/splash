@@ -14,8 +14,8 @@ public class Player extends Fish {
     private boolean movingLeft;
     private boolean movingRight;
 
-    public Player(double baseWidth, double baseHeight, int fishType) {
-        super(Config.PLAYER_BASE_SIZE, 100, baseWidth / 2, baseHeight / 2, fishType);
+    public Player(int fishType) {
+        super(Config.PLAYER_BASE_SIZE, 100, Config.GAME_HEIGHT / 2, Config.GAME_HEIGHT / 2, fishType);
         this.isPlayer = true;
         this.score = new SimpleIntegerProperty(0);
         this.coins = new SimpleIntegerProperty(0);

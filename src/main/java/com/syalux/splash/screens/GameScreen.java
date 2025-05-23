@@ -16,13 +16,14 @@ import javafx.scene.layout.StackPane;
 import java.util.stream.Stream;
 
 import com.syalux.splash.core.Engine;
-import com.syalux.splash.core.Manager;
+import com.syalux.splash.data.Profile;
 import com.syalux.splash.data.Config;
 import com.syalux.splash.data.Resource;
 import com.syalux.splash.entities.Player;
 
 public class GameScreen {
 
+    private final Profile profile;
     private final Player player;
     private final Engine engine;
     private StackPane root;
@@ -32,8 +33,11 @@ public class GameScreen {
     private Canvas backgroundCanvas;
     private HBox hud;
 
-    public GameScreen(Player player) {
-        this.player = player;
+    public GameScreen() {
+        profile = new Profile();
+        int selectedCharacter = profile.getSelectedCharacter();
+        player = new Player(selectedCharacter);
+
         this.gameCanvas = new Canvas(Config.GAME_WIDTH, Config.GAME_HEIGHT);
         this.engine = new Engine(player, gameCanvas, this::togglePause);
     }
@@ -67,10 +71,7 @@ public class GameScreen {
 
     private Button createPauseButton() {
         Button pauseButton = new Button();
-        pauseButton.textProperty().bind(
-                Bindings.createStringBinding(
-                        () -> Resource.getString("pause"),
-                        Resource.currentLocaleProperty()));
+        pauseButton.textProperty().bind(Bindings.createStringBinding(() -> Resource.getString("pause"), Resource.currentLocaleProperty()));
         pauseButton.setOnAction(e -> togglePause());
         pauseButton.getStyleClass().add("nav-button");
         return pauseButton;
@@ -110,13 +111,7 @@ public class GameScreen {
     }
 
     private void showPauseScreen() {
-        PauseScreen pauseScreen = new PauseScreen(
-                this::resumeGame,
-                () -> Manager.showSettingsScreen(),
-                () -> {
-                    engine.stop();
-                    Manager.showMainMenu();
-                });
+        PauseScreen pauseScreen = new PauseScreen(this::resumeGame);
         root.getChildren().add(pauseScreen);
     }
 
@@ -144,10 +139,6 @@ public class GameScreen {
         backgroundCanvas.widthProperty().bind(root.widthProperty());
         backgroundCanvas.heightProperty().bind(root.heightProperty());
         backgroundCanvas.getStyleClass().add("background-canvas");
-
-        // Draw static elements on background canvas
-        backgroundCanvas.getGraphicsContext2D().drawImage(Resource.getWaterTexture(), 0, 0);
-        root.getChildren().add(0, backgroundCanvas); // Add behind game canvas
 
         return new Scene(root);
     }

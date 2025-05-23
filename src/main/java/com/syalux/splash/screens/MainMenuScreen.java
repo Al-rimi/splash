@@ -18,7 +18,7 @@ public class MainMenuScreen {
         layout.getStyleClass().add("menu-container");
         layout.setPrefSize(Config.GAME_WIDTH, Config.GAME_HEIGHT);
 
-        Button btnStart = createMenuButton("start_game", Manager::startGame);
+        Button btnStart = createMenuButton("start_game", Manager::showGameScreen);
         Button btnSettings = createMenuButton("settings", Manager::showSettingsScreen);
         Button btnExit = createMenuButton("exit", () -> System.exit(0));
 
