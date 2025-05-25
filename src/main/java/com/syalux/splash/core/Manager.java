@@ -17,6 +17,8 @@ public final class Manager {
 
     public static void init(Stage stage) {
         primaryStage = stage;
+        primaryStage.setWidth(Config.GAME_WIDTH * 0.8);
+        primaryStage.setHeight(Config.GAME_HEIGHT * 0.8);
         mainScene = new Scene(new StackPane());
 
         Resource.loadLanguage(Config.DEFAULT_LANGUAGE);

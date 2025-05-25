@@ -53,7 +53,7 @@ public class SpawnSystem {
         double dx = player.getVelocityX();
         double dy = player.getVelocityY();
         double length = Math.hypot(dx, dy);
-        double distance = 1500 + Math.random() * Config.SPAWN_RADIUS;
+        double distance = 2000 + Math.random() * Config.SPAWN_RADIUS;
         double angle = Math.random() * 2 * Math.PI;
 
         double dirX = (length == 0) ? Math.cos(angle) : dx / length;
@@ -116,7 +116,7 @@ public class SpawnSystem {
         world.getStaticEntities().removeIf(entity -> {
             double dx = entity.getX() - player.getX();
             double dy = entity.getY() - player.getY();
-            return dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS * 12;
+            return dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS * 100;
         });
     }
 }

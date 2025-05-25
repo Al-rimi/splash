@@ -141,7 +141,6 @@ public class Engine extends AnimationTimer {
     private void updateScale() {
         scaleX = canvas.getWidth() / baseWidth;
         scaleY = canvas.getHeight() / baseHeight;
-        player.updateScale(scaleY);
     }
 
     public void setRootContainer(StackPane rootContainer) {

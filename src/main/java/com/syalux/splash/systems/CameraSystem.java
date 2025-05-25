@@ -11,8 +11,8 @@ public class CameraSystem {
 
     public CameraSystem(double baseWidth, double baseHeight) {
         this.baseHeight = baseHeight;
-        this.camX = baseWidth;
-        this.camY = baseHeight;
+        this.camX = baseWidth / 2;
+        this.camY = baseHeight / 2;
     }
 
     public void update(double deltaTime, PlayerEntity player) {
