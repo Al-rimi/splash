@@ -5,6 +5,7 @@ import java.util.Random;
 import com.syalux.splash.data.Config;
 import com.syalux.splash.data.Resource;
 import com.syalux.splash.data.World;
+import com.syalux.splash.entities.CoinEntity;
 import com.syalux.splash.entities.NPCEntity;
 import com.syalux.splash.entities.PlayerEntity;
 import com.syalux.splash.entities.StaticEntity;
@@ -20,7 +21,7 @@ public class SpawnSystem {
     private final Timeline spawnTimer;
     private final World world;
 
-    public SpawnSystem(World world){
+    public SpawnSystem(World world) {
         this.world = world;
         this.spawnTimer = new Timeline(new KeyFrame(Duration.seconds(Config.SPAWN_DURATION_SECONDS), e -> spawn()));
         this.spawnTimer.setCycleCount(Animation.INDEFINITE);
@@ -58,8 +59,8 @@ public class SpawnSystem {
 
         double dirX = (length == 0) ? Math.cos(angle) : dx / length;
         double dirY = (length == 0) ? Math.sin(angle) : dy / length;
-        double spawnX = player.getX() + dirX * distance;
-        double spawnY = player.getY() + dirY * distance;
+        double spawnX = player.getX() + dirX * distance + Math.random() * 800 - 200;
+        double spawnY = player.getY() + dirY * distance + Math.random() * 800 - 200;
 
         int fishType = random.nextInt(Config.FISH_IMAGE_COUNT) + 1;
         if (fishType == player.getFishType()) {
@@ -67,19 +68,21 @@ public class SpawnSystem {
         }
 
         if (random.nextDouble() < Config.SPAWN_ENEMY_PROBABILITY) {
-            NPCEntity enemy = new NPCEntity(world, spawnX, spawnY, fishType, random.nextDouble() * player.getSize() * 1.5 + player.getSize());
+            NPCEntity enemy = new NPCEntity(world, spawnX, spawnY, fishType,
+                    random.nextDouble() * player.getSize() * 1.5 + player.getSize());
             world.addNpc(enemy);
         }
 
         if (random.nextDouble() < Config.SPAWN_FOOD_PROBABILITY) {
-            NPCEntity food = new NPCEntity(world, spawnX, spawnY, fishType, random.nextDouble() * player.getSize() * 0.8 + player.getSize() * 0.2);
+            NPCEntity food = new NPCEntity(world, spawnX, spawnY, fishType,
+                    random.nextDouble() * player.getSize() * 0.8 + player.getSize() * 0.2);
             world.addNpc(food);
         }
 
         if (random.nextDouble() < Config.SPAWN_MOUNTAIN_PROBABILITY) {
             world.addStaticEntity(new StaticEntity(
                     Resource.Environment.MOUNTAIN,
-                    spawnX * 2, 
+                    spawnX * 2,
                     spawnY * 2,
                     random.nextInt(Config.MOUNTAIN_IMAGE_COUNT) + 1,
                     random.nextInt(2000) + 2000));
@@ -99,9 +102,12 @@ public class SpawnSystem {
                     random.nextInt(Config.SEAWEED_IMAGE_COUNT) + 1,
                     random.nextInt(200) + 50));
         }
+
+        if (random.nextDouble() < Config.SPAWN_COIN_PROBABILITY) {
+            world.addCoin(new CoinEntity( spawnX, spawnY));
+        }
     }
 
-    
     private void cleanupDistantEntities(PlayerEntity player) {
         world.getPlayers().removeIf(p -> {
             return p.isDead();
@@ -117,6 +123,12 @@ public class SpawnSystem {
             double dx = entity.getX() - player.getX();
             double dy = entity.getY() - player.getY();
             return dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS * 100;
+        });
+
+        world.getCoins().removeIf(coin -> {
+            double dx = coin.getX() - player.getX();
+            double dy = coin.getY() - player.getY();
+            return dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS;
         });
     }
 }

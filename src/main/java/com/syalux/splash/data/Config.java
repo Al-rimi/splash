@@ -12,6 +12,7 @@ public class Config {
     public static final double SPAWN_MOUNTAIN_PROBABILITY = 0.8;
     public static final double SPAWN_SEAWEED_PROBABILITY = 1.0;
     public static final double SPAWN_ROCK_PROBABILITY = 0.3;
+    public static final double SPAWN_COIN_PROBABILITY = 0.01;
     
     // Player Configuration
     public static final double PLAYER_BASE_SIZE = 60;

@@ -21,13 +21,15 @@ public class Resource {
     private static final Map<Integer, Image> seaweedImages = new HashMap<>();
     private static final Map<Integer, Image> bubbleImages = new HashMap<>();
     private static Image waterTexture;
+    private static Image coinImage;
     private static String styles;
 
     public enum Environment {
         MOUNTAIN,
         ROCK,
         SEAWEED,
-        BUBBLE
+        BUBBLE,
+        COIN
     }
 
     public static void loadAll() {
@@ -39,6 +41,7 @@ public class Resource {
         loadSeaweedImages();
         loadWaterTexture();
         loadBubbleImages();
+        loadCoinImage();
     }
 
     public static ObjectProperty<Locale> currentLocaleProperty() {
@@ -80,6 +83,8 @@ public class Resource {
                 return seaweedImages.get(imageNumber);
             case BUBBLE:
                 return bubbleImages.get(imageNumber);
+            case COIN:
+                return coinImage;
             default:
                 return null;
         }
@@ -186,6 +191,13 @@ public class Resource {
         waterTexture = loadImage("/images/environment/texture-water.png");
         if (waterTexture == null) {
             System.err.println("Failed to load water texture.");
+        }
+    }
+
+    private static void loadCoinImage() {
+        coinImage = loadImage("/images/environment/coin.png");
+        if (coinImage == null) {
+            System.err.println("Failed to load coin image.");
         }
     }
 }

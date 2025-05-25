@@ -24,6 +24,8 @@ public class StaticEntity {
         this.size = size;
         if (type == Resource.Environment.MOUNTAIN) {
             this.parallaxFactor = 1000.0/size;
+        } else if (type == Resource.Environment.COIN) {
+            this.parallaxFactor = 1.0;
         } else {
             this.parallaxFactor = size / 200.0;
         }
@@ -50,4 +52,6 @@ public class StaticEntity {
 
     public double getX() { return x; }
     public double getY() { return y; }
+
+    public double getRadius() { return size / 2.0; }
 }

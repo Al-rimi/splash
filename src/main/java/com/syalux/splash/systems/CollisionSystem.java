@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.syalux.splash.data.World;
+import com.syalux.splash.entities.CoinEntity;
 import com.syalux.splash.entities.FishEntity;
 import com.syalux.splash.entities.NPCEntity;
 import com.syalux.splash.entities.PlayerEntity;
@@ -18,6 +19,7 @@ public class CollisionSystem {
     public void checkCollisions() {
         List<PlayerEntity> players = new ArrayList<>(world.getPlayers());
         List<NPCEntity> npcs = new ArrayList<>(world.getNpcs());
+        List<CoinEntity> coins = new ArrayList<>(world.getCoins());
 
         for (int i = 0; i < players.size(); i++) {
             PlayerEntity a = players.get(i);
@@ -33,6 +35,13 @@ public class CollisionSystem {
                     handleCollision(a, b);
                 }
             }
+            for (int j = 0; j < coins.size(); j++) {
+                CoinEntity b = coins.get(j);
+                if (checkCollision(a, b)) {
+                    a.addCoins(1);
+                    world.remove(b);
+                }
+            }
         }
 
         for (int i = 0; i < npcs.size(); i++) {
@@ -45,6 +54,14 @@ public class CollisionSystem {
             }
         }
 
+    }
+
+    private boolean checkCollision(FishEntity a, CoinEntity b) {
+        double dx = a.getX() - b.getX();
+        double dy = a.getY() - b.getY();
+        double distanceSq = dx * dx + dy * dy;
+        double combinedRadius = a.getRadius() + (b.getRadius());
+        return distanceSq <= combinedRadius * combinedRadius;
     }
 
     private boolean checkCollision(FishEntity a, FishEntity b) {

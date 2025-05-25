@@ -34,6 +34,7 @@ public class RenderSystem {
         double offsetY = (canvas.getHeight() / Math.min(scaleX, scaleY) - baseHeight) / 2;
 
         world.getStaticEntities().forEach(e -> e.render(gc, camX, camY, baseWidth, baseHeight, offsetX, offsetY));
+        world.getCoins().forEach(e -> e.render(gc, camX, camY, baseWidth, baseHeight, offsetX, offsetY));
         gc.translate(translateX + offsetX, translateY + offsetY);
 
         drawWaterTiles(player);
