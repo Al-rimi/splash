@@ -21,7 +21,7 @@ public final class Manager {
 
         Resource.loadLanguage(Config.DEFAULT_LANGUAGE);
         Resource.loadStyles();
-        
+
         primaryStage.setMaximized(true);
         primaryStage.setTitle(Resource.getString("title"));
         mainScene.getStylesheets().add(Resource.getStyleSheet());
@@ -70,7 +70,6 @@ public final class Manager {
         // Add bubble transition overlay
         BubbleTransitionScreen transition = new BubbleTransitionScreen(() -> {
             container.getChildren().remove(1);
-            
         });
         container.getChildren().add(transition);
         

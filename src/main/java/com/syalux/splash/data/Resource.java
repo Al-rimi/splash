@@ -19,13 +19,15 @@ public class Resource {
     private static final Map<Integer, Image> mountainImages = new HashMap<>();
     private static final Map<Integer, Image> rockImages = new HashMap<>();
     private static final Map<Integer, Image> seaweedImages = new HashMap<>();
+    private static final Map<Integer, Image> bubbleImages = new HashMap<>();
     private static Image waterTexture;
     private static String styles;
 
     public enum Environment {
         MOUNTAIN,
         ROCK,
-        SEAWEED
+        SEAWEED,
+        BUBBLE
     }
 
     public static void loadImages() {
@@ -34,6 +36,7 @@ public class Resource {
         loadRockImages();
         loadSeaweedImages();
         loadWaterTexture();
+        loadBubbleImages();
     }
 
     public static ObjectProperty<Locale> currentLocaleProperty() {
@@ -69,6 +72,8 @@ public class Resource {
                 return rockImages.get(imageNumber);
             case SEAWEED:
                 return seaweedImages.get(imageNumber);
+            case BUBBLE:
+                return bubbleImages.get(imageNumber);
             default:
                 return null;
         }
@@ -153,6 +158,18 @@ public class Resource {
             Image image = loadImage(path);
             if (image != null) {
                 seaweedImages.put(i, image);
+            } else {
+                System.err.println("Failed to load seaweed image: " + i);
+            }
+        }
+    }
+
+    private static void loadBubbleImages() {
+        for (int i = 1; i <= Config.BUBBLE_IMAGE_COUNT; i++) {
+            String path = String.format("/images/environment/bubble-%d.png", i);
+            Image image = loadImage(path);
+            if (image != null) {
+                bubbleImages.put(i, image);
             } else {
                 System.err.println("Failed to load seaweed image: " + i);
             }

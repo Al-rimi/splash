@@ -27,4 +27,5 @@ public class Config {
     public static final int MOUNTAIN_IMAGE_COUNT = 3;
     public static final int SEAWEED_IMAGE_COUNT = 2;
     public static final int ROCK_IMAGE_COUNT = 2;
+    public static final int BUBBLE_IMAGE_COUNT = 2;
 }
