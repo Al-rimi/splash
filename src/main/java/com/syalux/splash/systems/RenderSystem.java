@@ -37,7 +37,7 @@ public class RenderSystem {
         world.getCoins().forEach(e -> e.render(gc, camX, camY, baseWidth, baseHeight, offsetX, offsetY));
         gc.translate(translateX + offsetX, translateY + offsetY);
 
-        drawWaterTiles(player);
+        drawWaterTiles(camX, camY);
         world.getNpcs().forEach(e -> e.render(gc));
         world.getPlayers().forEach(e -> e.render(gc));
 
@@ -46,28 +46,24 @@ public class RenderSystem {
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
-    private void drawWaterTiles(PlayerEntity player) {
-
+    private void drawWaterTiles(double camX, double camY) {
         final double tileSize = 1024;
         final double renderRadius = 1600;
 
-        double playerX = player.getX();
-        double playerY = player.getY();
-
-        int minTileX = (int) Math.floor((playerX - renderRadius) / tileSize);
-        int maxTileX = (int) Math.ceil((playerX + renderRadius) / tileSize);
-        int minTileY = (int) Math.floor((playerY - renderRadius) / tileSize);
-        int maxTileY = (int) Math.ceil((playerY + renderRadius) / tileSize);
+        int minTileX = (int) Math.floor((camX - renderRadius) / tileSize);
+        int maxTileX = (int) Math.ceil((camX + renderRadius) / tileSize);
+        int minTileY = (int) Math.floor((camY - renderRadius) / tileSize);
+        int maxTileY = (int) Math.ceil((camY + renderRadius) / tileSize);
 
         for (int xTile = minTileX; xTile <= maxTileX; xTile++) {
             for (int yTile = minTileY; yTile <= maxTileY; yTile++) {
                 double tileWorldX = xTile * tileSize;
                 double tileWorldY = yTile * tileSize;
 
-                double closestX = Math.max(tileWorldX, Math.min(playerX, tileWorldX + tileSize));
-                double closestY = Math.max(tileWorldY, Math.min(playerY, tileWorldY + tileSize));
-                double dx = playerX - closestX;
-                double dy = playerY - closestY;
+                double closestX = Math.max(tileWorldX, Math.min(camX, tileWorldX + tileSize));
+                double closestY = Math.max(tileWorldY, Math.min(camY, tileWorldY + tileSize));
+                double dx = camX - closestX;
+                double dy = camY - closestY;
                 double distanceSq = dx * dx + dy * dy;
 
                 if (distanceSq <= renderRadius * renderRadius) {

@@ -44,8 +44,8 @@ public class Engine extends AnimationTimer {
         this.scaleX = baseWidth;
         this.scaleY = baseHeight;
         this.onPausePressed = onPausePressed;
-        this.spawnSystem = new SpawnSystem(world);
         this.cameraSystem = new CameraSystem(baseWidth, baseHeight);
+        this.spawnSystem = new SpawnSystem(world, cameraSystem);
         this.collisionSystem = new CollisionSystem(world);
         this.renderSystem = new RenderSystem(gc, canvas, world, baseWidth, baseHeight);
 

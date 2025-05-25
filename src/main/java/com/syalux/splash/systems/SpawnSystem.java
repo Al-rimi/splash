@@ -20,9 +20,11 @@ public class SpawnSystem {
     private final Random random = new Random();
     private final Timeline spawnTimer;
     private final World world;
+    private final CameraSystem cameraSystem;
 
-    public SpawnSystem(World world) {
+    public SpawnSystem(World world, CameraSystem cameraSystem) {
         this.world = world;
+        this.cameraSystem = cameraSystem;
         this.spawnTimer = new Timeline(new KeyFrame(Duration.seconds(Config.SPAWN_DURATION_SECONDS), e -> spawn()));
         this.spawnTimer.setCycleCount(Animation.INDEFINITE);
     }
@@ -44,23 +46,21 @@ public class SpawnSystem {
     }
 
     private void spawn() {
-        world.getPlayers().forEach(player -> {
-            spawnEntities(player);
-            cleanupDistantEntities(player);
+        double camX = cameraSystem.getViewCenterX();
+        double camY = cameraSystem.getViewCenterY();
+
+        world.getPlayers().forEach(p -> {
+            spawnEntities(p ,camX, camY);
         });
+        cleanupDistantEntities(camX, camY);
     }
 
-    private void spawnEntities(PlayerEntity player) {
-        double dx = player.getVelocityX();
-        double dy = player.getVelocityY();
-        double length = Math.hypot(dx, dy);
+    private void spawnEntities(PlayerEntity player,double camX, double camY) {
         double distance = 2000 + Math.random() * Config.SPAWN_RADIUS;
         double angle = Math.random() * 2 * Math.PI;
-
-        double dirX = (length == 0) ? Math.cos(angle) : dx / length;
-        double dirY = (length == 0) ? Math.sin(angle) : dy / length;
-        double spawnX = player.getX() + dirX * distance + Math.random() * 800 - 200;
-        double spawnY = player.getY() + dirY * distance + Math.random() * 800 - 200;
+        
+        double spawnX = camX + Math.cos(angle) * distance + Math.random() * 800 - 200;
+        double spawnY = camY + Math.sin(angle) * distance + Math.random() * 800 - 200;
 
         int fishType = random.nextInt(Config.FISH_IMAGE_COUNT) + 1;
         if (fishType == player.getFishType()) {
@@ -108,26 +108,26 @@ public class SpawnSystem {
         }
     }
 
-    private void cleanupDistantEntities(PlayerEntity player) {
+    private void cleanupDistantEntities(double camX, double camY) {
         world.getPlayers().removeIf(p -> {
             return p.isDead();
         });
 
         world.getNpcs().removeIf(npc -> {
-            double dx = npc.getX() - player.getX();
-            double dy = npc.getY() - player.getY();
+            double dx = npc.getX() - camX;
+            double dy = npc.getY() - camY;
             return (dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS) || npc.isDead();
         });
 
         world.getStaticEntities().removeIf(entity -> {
-            double dx = entity.getX() - player.getX();
-            double dy = entity.getY() - player.getY();
+            double dx = entity.getX() - camX;
+            double dy = entity.getY() - camY;
             return dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS * 100;
         });
 
         world.getCoins().removeIf(coin -> {
-            double dx = coin.getX() - player.getX();
-            double dy = coin.getY() - player.getY();
+            double dx = coin.getX() - camX;
+            double dy = coin.getY() - camY;
             return dx * dx + dy * dy > Config.DESPAWN_RADIUS * Config.DESPAWN_RADIUS;
         });
     }

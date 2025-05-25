@@ -17,7 +17,6 @@ import javafx.beans.binding.Bindings;
 public class DeathScreen extends StackPane {
 
     public DeathScreen(FishEntity killer, int score) {
-        this.setStyle("-fx-background-color: rgba(0, 0, 0, 0.09);");
         this.setAlignment(Pos.CENTER);
 
         VBox container = new VBox(20);

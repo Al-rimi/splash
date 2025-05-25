@@ -36,4 +36,12 @@ public class CameraSystem {
     public double getCamX() { return camX; }
     public double getCamY() { return camY; }
     public double getDepthEffectAlpha() { return depthEffectAlpha; }
+
+    public double getViewCenterX() {
+        return camX;
+    }
+
+    public double getViewCenterY() {
+        return camY;
+    }
 }
