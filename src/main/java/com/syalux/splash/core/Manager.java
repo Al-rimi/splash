@@ -16,25 +16,20 @@ public final class Manager {
     private static final Deque<Parent> screenStack = new ArrayDeque<>();
 
     public static void init(Stage stage) {
+        Resource.loadAll();
+
         primaryStage = stage;
         primaryStage.setWidth(Config.GAME_WIDTH * 0.8);
         primaryStage.setHeight(Config.GAME_HEIGHT * 0.8);
-        mainScene = new Scene(new StackPane());
-
-        Resource.loadLanguage(Config.DEFAULT_LANGUAGE);
-        Resource.loadStyles();
-
         primaryStage.setMaximized(true);
         primaryStage.setTitle(Resource.getString("title"));
+        
+        mainScene = new Scene(new StackPane());
         mainScene.getStylesheets().add(Resource.getStyleSheet());
         primaryStage.setScene(mainScene);
 
         showScreen(new WelcomeScreen());
         primaryStage.show();
-
-        Resource.loadImages();
-    
-        showMainMenu();
     }
 
     private static void showScreen(Parent root) {

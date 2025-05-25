@@ -82,7 +82,7 @@ public class SpawnSystem {
                     spawnX * 2, 
                     spawnY * 2,
                     random.nextInt(Config.MOUNTAIN_IMAGE_COUNT) + 1,
-                    random.nextInt(4000) + 2000));
+                    random.nextInt(2000) + 2000));
         }
 
         if (random.nextDouble() < Config.SPAWN_ROCK_PROBABILITY) {

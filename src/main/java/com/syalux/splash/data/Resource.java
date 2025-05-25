@@ -30,7 +30,9 @@ public class Resource {
         BUBBLE
     }
 
-    public static void loadImages() {
+    public static void loadAll() {
+        loadLanguage(Config.DEFAULT_LANGUAGE);
+        loadStyles();
         loadFishImages();
         loadMountainImages();
         loadRockImages();
@@ -83,7 +85,7 @@ public class Resource {
         return waterTexture;
     }
 
-    private static Image loadImage(String path) {
+    public static Image loadImage(String path) {
         try (InputStream is = Resource.class.getResourceAsStream(path)) {
             return new Image(is);
         } catch (IOException | NullPointerException e) {

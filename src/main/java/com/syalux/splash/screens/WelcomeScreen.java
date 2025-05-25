@@ -1,51 +1,151 @@
 package com.syalux.splash.screens;
 
-import javafx.animation.FadeTransition;
-import javafx.animation.RotateTransition;
-import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Circle;
-import javafx.util.Duration;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.scene.text.Font;
-import javafx.animation.ParallelTransition;
+import com.syalux.splash.core.Manager;
+import javafx.animation.*;
 import javafx.geometry.Pos;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 public class WelcomeScreen extends StackPane {
+    private static final int ANIMATION_DURATION = 4;
+    private static final String SPLASH_TEXT = "SPLASH";
+
     public WelcomeScreen() {
-        createLoadingScreen();
+        setStyle("-fx-background-color: #1a1a1a;");
+        HBox titleBox = buildTitleBox();
+        getChildren().add(titleBox);
+        StackPane.setAlignment(titleBox, Pos.CENTER);
+        setupAutoTransition();
     }
 
-    private void createLoadingScreen() {
-        this.setStyle("-fx-background-color: #1a1a1a;");
-        
-        // Loading spinner
-        Circle spinner = new Circle(30);
-        spinner.setStroke(Color.WHITE);
-        spinner.setFill(Color.TRANSPARENT);
-        spinner.setStrokeWidth(3);
-        
-        // Loading text
-        Text loadingText = new Text("Loading...");
-        loadingText.setFont(Font.font(20));
-        loadingText.setFill(Color.WHITE);
-        
-        // Animations
-        RotateTransition rotate = new RotateTransition(Duration.seconds(2), spinner);
-        rotate.setByAngle(360);
-        rotate.setCycleCount(RotateTransition.INDEFINITE);
-        
-        FadeTransition fadeText = new FadeTransition(Duration.seconds(1), loadingText);
-        fadeText.setFromValue(0.5);
-        fadeText.setToValue(1);
-        fadeText.setCycleCount(FadeTransition.INDEFINITE);
-        fadeText.setAutoReverse(true);
-        
-        this.getChildren().addAll(spinner, loadingText);
-        StackPane.setAlignment(spinner, Pos.CENTER);
-        StackPane.setAlignment(loadingText, Pos.CENTER);
-        // StackPane does not support setSpacing; consider using VBox if spacing is needed
-        
-        new ParallelTransition(rotate, fadeText).play();
+    private HBox buildTitleBox() {
+        HBox box = new HBox(10);
+        box.setAlignment(Pos.CENTER);
+
+        int total = SPLASH_TEXT.length();
+
+        for (int i = 0; i < total; i++) {
+            Text letter = createLetter(SPLASH_TEXT.charAt(i));
+            setupLetterAnimation(letter, i, total, box);
+            box.getChildren().add(letter);
+        }
+
+        return box;
     }
+
+    private Text createLetter(char c) {
+        Text letter = new Text(String.valueOf(c));
+        letter.setFont(Font.font("Arial", FontWeight.BOLD, 64));
+        letter.setFill(Color.WHITE);
+        letter.setOpacity(0);
+
+        DropShadow glow = new DropShadow();
+        glow.setColor(Color.rgb(0, 150, 255, 0.3));
+        letter.setEffect(glow);
+
+        return letter;
+    }
+
+    private void setupLetterAnimation(Text letter, int index, int total, HBox titleBox) {
+        Duration delay = Duration.seconds(index * 0.15);
+
+        FadeTransition fade = new FadeTransition(Duration.seconds(0.5), letter);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+
+        ScaleTransition scaleUp = new ScaleTransition(Duration.seconds(0.3), letter);
+        scaleUp.setFromX(0);
+        scaleUp.setFromY(0);
+        scaleUp.setToX(1.2);
+        scaleUp.setToY(1.2);
+        scaleUp.setInterpolator(Interpolator.EASE_OUT);
+
+        ScaleTransition scaleDown = new ScaleTransition(Duration.seconds(0.2), letter);
+        scaleDown.setToX(1.0);
+        scaleDown.setToY(1.0);
+        scaleDown.setInterpolator(Interpolator.EASE_IN);
+
+        SequentialTransition entrance = new SequentialTransition(
+            new PauseTransition(delay),
+            new ParallelTransition(scaleUp, scaleDown, fade)
+        );
+
+        entrance.setOnFinished(e -> {
+            playFloatingEffect(letter);
+            playGlowEffect((DropShadow) letter.getEffect());
+
+            if (index == total - 1) {
+                createRippleEffect(titleBox);
+            }
+        });
+
+        entrance.play();
+    }
+
+    private void playFloatingEffect(Text letter) {
+        TranslateTransition floatEffect = new TranslateTransition(Duration.seconds(2), letter);
+        floatEffect.setFromY(0);
+        floatEffect.setToY(-10);
+        floatEffect.setAutoReverse(true);
+        floatEffect.setCycleCount(Animation.INDEFINITE);
+        floatEffect.play();
+    }
+
+    private void playGlowEffect(DropShadow glow) {
+        Timeline glowTimeline = new Timeline(
+            new KeyFrame(Duration.ZERO,
+                new KeyValue(glow.radiusProperty(), 0),
+                new KeyValue(glow.spreadProperty(), 0)
+            ),
+            new KeyFrame(Duration.seconds(1.5),
+                new KeyValue(glow.radiusProperty(), 25),
+                new KeyValue(glow.spreadProperty(), 0.4)
+            )
+        );
+        glowTimeline.setAutoReverse(true);
+        glowTimeline.setCycleCount(Animation.INDEFINITE);
+        glowTimeline.play();
+    }
+
+    private void createRippleEffect(HBox titleBox) {
+        Circle ripple = new Circle(0, Color.TRANSPARENT);
+        ripple.setStroke(Color.rgb(255, 255, 255, 0.3));
+        ripple.setStrokeWidth(2);
+        ripple.setMouseTransparent(true);
+
+        ripple.translateXProperty().bind(titleBox.translateXProperty().add(titleBox.widthProperty().divide(2)));
+        ripple.translateYProperty().bind(titleBox.translateYProperty().add(titleBox.heightProperty().divide(2)));
+
+        getChildren().add(ripple);
+
+        ScaleTransition scale = new ScaleTransition(Duration.seconds(2), ripple);
+        scale.setToX(10);
+        scale.setToY(10);
+
+        FadeTransition fade = new FadeTransition(Duration.seconds(2), ripple);
+        fade.setToValue(0);
+
+        ParallelTransition rippleEffect = new ParallelTransition(scale, fade);
+        rippleEffect.setCycleCount(Animation.INDEFINITE);
+        rippleEffect.play();
+    }
+
+    private void setupAutoTransition() {
+        Timeline delay = new Timeline(new KeyFrame(Duration.seconds(ANIMATION_DURATION - 1), e -> {
+            FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), this);
+            fadeOut.setFromValue(1);
+            fadeOut.setToValue(0);
+            fadeOut.setOnFinished(ev -> Manager.showMainMenu());
+            fadeOut.play();
+        }));
+        delay.play();
+    }
+
 }
