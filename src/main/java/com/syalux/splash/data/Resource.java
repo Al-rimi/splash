@@ -28,9 +28,7 @@ public class Resource {
         SEAWEED
     }
 
-    public static void load() {
-        loadLanguage(Config.DEFAULT_LANGUAGE);
-        loadStyles();
+    public static void loadImages() {
         loadFishImages();
         loadMountainImages();
         loadRockImages();
@@ -105,7 +103,7 @@ public class Resource {
         }
     }
 
-    private static void loadStyles() {
+    public static void loadStyles() {
         try {
             styles = Resource.class.getResource("/css/styles.css").toExternalForm();
         } catch (NullPointerException e) {

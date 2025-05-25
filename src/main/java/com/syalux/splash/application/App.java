@@ -9,7 +9,6 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
         Manager.init(primaryStage);
-        Manager.showMainMenu();
     }
 
     public static void main(String[] args) {

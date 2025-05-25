@@ -7,16 +7,15 @@ import com.syalux.splash.data.Resource;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 
 public class SettingsScreen {
 
-    public Scene createScene() {
+    public Parent createRoot() {
         VBox mainLayout = new VBox(20);
         mainLayout.setAlignment(Pos.TOP_CENTER);
         mainLayout.setPadding(new Insets(40, 20, 20, 20));
@@ -39,14 +38,7 @@ public class SettingsScreen {
             bottomNavigation
         );
 
-        Scene scene = new Scene(mainLayout);
-        scene.setFill(Color.TRANSPARENT);
-        scene.getStylesheets().add(Resource.getStyleSheet());
-
-        mainLayout.prefWidthProperty().bind(scene.widthProperty());
-        mainLayout.prefHeightProperty().bind(scene.heightProperty());
-
-        return scene;
+        return mainLayout;
     }
 
     private VBox createVolumeControl() {
@@ -112,7 +104,7 @@ public class SettingsScreen {
                 Resource.currentLocaleProperty()
             )
         );
-        btnBack.setOnAction(e -> Manager.showMainMenu());
+        btnBack.setOnAction(e -> Manager.goBack());
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);

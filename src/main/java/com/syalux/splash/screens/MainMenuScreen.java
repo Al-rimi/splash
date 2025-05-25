@@ -6,13 +6,13 @@ import com.syalux.splash.data.Resource;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
 public class MainMenuScreen {
 
-    public Scene createScene() {
+    public Parent createRoot() {
         VBox layout = new VBox(20);
         layout.setAlignment(Pos.CENTER);
         layout.getStyleClass().add("menu-container");
@@ -24,9 +24,7 @@ public class MainMenuScreen {
 
         layout.getChildren().addAll(btnSettings, btnStart, btnExit);
 
-        Scene scene = new Scene(layout);
-        scene.getStylesheets().add(Resource.getStyleSheet());
-        return scene;
+        return layout;
     }
 
     private Button createMenuButton(String resourceKey, Runnable action) {

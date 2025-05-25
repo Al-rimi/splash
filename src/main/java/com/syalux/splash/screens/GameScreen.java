@@ -4,7 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
+import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -71,7 +71,8 @@ public class GameScreen {
 
     private Button createPauseButton() {
         Button pauseButton = new Button();
-        pauseButton.textProperty().bind(Bindings.createStringBinding(() -> Resource.getString("pause"), Resource.currentLocaleProperty()));
+        pauseButton.textProperty().bind(
+                Bindings.createStringBinding(() -> Resource.getString("pause"), Resource.currentLocaleProperty()));
         pauseButton.setOnAction(e -> togglePause());
         pauseButton.getStyleClass().add("nav-button");
         return pauseButton;
@@ -119,7 +120,7 @@ public class GameScreen {
         root.getChildren().removeIf(node -> node instanceof PauseScreen);
     }
 
-    public Scene createScene() {
+    public Parent createRoot() {
         root = new StackPane();
         root.getStyleClass().add("game-container");
 
@@ -134,12 +135,20 @@ public class GameScreen {
         engine.setRootContainer(root);
         root.requestFocus();
         engine.start();
-        
+
         backgroundCanvas = new Canvas();
         backgroundCanvas.widthProperty().bind(root.widthProperty());
         backgroundCanvas.heightProperty().bind(root.heightProperty());
         backgroundCanvas.getStyleClass().add("background-canvas");
 
-        return new Scene(root);
+        root.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene == null) {
+                engine.pause(true);
+            } else if (!isPaused) {
+                engine.pause(false);
+            }
+        });
+
+        return root;
     }
 }

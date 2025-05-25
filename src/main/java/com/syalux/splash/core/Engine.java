@@ -89,6 +89,10 @@ public class Engine extends AnimationTimer {
         );
     }
 
+    public void startSpawning() {
+        spawnSystem.start();
+    }
+
     public void setupInputHandling() {
         if (rootContainer == null) return;
 
