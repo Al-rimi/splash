@@ -53,6 +53,10 @@ public class Resource {
         }
     }
 
+    public static Image getLogo(){
+        return loadImage("/images/logo.icon");
+    }
+
     public static Image getFishImage(int fishNumber) {
         if (fishNumber < 1 || fishNumber > Config.FISH_IMAGE_COUNT) {
             System.err.println("Fish number must be between 1 and " + Config.FISH_IMAGE_COUNT + ": " + fishNumber);

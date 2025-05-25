@@ -4,7 +4,7 @@ public class Config {
     // Window Configuration
     public static final int GAME_WIDTH = 1920;
     public static final int GAME_HEIGHT = 1080;
-    public static final double SPAWN_RADIUS = 1000;
+    public static final double SPAWN_RADIUS = 2000;
     public static final double DESPAWN_RADIUS = 4000;
     public static final double SPAWN_DURATION_SECONDS = 0.1;
     public static final double SPAWN_FOOD_PROBABILITY = 0.9;

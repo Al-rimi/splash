@@ -1,8 +1,8 @@
 package com.syalux.splash.screens;
 
-import com.syalux.splash.core.Manager;
 import javafx.animation.*;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -14,11 +14,11 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class WelcomeScreen extends StackPane {
-    private static final int ANIMATION_DURATION = 4;
+    private static final int ANIMATION_DURATION = 3;
     private static final String SPLASH_TEXT = "SPLASH";
 
     public WelcomeScreen() {
-        setStyle("-fx-background-color: #1a1a1a;");
+        setStyle("-fx-background-color:rgb(0, 0, 0);");
         HBox titleBox = buildTitleBox();
         getChildren().add(titleBox);
         StackPane.setAlignment(titleBox, Pos.CENTER);
@@ -73,9 +73,8 @@ public class WelcomeScreen extends StackPane {
         scaleDown.setInterpolator(Interpolator.EASE_IN);
 
         SequentialTransition entrance = new SequentialTransition(
-            new PauseTransition(delay),
-            new ParallelTransition(scaleUp, scaleDown, fade)
-        );
+                new PauseTransition(delay),
+                new ParallelTransition(scaleUp, scaleDown, fade));
 
         entrance.setOnFinished(e -> {
             playFloatingEffect(letter);
@@ -100,15 +99,12 @@ public class WelcomeScreen extends StackPane {
 
     private void playGlowEffect(DropShadow glow) {
         Timeline glowTimeline = new Timeline(
-            new KeyFrame(Duration.ZERO,
-                new KeyValue(glow.radiusProperty(), 0),
-                new KeyValue(glow.spreadProperty(), 0)
-            ),
-            new KeyFrame(Duration.seconds(1.5),
-                new KeyValue(glow.radiusProperty(), 25),
-                new KeyValue(glow.spreadProperty(), 0.4)
-            )
-        );
+                new KeyFrame(Duration.ZERO,
+                        new KeyValue(glow.radiusProperty(), 0),
+                        new KeyValue(glow.spreadProperty(), 0)),
+                new KeyFrame(Duration.seconds(1.5),
+                        new KeyValue(glow.radiusProperty(), 25),
+                        new KeyValue(glow.spreadProperty(), 0.4)));
         glowTimeline.setAutoReverse(true);
         glowTimeline.setCycleCount(Animation.INDEFINITE);
         glowTimeline.play();
@@ -139,11 +135,20 @@ public class WelcomeScreen extends StackPane {
 
     private void setupAutoTransition() {
         Timeline delay = new Timeline(new KeyFrame(Duration.seconds(ANIMATION_DURATION - 1), e -> {
-            FadeTransition fadeOut = new FadeTransition(Duration.seconds(1), this);
-            fadeOut.setFromValue(1);
-            fadeOut.setToValue(0);
-            fadeOut.setOnFinished(ev -> Manager.showMainMenu());
-            fadeOut.play();
+            Parent mainMenu = new MainMenuScreen().createRoot();
+            mainMenu.setOpacity(0);
+
+            StackPane container = (StackPane) getParent();
+            container.getChildren().add(0, mainMenu);
+
+            FadeTransition fadeMainMenu = new FadeTransition(Duration.seconds(1), mainMenu);
+            fadeMainMenu.setToValue(1);
+
+            FadeTransition fadeWelcome = new FadeTransition(Duration.seconds(1), this);
+            fadeWelcome.setToValue(0);
+            fadeWelcome.setOnFinished(ev -> container.getChildren().remove(this));
+
+            new ParallelTransition(fadeMainMenu, fadeWelcome).play();
         }));
         delay.play();
     }

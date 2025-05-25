@@ -2,7 +2,6 @@
 /* == Base Styles ====== */
 /* ==================== */
 .root {
-    -fx-font-family: "Arial";
     -fx-font-smoothing-type: gray;
 }
 
@@ -20,13 +19,23 @@
 /* Primary Buttons */
 .menu-button, .nav-button, .pause-button {
     -fx-background-color: #3498db;
-    -fx-text-fill: #ecf0f1;
-    -fx-padding: 12px 32px;
-    -fx-font-size: 1.2em;
+    -fx-text-fill: white;
+    -fx-padding: 15px 40px;
+    -fx-font-size: 1.3em;
+    -fx-background-radius: 30px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);
+    -fx-transition: all 0.3s ease;
 }
 
 .menu-button:hover, .nav-button:hover, .pause-button:hover {
-    -fx-background-color: derive(#3498db, -15%);
+    -fx-background-color: #2980b9;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 3);
+    -fx-translate-y: -3px;
+}
+
+.menu-button:pressed {
+    -fx-translate-y: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1);
 }
 
 /* Secondary Buttons */
@@ -44,9 +53,10 @@
 
 /* Main Menu */
 .menu-container {
-    -fx-background-color: linear-gradient(to bottom right, #1a237e, #0d47a1);
-    -fx-padding: 40px;
-    -fx-spacing: 20px;
+    -fx-background-color: radial-gradient(center 50% 50%, radius 150%, #1a237e, #0d47a1);
+    -fx-padding: 60px;
+    -fx-spacing: 25px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 30, 0, 0, 0);
 }
 
 /* Settings Screen */
@@ -65,7 +75,6 @@
     -fx-background-radius: 8px;
     -fx-padding: 12px 20px;
     -fx-spacing: 15px;
-    -fx-background-color: rgba(0,0,0,0.5);
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0,0,2);
 }
 
@@ -142,4 +151,8 @@
     -fx-font-size: 1.3em;
     -fx-text-fill: #2c3e50;
     -fx-font-weight: 600;
+}
+
+.welcome-background {
+    -fx-background-color: linear-gradient(to bottom right, #1a1a1a, #2a2a2a);
 }
