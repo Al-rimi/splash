@@ -28,6 +28,7 @@ public class GameScreen {
     private final Engine engine;
     private StackPane root;
     private boolean isPaused = false;
+    private boolean isDead = false;
 
     private Canvas gameCanvas;
     private Canvas backgroundCanvas;
@@ -141,6 +142,13 @@ public class GameScreen {
         backgroundCanvas.heightProperty().bind(root.heightProperty());
         backgroundCanvas.getStyleClass().add("background-canvas");
 
+        player.healthProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal.intValue() <= 0 && !isDead) {
+                isDead = true;
+                showDeathScreen();
+            }
+        });
+
         root.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene == null) {
                 engine.pause(true);
@@ -150,5 +158,14 @@ public class GameScreen {
         });
 
         return root;
+    }
+
+    private void showDeathScreen() {
+        applyBlurEffect(true);
+        DeathScreen deathScreen = new DeathScreen(
+            player.getKiller(),
+            player.scoreProperty().get()
+        );
+        root.getChildren().add(deathScreen);
     }
 }

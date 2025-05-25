@@ -156,3 +156,22 @@
 .welcome-background {
     -fx-background-color: linear-gradient(to bottom right, #1a1a1a, #2a2a2a);
 }
+
+.death-screen {
+    -fx-padding: 40px;
+    -fx-background-color: rgba(0, 0, 0, 0.9);
+    -fx-background-radius: 15;
+    -fx-spacing: 20;
+}
+
+.death-button {
+    -fx-font-size: 20px;
+    -fx-padding: 10px 30px;
+    -fx-background-color: #ff4444;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+}
+
+.death-button:hover {
+    -fx-background-color: #ff6666;
+}

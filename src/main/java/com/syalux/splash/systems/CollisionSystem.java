@@ -85,18 +85,18 @@ public class CollisionSystem {
             PlayerEntity player = (PlayerEntity) large;
             player.addScore((int) small.getSize());
             player.addSize(small.getSize() * 0.01);
-            small.takeDamage(player.getSize() * 0.01);
+            small.takeDamage(player.getSize() * 0.01, large);
         } else if (large instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) large;
             player.addScore((int) (small.getSize() * 0.4));
             player.addSize(small.getSize() * 0.001);
-            small.die();
+            small.takeDamage(small.getHealth(), large);
         } else if (small instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) small;
-            player.takeDamage(large.getSize() * 0.1);
+            player.takeDamage(large.getSize() * 0.1, large);
         } else {
             large.addSize(small.getSize() * 0.001);
-            small.die();
+            small.takeDamage(small.getHealth(), large);
         }    
     }
 }

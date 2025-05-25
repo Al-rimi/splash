@@ -8,6 +8,8 @@ import javafx.beans.property.SimpleIntegerProperty;
 public class PlayerEntity extends FishEntity {
     private final IntegerProperty score;
     private final IntegerProperty coins;
+        
+    private FishEntity killer;
 
     private boolean movingUp;
     private boolean movingDown;
@@ -15,7 +17,7 @@ public class PlayerEntity extends FishEntity {
     private boolean movingRight;
 
     public PlayerEntity(int fishType) {
-        super(Config.PLAYER_BASE_SIZE, 100, Config.GAME_HEIGHT / 2, Config.GAME_HEIGHT / 2, fishType);
+        super(Config.PLAYER_BASE_SIZE, 1, Config.GAME_HEIGHT / 2, Config.GAME_HEIGHT / 2, fishType);
         this.isPlayer = true;
         this.score = new SimpleIntegerProperty(0);
         this.coins = new SimpleIntegerProperty(0);
@@ -25,6 +27,16 @@ public class PlayerEntity extends FishEntity {
     public void update(double deltaTime) {
         updateVelocity();
         updatePosition(deltaTime);
+    }
+
+     @Override
+    protected void die(FishEntity killer) {
+        super.die(killer);
+        this.killer = killer;
+    }
+
+    public FishEntity getKiller() {
+        return killer;
     }
 
     private void updateVelocity() {

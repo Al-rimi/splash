@@ -1,9 +1,11 @@
 package com.syalux.splash.systems;
 
 import com.syalux.splash.data.Config;
+import com.syalux.splash.entities.FishEntity;
 import com.syalux.splash.entities.PlayerEntity;
 
 public class CameraSystem {
+    private FishEntity targetOverride;
     private double camX;
     private double camY;
     private final double baseHeight;
@@ -15,9 +17,14 @@ public class CameraSystem {
         this.camY = baseHeight / 2;
     }
 
+    public void setTargetOverride(FishEntity target) {
+        this.targetOverride = target;
+    }
+
     public void update(double deltaTime, PlayerEntity player) {
-        camX += (player.getX() - camX) * deltaTime;
-        camY += (player.getY() - camY) * deltaTime * 2;
+        FishEntity target = (targetOverride != null && !targetOverride.isDead()) ? targetOverride : player;
+        camX += (target.getX() - camX) * deltaTime;
+        camY += (target.getY() - camY) * deltaTime * 2;
         updateDepthEffect();
     }
 

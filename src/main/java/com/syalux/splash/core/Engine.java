@@ -75,6 +75,12 @@ public class Engine extends AnimationTimer {
     }
 
     private void update(double deltaTime) {
+        if (player.isDead() && player.getKiller() != null && !player.getKiller().isDead()) {
+            cameraSystem.setTargetOverride(player.getKiller());
+        } else {
+            cameraSystem.setTargetOverride(null);
+        }
+
         world.getPlayers().forEach(p -> p.update(deltaTime));
         world.getNpcs().forEach(npc -> npc.update(deltaTime));
 

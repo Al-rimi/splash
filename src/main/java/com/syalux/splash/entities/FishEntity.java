@@ -85,14 +85,14 @@ public abstract class FishEntity {
         gc.restore();
     }
 
-    public void takeDamage(double damage) {
+    public void takeDamage(double damage, FishEntity source) {
         if (invulnerable)
             return;
 
         health.set(health.get() - (int) damage);
         invulnerable = true;
         if (health.get() <= 0) {
-            die();
+            die(source);
         }
         opacity = 0.5;
 
@@ -112,7 +112,7 @@ public abstract class FishEntity {
         delay.play();
     }
 
-    public void die() {
+    protected void die(FishEntity killer) {
         health.set(0);
         isDead = true;
     }
@@ -203,6 +203,10 @@ public abstract class FishEntity {
 
     public boolean isFacingLeft() {
         return facingLeft;
+    }
+
+    public int getHealth() {
+        return health.get();
     }
 
     public double getSize() {
