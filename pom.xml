@@ -5,11 +5,12 @@
 
     <groupId>com.syalux</groupId>
     <artifactId>splash</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.0.1</version>
     <packaging>jar</packaging>
 
     <name>Splash</name>
     <description>Splash Game</description>
+    <url>https://github.com/Al-rimi/splash</url>
 
     <developers>
         <developer>
@@ -23,8 +24,7 @@
 
     <licenses>
         <license>
-            <name>MIT License</name>
-            <url>https://opensource.org/licenses/MIT</url>
+            <url>https://raw.githubusercontent.com/Al-rimi/splash/refs/heads/main/LICENSE</url>
         </license>
     </licenses>
 
@@ -64,11 +64,38 @@
                             <platform>windows</platform>
                             <bundleJre>true</bundleJre>
                             <generateInstaller>true</generateInstaller>
-                            <administratorRequired>true</administratorRequired>
+                            <administratorRequired>false</administratorRequired>
                             <arch>x64</arch>
+
                             <winConfig>
+                                <icoFile>src\main\resources\images\logo.ico</icoFile>
+
+                                <generateSetup>true</generateSetup>
+                                <generateMsi>false</generateMsi>
+                                <generateMsm>false</generateMsm>
+
                                 <exeCreationTool>launch4j</exeCreationTool>
+
+                                <headerType>gui</headerType>
+                                <companyName>Syalux</companyName>
+                                <fileVersion>${project.version}</fileVersion>
+                                <txtFileVersion>${project.version}</txtFileVersion>
+                                <productVersion>${project.version}</productVersion>
+                                <txtProductVersion>${project.version}</txtProductVersion>
+                                <fileDescription>${project.description}</fileDescription>
+                                <copyright>Syalux</copyright>
+                                <productName>${project.artifactId}</productName>
+                                <internalName>${project.artifactId}</internalName>
+                                <originalFilename>${Splash}.exe</originalFilename>
+
+                                <setupMode>askTheUser</setupMode>
+                                <disableDirPage>false</disableDirPage>
+                                <disableFinishedPage>false</disableFinishedPage>
+                                <disableRunAfterInstall>false</disableRunAfterInstall>
+                                <disableWelcomePage>false</disableWelcomePage>
+                                <createDesktopIconTask>true</createDesktopIconTask>
                             </winConfig>
+
                             <vmArgs>
                                 <vmArg>--module-path ${project.basedir}/target/Splash/libs</vmArg>
                                 <vmArg>--add-modules javafx.controls,javafx.media,javafx.graphics,javafx.base</vmArg>
@@ -85,25 +112,30 @@
     </build>
 
     <dependencies>
+        <!-- JavaFX dependencies with Windows classifier -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
             <version>${javafx.version}</version>
+            <classifier>win</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
             <version>${javafx.version}</version>
+            <classifier>win</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
             <version>${javafx.version}</version>
+            <classifier>win</classifier>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-base</artifactId>
             <version>${javafx.version}</version>
+            <classifier>win</classifier>
         </dependency>
     </dependencies>
 </project>
