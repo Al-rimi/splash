@@ -1,5 +1,7 @@
 package com.syalux.splash.systems;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import com.syalux.splash.data.Config;
@@ -49,13 +51,20 @@ public class SpawnSystem {
         double camX = cameraSystem.getViewCenterX();
         double camY = cameraSystem.getViewCenterY();
 
-        world.getPlayers().forEach(p -> {
-            spawnEntities(p ,camX, camY);
-        });
+        List <PlayerEntity> players = new ArrayList<>(world.getPlayers());
+        
         cleanupDistantEntities(camX, camY);
+
+        if (players.isEmpty()) {
+            spawnEntities(60, 1,camX, camY);
+        } else {
+            for (PlayerEntity player : players) {
+                spawnEntities((int) player.getSize(), player.getFishType(), camX, camY);
+            }
+        }
     }
 
-    private void spawnEntities(PlayerEntity player,double camX, double camY) {
+    private void spawnEntities(int size, int playerFishType, double camX, double camY) {
         double distance = 2000 + Math.random() * Config.SPAWN_RADIUS;
         double angle = Math.random() * 2 * Math.PI;
         
@@ -63,27 +72,27 @@ public class SpawnSystem {
         double spawnY = camY + Math.sin(angle) * distance + Math.random() * 800 - 200;
 
         int fishType = random.nextInt(Config.FISH_IMAGE_COUNT) + 1;
-        if (fishType == player.getFishType()) {
+        if (fishType == playerFishType) {
             fishType = random.nextInt(Config.FISH_IMAGE_COUNT) + 1;
         }
 
         if (random.nextDouble() < Config.SPAWN_ENEMY_PROBABILITY) {
             NPCEntity enemy = new NPCEntity(world, spawnX, spawnY, fishType,
-                    random.nextDouble() * player.getSize() * 1.5 + player.getSize());
+                    random.nextDouble() * (size + 10) * 1.5 + size + 10);
             world.addNpc(enemy);
         }
 
         if (random.nextDouble() < Config.SPAWN_FOOD_PROBABILITY) {
             NPCEntity food = new NPCEntity(world, spawnX, spawnY, fishType,
-                    random.nextDouble() * player.getSize() * 0.8 + player.getSize() * 0.2);
+                    random.nextDouble() * (size - 10) * 0.8 + (size - 10) * 0.2);
             world.addNpc(food);
         }
 
         if (random.nextDouble() < Config.SPAWN_MOUNTAIN_PROBABILITY) {
             world.addStaticEntity(new StaticEntity(
                     Resource.Environment.MOUNTAIN,
-                    spawnX * 2,
-                    spawnY * 2,
+                    spawnX * 4,
+                    spawnY * 4,
                     random.nextInt(Config.MOUNTAIN_IMAGE_COUNT) + 1,
                     random.nextInt(2000) + 2000));
         }

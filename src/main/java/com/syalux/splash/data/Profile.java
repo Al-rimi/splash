@@ -15,7 +15,7 @@ public class Profile {
         this.coins = 0;
         this.fishType = 1;
         this.fishSize = 60;
-        this.fishHealth = 100;
+        this.fishHealth = 1;
         this.fishSpeed = 600;
     }
     
