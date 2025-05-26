@@ -10,14 +10,14 @@ public class NPCEntity extends FishEntity {
     private double directionChangeInterval;
     private int intelligenceLevel;
 
-    public NPCEntity(World world, double x, double y, int fishType, double size) {
-        super(size, new Random().nextInt(600) + 200, new Random().nextInt((int) size) + 10, x, y, fishType);
-
+    public NPCEntity(World world, double x, double y, int fishType, int size, double difficultyFactor) {
+        super(size, new Random().nextInt(300) + 200 + (int) (400 * difficultyFactor), new Random().nextInt(size) + size, x, y, fishType);
         this.world = world;
-        this.intelligenceLevel = new Random().nextInt(3) + 1;
 
-        this.detectionRadius = new Random().nextInt(2000) + 500;
-        this.directionChangeInterval = new Random().nextDouble() * 0.5 + 0.5;
+        this.intelligenceLevel = (int) Math.min(3, Math.max(1, difficultyFactor * 3));
+        this.detectionRadius = (int) (difficultyFactor * 4000 + 500);
+        this.directionChangeInterval = Math.max(0.3, 1.0 - difficultyFactor);
+
         setPosition(x, y);
     }
 

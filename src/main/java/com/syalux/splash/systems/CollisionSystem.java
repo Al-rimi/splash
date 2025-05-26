@@ -88,7 +88,7 @@ public class CollisionSystem {
             small.takeDamage(player.getSize() * 0.01, large);
         } else if (large instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) large;
-            player.addScore((int) (small.getSize() * 0.4));
+            player.addScore((int) (small.getSize() * 0.1));
             player.addSize(small.getSize() * 0.001);
             small.takeDamage(small.getHealth(), large);
         } else if (small instanceof PlayerEntity) {

@@ -63,6 +63,10 @@ public class PlayerEntity extends FishEntity {
         this.score.set(this.score.get() + score);
     }
 
+    public int getScore() {
+        return score.get();
+    }
+
     public void moveUp(boolean moving) {
         movingUp = moving;
     }

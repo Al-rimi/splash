@@ -6,13 +6,8 @@ public class Config {
     public static final int GAME_HEIGHT = 1080;
     public static final double SPAWN_RADIUS = 2000;
     public static final double DESPAWN_RADIUS = 4000;
+    public static final double DIFFICULTY = 0.3;
     public static final double SPAWN_DURATION_SECONDS = 0.1;
-    public static final double SPAWN_FOOD_PROBABILITY = 0.9;
-    public static final double SPAWN_ENEMY_PROBABILITY = 0.1;
-    public static final double SPAWN_MOUNTAIN_PROBABILITY = 0.8;
-    public static final double SPAWN_SEAWEED_PROBABILITY = 1.0;
-    public static final double SPAWN_ROCK_PROBABILITY = 0.3;
-    public static final double SPAWN_COIN_PROBABILITY = 0.01;
     
     // Player Configuration
     

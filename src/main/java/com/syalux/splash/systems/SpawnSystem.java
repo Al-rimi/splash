@@ -56,39 +56,44 @@ public class SpawnSystem {
         cleanupDistantEntities(camX, camY);
 
         if (players.isEmpty()) {
-            spawnEntities(60, 1,camX, camY);
+            spawnEntities(60, 1, 100, camX, camY);
         } else {
             for (PlayerEntity player : players) {
-                spawnEntities((int) player.getSize(), player.getFishType(), camX, camY);
+                spawnEntities((int) player.getSize(), player.getFishType(), player.getScore(), camX, camY);
             }
         }
     }
 
-    private void spawnEntities(int size, int playerFishType, double camX, double camY) {
+    private void spawnEntities(int playerSize, int playerFishType, int playerScore, double camX, double camY) {
         double distance = 2000 + Math.random() * Config.SPAWN_RADIUS;
         double angle = Math.random() * 2 * Math.PI;
         
         double spawnX = camX + Math.cos(angle) * distance + Math.random() * 800 - 200;
         double spawnY = camY + Math.sin(angle) * distance + Math.random() * 800 - 200;
 
+        double difficultyFactor = Math.log(playerScore + 2) / (5 + (25.0 * (1 - Config.DIFFICULTY)));
+        difficultyFactor = Math.min(1.0, Math.max(0.05, difficultyFactor));
+        System.out.println("difficulty factor: " + difficultyFactor);
+        System.out.println("score: " + playerScore);
+
         int fishType = random.nextInt(Config.FISH_IMAGE_COUNT) + 1;
         if (fishType == playerFishType) {
             fishType = random.nextInt(Config.FISH_IMAGE_COUNT) + 1;
         }
 
-        if (random.nextDouble() < Config.SPAWN_ENEMY_PROBABILITY) {
+        if (random.nextDouble() < difficultyFactor) {
             NPCEntity enemy = new NPCEntity(world, spawnX, spawnY, fishType,
-                    random.nextDouble() * (size + 10) * 1.5 + size + 10);
+                    (int) (random.nextDouble() * (playerSize + 10) * 1.5 + (playerSize + 10)), difficultyFactor);
             world.addNpc(enemy);
         }
 
-        if (random.nextDouble() < Config.SPAWN_FOOD_PROBABILITY) {
+        if (random.nextDouble() < (1.0 - difficultyFactor)) {
             NPCEntity food = new NPCEntity(world, spawnX, spawnY, fishType,
-                    random.nextDouble() * (size - 10) * 0.8 + (size - 10) * 0.2);
+                    (int) (random.nextDouble() * (playerSize - 10) * 0.8 + (playerSize - 10) * 0.2), difficultyFactor);
             world.addNpc(food);
         }
 
-        if (random.nextDouble() < Config.SPAWN_MOUNTAIN_PROBABILITY) {
+        if (random.nextDouble() < 0.8) {
             world.addStaticEntity(new StaticEntity(
                     Resource.Environment.MOUNTAIN,
                     spawnX * 4,
@@ -97,7 +102,7 @@ public class SpawnSystem {
                     random.nextInt(2000) + 2000));
         }
 
-        if (random.nextDouble() < Config.SPAWN_ROCK_PROBABILITY) {
+        if (random.nextDouble() < 0.5) {
             world.addStaticEntity(new StaticEntity(
                     Resource.Environment.ROCK,
                     spawnX,
@@ -106,13 +111,13 @@ public class SpawnSystem {
                     random.nextInt(100) + 50));
         }
 
-        if (random.nextDouble() < Config.SPAWN_SEAWEED_PROBABILITY) {
+        if (random.nextDouble() < 1.0) {
             world.addStaticEntity(new StaticEntity(Resource.Environment.SEAWEED, spawnX, spawnY,
                     random.nextInt(Config.SEAWEED_IMAGE_COUNT) + 1,
                     random.nextInt(200) + 50));
         }
 
-        if (random.nextDouble() < Config.SPAWN_COIN_PROBABILITY) {
+        if (random.nextDouble() < difficultyFactor) {
             world.addCoin(new CoinEntity( spawnX, spawnY));
         }
     }
