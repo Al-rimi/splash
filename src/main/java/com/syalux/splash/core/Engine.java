@@ -104,7 +104,7 @@ public class Engine extends AnimationTimer {
 
         rootContainer.setOnKeyPressed(e -> {
             switch (e.getCode()) {
-                case W: 
+                case W : 
                     player.moveUp(true);
                     break;
                 case S:

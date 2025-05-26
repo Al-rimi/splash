@@ -15,8 +15,6 @@ public class Config {
     public static final double SPAWN_COIN_PROBABILITY = 0.01;
     
     // Player Configuration
-    public static final double PLAYER_BASE_SIZE = 60;
-    public static final double PLAYER_MAX_SPEED = 500;
     
     // Camera Configuration
     public static final double DEPTH_DIVISOR = 10000.0;

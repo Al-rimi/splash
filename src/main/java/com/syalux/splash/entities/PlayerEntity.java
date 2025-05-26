@@ -1,6 +1,7 @@
 package com.syalux.splash.entities;
 
 import com.syalux.splash.data.Config;
+import com.syalux.splash.data.Profile;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -8,35 +9,23 @@ import javafx.beans.property.SimpleIntegerProperty;
 public class PlayerEntity extends FishEntity {
     private final IntegerProperty score;
     private final IntegerProperty coins;
-        
-    private FishEntity killer;
-
+    
     private boolean movingUp;
     private boolean movingDown;
     private boolean movingLeft;
     private boolean movingRight;
 
-    public PlayerEntity(int fishType) {
-        super(Config.PLAYER_BASE_SIZE, 1, Config.GAME_HEIGHT / 2, Config.GAME_HEIGHT / 2, fishType);
+    public PlayerEntity(Profile profile) {
+        super(profile.getFishSize(), profile.getFishSpeed(), profile.getFishHealth(), Config.GAME_HEIGHT / 2, Config.GAME_HEIGHT / 2, profile.getFishType());
         this.isPlayer = true;
         this.score = new SimpleIntegerProperty(0);
-        this.coins = new SimpleIntegerProperty(0);
+        this.coins = new SimpleIntegerProperty(profile.getCoins());
     }
 
     @Override
     public void update(double deltaTime) {
         updateVelocity();
         updatePosition(deltaTime);
-    }
-
-     @Override
-    protected void die(FishEntity killer) {
-        super.die(killer);
-        this.killer = killer;
-    }
-
-    public FishEntity getKiller() {
-        return killer;
     }
 
     private void updateVelocity() {
@@ -49,7 +38,7 @@ public class PlayerEntity extends FishEntity {
     }
 
     private double calculateVelocity(boolean negativeDirection, boolean positiveDirection) {
-        return (negativeDirection ? -Config.PLAYER_MAX_SPEED : 0) + (positiveDirection ? Config.PLAYER_MAX_SPEED : 0);
+        return (negativeDirection ? -speed : 0) + (positiveDirection ? speed : 0);
     }
 
     private void updatePosition(double deltaTime) {

@@ -23,7 +23,6 @@ import com.syalux.splash.entities.PlayerEntity;
 
 public class GameScreen {
 
-    private final Profile profile;
     private final PlayerEntity player;
     private final Engine engine;
     private StackPane root;
@@ -34,10 +33,8 @@ public class GameScreen {
     private Canvas backgroundCanvas;
     private HBox hud;
 
-    public GameScreen() {
-        profile = new Profile();
-        int selectedCharacter = profile.getSelectedCharacter();
-        player = new PlayerEntity(selectedCharacter);
+    public GameScreen(Profile profile) {
+        player = new PlayerEntity(profile);
 
         this.gameCanvas = new Canvas(Config.GAME_WIDTH, Config.GAME_HEIGHT);
         this.engine = new Engine(player, gameCanvas, this::togglePause);

@@ -2,6 +2,7 @@ package com.syalux.splash.core;
 
 import com.syalux.splash.data.Resource;
 import com.syalux.splash.data.Config;
+import com.syalux.splash.data.Profile;
 import com.syalux.splash.screens.*;
 
 import javafx.animation.FadeTransition;
@@ -19,6 +20,7 @@ public final class Manager {
     private static Scene mainScene;
     private static final StackPane container = new StackPane();
     private static final Deque<Parent> screenStack = new ArrayDeque<>();
+    private static Profile profile = new Profile();
 
     public static void init(Stage stage) {
         Resource.loadAll();
@@ -91,7 +93,7 @@ public final class Manager {
     public static void showGameScreen() {
         StackPane container = new StackPane();
         
-        Parent gameRoot = new GameScreen().createRoot();
+        Parent gameRoot = new GameScreen(profile).createRoot();
         container.getChildren().add(gameRoot);
         
         BubbleTransitionScreen transition = new BubbleTransitionScreen(() -> {
@@ -100,5 +102,13 @@ public final class Manager {
         container.getChildren().add(transition);
         
         showScreen(container);
+    }
+
+    public static Profile getProfile() {
+        return profile;
+    }
+
+    public static void setProfile(Profile profile) {
+        Manager.profile = profile;
     }
 }

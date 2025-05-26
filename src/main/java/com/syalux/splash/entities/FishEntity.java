@@ -33,13 +33,16 @@ public abstract class FishEntity {
     protected double opacity = 1.0;
     protected boolean invulnerable = false;
     protected final IntegerProperty health;
+    protected int speed;
 
+    protected FishEntity killer;
     protected int fishType;
     protected boolean isPlayer;
     protected boolean isDead = false;
 
-    public FishEntity(double size, int health, double x, double y, int fishType) {
+    public FishEntity(double size, int speed, int health, double x, double y, int fishType) {
         this.size = size;
+        this.speed = speed;
         this.health = new SimpleIntegerProperty(health);
         this.x = x;
         this.y = y;
@@ -115,6 +118,11 @@ public abstract class FishEntity {
     protected void die(FishEntity killer) {
         health.set(0);
         isDead = true;
+        this.killer = killer;
+    }
+
+    public FishEntity getKiller() {
+        return killer;
     }
 
     protected double calculateTargetAngle() {

@@ -7,18 +7,16 @@ import com.syalux.splash.data.World;
 public class NPCEntity extends FishEntity {
     private final World world;
     private int detectionRadius;
-    private int movementSpeed;
     private double directionChangeInterval;
     private int intelligenceLevel;
 
     public NPCEntity(World world, double x, double y, int fishType, double size) {
-        super(size, new Random().nextInt((int) size) + 10, x, y, fishType);
+        super(size, new Random().nextInt(600) + 200, new Random().nextInt((int) size) + 10, x, y, fishType);
 
         this.world = world;
         this.intelligenceLevel = new Random().nextInt(3) + 1;
 
         this.detectionRadius = new Random().nextInt(2000) + 500;
-        this.movementSpeed = new Random().nextInt(600) + 200;
         this.directionChangeInterval = new Random().nextDouble() * 0.5 + 0.5;
         setPosition(x, y);
     }
@@ -44,17 +42,17 @@ public class NPCEntity extends FishEntity {
         FishEntity nearestFood = findNearestEntity(false);
 
         if (player != null && player.size < size) {
-            pursue(player.getX(), player.getY(), movementSpeed, 0.1);
+            pursue(player.getX(), player.getY(), speed, 0.1);
         } else if (player != null) {
-            fleeFrom(player.getX(), player.getY(), movementSpeed, 0.1);
+            fleeFrom(player.getX(), player.getY(), speed, 0.1);
         }
 
         if (nearestEnemy != null) {
-            fleeFrom(nearestEnemy.getX(), nearestEnemy.getY(), movementSpeed, 0.1);
+            fleeFrom(nearestEnemy.getX(), nearestEnemy.getY(), speed, 0.1);
         } else if (nearestFood != null) {
-            pursue(nearestFood.getX(), nearestFood.getY(), movementSpeed, 0.1);
+            pursue(nearestFood.getX(), nearestFood.getY(), speed, 0.1);
         } else {
-            wander(deltaTime, directionChangeInterval, movementSpeed, 0.05);
+            wander(deltaTime, directionChangeInterval, speed, 0.05);
         }
     }
 
@@ -64,17 +62,17 @@ public class NPCEntity extends FishEntity {
         FishEntity bestFood = findBestFood();
 
         if (player != null && player.size < size) {
-            pursue(player.getX(), player.getY(), movementSpeed * 1.1, 0.1);
+            pursue(player.getX(), player.getY(), speed * 1.1, 0.1);
         } else if (player != null) {
-            fleeFrom(player.getX(), player.getY(), movementSpeed * 1.1, 0.1);
+            fleeFrom(player.getX(), player.getY(), speed * 1.1, 0.1);
         }
 
         if (nearestEnemy != null) {
-            fleeFrom(nearestEnemy.getX(), nearestEnemy.getY(), movementSpeed * 1.1, 0.1);
+            fleeFrom(nearestEnemy.getX(), nearestEnemy.getY(), speed * 1.1, 0.1);
         } else if (bestFood != null) {
-            pursue(bestFood.getX(), bestFood.getY(), movementSpeed * 1.1, 0.1);
+            pursue(bestFood.getX(), bestFood.getY(), speed * 1.1, 0.1);
         } else {
-            wander(deltaTime, directionChangeInterval * 0.8, movementSpeed, 0.05);
+            wander(deltaTime, directionChangeInterval * 0.8, speed, 0.05);
         }
     }
 
@@ -83,15 +81,15 @@ public class NPCEntity extends FishEntity {
         FishEntity player = findNearestPlayer();
 
         if (player != null && player.size < size) {
-            pursue(player.getX(), player.getY(), movementSpeed * 1.2, 0.1);
+            pursue(player.getX(), player.getY(), speed * 1.2, 0.1);
         } else if (player != null) {
-            fleeFrom(player.getX(), player.getY(), movementSpeed * 1.2, 0.1);
+            fleeFrom(player.getX(), player.getY(), speed * 1.2, 0.1);
         }
 
         if (nearestEnemy != null) {
-            fleeFrom(nearestEnemy.getX(), nearestEnemy.getY(), movementSpeed * 1.2, 0.1);
+            fleeFrom(nearestEnemy.getX(), nearestEnemy.getY(), speed * 1.2, 0.1);
         } else {
-            wander(deltaTime, directionChangeInterval * 0.5, movementSpeed, 0.05);
+            wander(deltaTime, directionChangeInterval * 0.5, speed, 0.05);
         }
     }
 
