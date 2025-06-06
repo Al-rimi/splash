@@ -84,6 +84,7 @@ public class Resource {
             case BUBBLE:
                 return bubbleImages.get(imageNumber);
             case COIN:
+                // For Environment.COIN, we always return the single coinImage
                 return coinImage;
             default:
                 return null;
@@ -94,11 +95,22 @@ public class Resource {
         return waterTexture;
     }
 
+    public static Image getCoinImage() {
+        return coinImage;
+    }
+
     public static Image loadImage(String path) {
         try (InputStream is = Resource.class.getResourceAsStream(path)) {
+            if (is == null) {
+                System.err.println("Resource not found: " + path);
+                return null;
+            }
             return new Image(is);
-        } catch (IOException | NullPointerException e) {
-            System.err.println("Error loading image: " + path);
+        } catch (IOException e) {
+            System.err.println("Error loading image: " + path + " - " + e.getMessage());
+            return null;
+        } catch (IllegalArgumentException e) {
+            System.err.println("Invalid image content or format for: " + path + " - " + e.getMessage());
             return null;
         }
     }
@@ -182,7 +194,7 @@ public class Resource {
             if (image != null) {
                 bubbleImages.put(i, image);
             } else {
-                System.err.println("Failed to load seaweed image: " + i);
+                System.err.println("Failed to load bubble image: " + i);
             }
         }
     }

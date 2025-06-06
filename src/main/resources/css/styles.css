@@ -309,6 +309,7 @@
 }
 
 .hud {
+    -fx-background-color: transparent; /* Make HUD background transparent */
     -fx-background-radius: 12px;
     -fx-padding: 15px 25px;
     -fx-spacing: 25px;
@@ -327,8 +328,21 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0,0,1);
 }
 
-.hud-label .text {
-    -fx-fill: -fx-text-light;
+/* Specific style for the score label */
+.score-label {
+    -fx-text-fill: #FFD700; /* Gold color for score */
+    -fx-font-size: 2.2em; /* Bigger font size for score */
+    -fx-font-weight: 900; /* Even bolder */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 5, 0,0,2);
+    -fx-alignment: center; /* Center the text within its label */
+    -fx-padding: 20px 0 0 0; /* Add top padding to move it down from the very top */
+}
+
+/* Style for the coin count label */
+.coin-count-label {
+    -fx-text-fill: #FFD700; /* Gold color for coin count */
+    -fx-font-size: 1.8em; /* Slightly larger than other labels */
+    -fx-font-weight: 800;
 }
 
 .hud-pause-button {
@@ -432,16 +446,6 @@
     -fx-text-fill: -fx-text-dark;
     -fx-font-weight: 700;
     -fx-padding: 0 0 10px 0;
-}
-
-.hud-label {
-    -fx-text-fill: -fx-text-light;
-    -fx-font-size: 1.3em;
-    -fx-font-weight: 700;
-    -fx-alignment: center-left;
-    -fx-padding: 0 10px;
-    -fx-background-radius: 6px;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0,0,1);
 }
 
 .pause-menu, .loading-overlay {

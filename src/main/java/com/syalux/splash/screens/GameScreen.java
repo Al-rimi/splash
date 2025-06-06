@@ -9,10 +9,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 import com.syalux.splash.core.Engine;
 import com.syalux.splash.core.Manager;
@@ -31,7 +32,10 @@ public class GameScreen {
 
     private Canvas gameCanvas;
     private Canvas backgroundCanvas;
-    private HBox hud;
+
+    private HBox topLeftHudContainer;
+    private Label scoreLabel;
+    private Button pauseButton;
 
     public GameScreen(Profile profile) {
         player = new PlayerEntity(profile);
@@ -39,22 +43,89 @@ public class GameScreen {
         this.engine = new Engine(player, gameCanvas, this::togglePause);
     }
 
-    private void createHUD() {
-        hud = new HBox(25);
-        hud.setPadding(new Insets(15, 25, 15, 25));
-        hud.setAlignment(Pos.TOP_LEFT);
-        hud.getStyleClass().add("hud");
+    /**
+     * Creates the HUD elements for the top-left section (health and coins).
+     */
+    private HBox createTopLeftHud() {
+        HBox container = new HBox(40);
+        container.setPadding(new Insets(20, 20, 0, 20));
 
-        Label healthLabel = createBoundLabel("health", player.healthProperty());
-        Label scoreLabel = createBoundLabel("score", player.scoreProperty());
-        Label coinsLabel = createBoundLabel("coins", player.coinsProperty());
+        HBox healthBar = createHealthBar(player.healthProperty(), player.getInitialMaxHealth(), 200);
+        HBox coinDisplay = createCoinDisplay(player.coinsProperty());
 
-        Button pauseButton = createPauseButton();
+        container.getChildren().addAll(healthBar, coinDisplay);
+        container.getStyleClass().add("hud");
 
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
+        return container;
+    }
 
-        hud.getChildren().addAll(healthLabel, scoreLabel, coinsLabel, spacer, pauseButton);
+    /**
+     * Creates a custom health bar with a background representing max health
+     * and a foreground representing current health. The bar has a fixed visual width.
+     *
+     * @param currentHealthProperty The IntegerProperty for the player's current health.
+     * @param maxHealth The maximum health value for the player.
+     * @param barVisualWidth The fixed visual width (in pixels) for the health bar.
+     * @return An HBox containing the health bar.
+     */
+    private HBox createHealthBar(IntegerProperty currentHealthProperty, int maxHealth, double barVisualWidth) {
+        HBox healthBarContainer = new HBox(10);
+        healthBarContainer.getStyleClass().add("health-bar-container");
+
+        StackPane barStack = new StackPane();
+        barStack.setPrefHeight(25);
+        barStack.setPrefWidth(barVisualWidth);
+        barStack.getStyleClass().add("health-bar-stack");
+
+        Rectangle backgroundRect = new Rectangle();
+        backgroundRect.setHeight(25);
+        backgroundRect.widthProperty().bind(barStack.prefWidthProperty());
+        backgroundRect.setFill(Color.web("#3a3a3a"));
+        backgroundRect.setArcWidth(15);
+        backgroundRect.setArcHeight(15);
+        backgroundRect.getStyleClass().add("health-bar-background");
+
+        Rectangle currentHealthRect = new Rectangle();
+        currentHealthRect.setHeight(25);
+        currentHealthRect.setFill(Color.web("#FF0000"));
+        currentHealthRect.setArcWidth(15);
+        currentHealthRect.setArcHeight(15);
+        currentHealthRect.getStyleClass().add("health-bar-current");
+
+        currentHealthRect.widthProperty().bind(
+                Bindings.createDoubleBinding(
+                        () -> ((double) currentHealthProperty.get() / maxHealth) * barVisualWidth,
+                        currentHealthProperty
+                )
+        );
+
+        barStack.getChildren().addAll(backgroundRect, currentHealthRect);
+        healthBarContainer.getChildren().addAll(barStack);
+        return healthBarContainer;
+    }
+
+    /**
+     * Creates a display for the player's coins, including a coin image and the coin count.
+     *
+     * @param coinsProperty The IntegerProperty for the player's current coins.
+     * @return An HBox containing the coin image and coin count label.
+     */
+    private HBox createCoinDisplay(IntegerProperty coinsProperty) {
+        HBox coinDisplayBox = new HBox(8);
+        coinDisplayBox.getStyleClass().add("coin-display-container");
+
+        ImageView coinImageView = new ImageView(Resource.getCoinImage());
+        coinImageView.setFitWidth(28);
+        coinImageView.setFitHeight(28);
+        coinImageView.setPreserveRatio(true);
+        coinImageView.getStyleClass().add("coin-icon");
+
+        Label coinCountLabel = new Label();
+        coinCountLabel.textProperty().bind(coinsProperty.asString());
+        coinCountLabel.getStyleClass().add("coin-count-label");
+
+        coinDisplayBox.getChildren().addAll(coinImageView, coinCountLabel);
+        return coinDisplayBox;
     }
 
     private Label createBoundLabel(String key, IntegerProperty property) {
@@ -135,15 +206,24 @@ public class GameScreen {
         gameCanvas.widthProperty().bind(root.widthProperty());
         gameCanvas.heightProperty().bind(root.heightProperty());
 
-        createHUD();
-        root.getChildren().addAll(backgroundCanvas, gameCanvas, hud);
+        topLeftHudContainer = createTopLeftHud();
+        scoreLabel = createBoundLabel("score", player.scoreProperty());
+        scoreLabel.getStyleClass().add("score-label");
+        pauseButton = createPauseButton();
+
+        root.getChildren().addAll(backgroundCanvas, gameCanvas, topLeftHudContainer, scoreLabel, pauseButton);
         root.getStylesheets().add(Resource.getStyleSheet());
+
+        StackPane.setAlignment(topLeftHudContainer, Pos.TOP_LEFT);
+        StackPane.setAlignment(scoreLabel, Pos.TOP_CENTER);
+        StackPane.setAlignment(pauseButton, Pos.TOP_RIGHT);
+        StackPane.setMargin(pauseButton, new Insets(20, 20, 0, 0));
+
 
         engine.setRootContainer(root);
         root.requestFocus();
         engine.start();
 
-        // Listen for player health changes to trigger game over.
         player.healthProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.intValue() <= 0 && !isDead) {
                 isDead = true;
@@ -151,7 +231,6 @@ public class GameScreen {
             }
         });
 
-        // Listen for scene changes to pause the engine and save player data.
         root.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene == null) {
                 engine.pause(true);

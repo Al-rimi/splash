@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 public class PlayerEntity extends FishEntity {
     private final IntegerProperty score;
     private final IntegerProperty coins;
+    private final int initialMaxHealth;
 
     private boolean movingUp;
     private boolean movingDown;
@@ -20,6 +21,7 @@ public class PlayerEntity extends FishEntity {
         this.isPlayer = true;
         this.score = new SimpleIntegerProperty(0);
         this.coins = new SimpleIntegerProperty(profile.getCoins());
+        this.initialMaxHealth = profile.getFishHealth(); // Store the initial max health from the profile
     }
 
     @Override
@@ -72,6 +74,10 @@ public class PlayerEntity extends FishEntity {
 
     public int getScore() {
         return score.get();
+    }
+
+    public int getInitialMaxHealth() {
+        return initialMaxHealth;
     }
 
     public void moveUp(boolean moving) {
