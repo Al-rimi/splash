@@ -81,6 +81,11 @@ public class CollisionSystem {
     }
 
     private void executeCollision(FishEntity large, FishEntity small) {
+        // If the small fish is already dead, it cannot take further damage or contribute to size/score.
+        if (small.isDead()) {
+            return;
+        }
+
         if (large instanceof PlayerEntity && small instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) large;
             player.addScore((int) small.getSize());
@@ -90,13 +95,13 @@ public class CollisionSystem {
             PlayerEntity player = (PlayerEntity) large;
             player.addScore((int) (small.getSize() * 0.1));
             player.addSize(small.getSize() * 0.001);
-            small.takeDamage(small.getHealth(), large);
+            small.takeDamage(small.getHealth(), large); // Small fish takes full health damage if eaten by player
         } else if (small instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) small;
             player.takeDamage(large.getSize() * 0.1, large);
         } else {
             large.addSize(small.getSize() * 0.001);
-            small.takeDamage(small.getHealth(), large);
-        }    
+            small.takeDamage(small.getHealth(), large); // Small fish takes full health damage if eaten by another NPC
+        }
     }
 }

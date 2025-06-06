@@ -13,7 +13,7 @@ public class Config {
     public static double GAME_HEIGHT = 1080;
     public static double SPAWN_RADIUS = 2000;
     public static double DESPAWN_RADIUS = 4000;
-    public static double GAME_DIFFICULTY_FACTOR = 1; // Renamed to avoid clash with user preference difficulty
+    public static double GAME_DIFFICULTY_FACTOR = 0.3; // Renamed to avoid clash with user preference difficulty
     public static double SPAWN_DURATION_SECONDS = 0.1;
 
     // Camera Configuration

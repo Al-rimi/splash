@@ -22,10 +22,10 @@ public class Profile implements Serializable {
     public Profile() {
         this.playerName = "Player";
         this.highScore = 0;
-        this.coins = 0;
+        this.coins = 10000;
         this.fishType = 1;
         this.fishSize = 60;
-        this.fishHealth = 1;
+        this.fishHealth = 100;
         this.fishSpeed = 600;
     }
 

@@ -23,13 +23,16 @@ public class NPCEntity extends FishEntity {
 
     @Override
     public void update(double deltaTime) {
+        super.update(deltaTime); // Call super.update() to handle death and moving animations
+        if (isDead) return; // Stop updating if dead
+
         switch (intelligenceLevel) {
-            case 3: 
+            case 3:
                 advanced(deltaTime);
                 break;
             case 2: intermediate(deltaTime);
                 break;
-            default: 
+            default:
                 basic(deltaTime);
                 break;
         }
@@ -96,15 +99,15 @@ public class NPCEntity extends FishEntity {
     private FishEntity findBestFood() {
         FishEntity bestFood = null;
         double bestValue = Double.MIN_VALUE;
-        
+
         for (FishEntity entity : world.getNpcs()) {
             if (entity == this || entity.getSize() >= this.size) continue;
-            
+
             double dx = entity.getX() - x;
             double dy = entity.getY() - y;
             double distance = Math.hypot(dx, dy);
             double value = entity.getSize() / (distance + 1);
-            
+
             if (distance < detectionRadius && value > bestValue) {
                 bestFood = entity;
                 bestValue = value;
@@ -116,14 +119,14 @@ public class NPCEntity extends FishEntity {
     private FishEntity findNearestEntity(boolean larger) {
         FishEntity nearest = null;
         double nearestDistance = Double.MAX_VALUE;
-        
+
         for (FishEntity entity : world.getNpcs()) {
             if (entity == this) continue;
-            
+
             double dx = entity.getX() - x;
             double dy = entity.getY() - y;
             double distance = Math.hypot(dx, dy);
-            
+
             if (distance < detectionRadius && (larger ? entity.getSize() > size : entity.getSize() < size)) {
                 if (distance < nearestDistance) {
                     nearest = entity;

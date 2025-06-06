@@ -9,7 +9,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 public class PlayerEntity extends FishEntity {
     private final IntegerProperty score;
     private final IntegerProperty coins;
-    
+
     private boolean movingUp;
     private boolean movingDown;
     private boolean movingLeft;
@@ -24,6 +24,9 @@ public class PlayerEntity extends FishEntity {
 
     @Override
     public void update(double deltaTime) {
+        super.update(deltaTime); // Call super.update() to handle death and moving animations
+        if (isDead) return; // Stop updating if dead
+
         updateVelocity();
         updatePosition(deltaTime);
     }

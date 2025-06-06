@@ -242,7 +242,7 @@ public class SettingsScreen {
         grid.add(despawnRadiusSlider, 1, 1);
         grid.add(createValueLabel(despawnRadiusSlider, "%.0f"), 2, 1);
 
-        gameDifficultyFactorSlider = new Slider(0.1, 3.0, Config.GAME_DIFFICULTY_FACTOR);
+        gameDifficultyFactorSlider = new Slider(0.01, 1.0, Config.GAME_DIFFICULTY_FACTOR);
         gameDifficultyFactorSlider.setShowTickMarks(true);
         gameDifficultyFactorSlider.setShowTickLabels(true);
         gameDifficultyFactorSlider.setMajorTickUnit(0.5);
@@ -437,7 +437,7 @@ public class SettingsScreen {
         Config.FULLSCREEN = true;
         Config.SHOW_FPS = false;
         Config.LANGUAGE = "en"; // Reset language to default English
-        Config.CAMERA_SENSITIVITY = 1.0;
+        Config.CAMERA_SENSITIVITY = 0.3;
 
         Config.SPAWN_RADIUS = 2000.0;
         Config.DESPAWN_RADIUS = 4000.0;
