@@ -1,8 +1,8 @@
 package com.syalux.splash.screens;
 
+import com.syalux.splash.core.CharacterManager;
 import com.syalux.splash.core.Manager;
-import com.syalux.splash.data.CharacterData;
-import com.syalux.splash.data.CharacterManager;
+import com.syalux.splash.data.Character;
 import com.syalux.splash.data.Profile;
 import com.syalux.splash.data.Resource;
 import javafx.geometry.Pos;
@@ -38,7 +38,7 @@ public class StoreScreen {
 
         Label storeTitle = new Label(Resource.getString("store_title"));
         storeTitle.getStyleClass().add("store-title");
-        
+
         coinsLabel = new Label(Resource.getString("coins") + ": " + profile.getCoins());
         coinsLabel.getStyleClass().add("coins-label");
 
@@ -50,7 +50,7 @@ public class StoreScreen {
 
         StackPane centerWrapper = new StackPane();
         centerWrapper.setAlignment(Pos.CENTER);
-        
+
         VBox characterCard = new VBox(20);
         characterCard.getStyleClass().add("character-card");
         characterCard.setAlignment(Pos.CENTER);
@@ -60,7 +60,6 @@ public class StoreScreen {
         characterImage = new ImageView();
         characterImage.setPreserveRatio(true);
         characterImage.setFitWidth(400);
-        characterImage.setFitHeight(400);
 
         nameLabel = new Label();
         nameLabel.getStyleClass().add("character-name");
@@ -99,7 +98,7 @@ public class StoreScreen {
         HBox bottomBar = new HBox();
         bottomBar.setAlignment(Pos.CENTER);
         bottomBar.setPadding(new Insets(20, 0, 30, 0));
-        
+
         Button backButton = new Button(Resource.getString("back"));
         backButton.getStyleClass().add("menu-button");
         backButton.setOnAction(e -> Manager.showMainMenu());
@@ -117,11 +116,11 @@ public class StoreScreen {
      * (buy, select, or selected). Also updates the player's coin count.
      */
     private void updateDisplay() {
-        CharacterData character = CharacterManager.getAllCharacters().get(currentIndex);
+        Character character = CharacterManager.getAllCharacters().get(currentIndex);
 
         characterImage.setImage(Resource.getFishImage(character.getId()));
         nameLabel.setText(character.getName());
-        
+
         statsLabel.setText(String.format(
                 "%s: %d\n%s: %d\n%s: %d",
                 Resource.getString("health"), character.getBaseHealth(),
@@ -163,17 +162,23 @@ public class StoreScreen {
      * The display is updated after the action.
      */
     private void handleCharacterAction() {
-        CharacterData character = CharacterManager.getAllCharacters().get(currentIndex);
+        Character character = CharacterManager.getAllCharacters().get(currentIndex);
 
         if (!character.isUnlocked()) {
             if (profile.getCoins() >= character.getPrice()) {
                 profile.setCoins(profile.getCoins() - character.getPrice());
                 profile.unlockCharacter(character.getId());
-                character.setUnlocked(true);
+                profile.setFishType(character.getId());
+                profile.setFishHealth(character.getBaseHealth());
+                profile.setFishSpeed(character.getBaseSpeed());
+                profile.setFishSize(character.getBaseSize());
                 Manager.setProfile(profile);
             }
         } else {
             profile.setFishType(character.getId());
+            profile.setFishHealth(character.getBaseHealth());
+            profile.setFishSpeed(character.getBaseSpeed());
+            profile.setFishSize(character.getBaseSize());
             Manager.setProfile(profile);
         }
         updateDisplay();

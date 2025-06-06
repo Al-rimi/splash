@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.syalux.splash.core.CharacterManager;
+
 public class Profile implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -21,9 +23,12 @@ public class Profile implements Serializable {
         this.highScore = 0;
         this.coins = 10000;
         this.fishType = 1;
-        this.fishSize = 60;
-        this.fishHealth = 100;
-        this.fishSpeed = 600;
+
+        Character initialFish = CharacterManager.getCharacter(this.fishType);
+        this.fishSize = initialFish.getBaseSize();
+        this.fishHealth = initialFish.getBaseHealth();
+        this.fishSpeed = initialFish.getBaseSpeed();
+        this.unlockedCharacters.add(initialFish.getId());
     }
 
     public Profile(String playerName, int highScore, int coins, int fishType, int fishSize, int fishHealth, int fishSpeed) {

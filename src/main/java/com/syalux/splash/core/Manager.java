@@ -31,8 +31,10 @@ public final class Manager {
     private static Profile profile;
 
     public static void init(Stage stage) {
-        Config.loadConfig();
+        CharacterManager.init();
         loadProfile();
+        CharacterManager.updateCharacterUnlockedStatus(profile);
+        Config.loadConfig();
         Resource.loadAll();
 
         primaryStage = stage;
@@ -95,11 +97,9 @@ public final class Manager {
         if (file.exists()) {
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
                 profile = (Profile) ois.readObject();
-                System.out.println("Profile loaded successfully.");
             } catch (IOException | ClassNotFoundException e) {
                 System.err.println("Error loading profile: " + e.getMessage());
                 profile = new Profile();
-                System.out.println("Created a new default profile due to loading error.");
             }
         } else {
             profile = new Profile();
@@ -110,7 +110,6 @@ public final class Manager {
     public static void saveProfile() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(PROFILE_FILE))) {
             oos.writeObject(profile);
-            System.out.println("Profile saved successfully.");
         } catch (IOException e) {
             System.err.println("Error saving profile: " + e.getMessage());
             e.printStackTrace();

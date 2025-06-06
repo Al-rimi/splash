@@ -2,7 +2,7 @@ package com.syalux.splash.data;
 
 import java.io.Serializable;
 
-public class CharacterData implements Serializable {
+public class Character implements Serializable {
     private static final long serialVersionUID = 2L;
 
     private final int id;
@@ -13,7 +13,7 @@ public class CharacterData implements Serializable {
     private final int baseSize;
     private boolean unlocked;
 
-    public CharacterData(int id, String name, int price,
+    public Character(int id, String name, int price,
                          int baseHealth, int baseSpeed, int baseSize,
                          boolean unlocked) {
         this.id = id;

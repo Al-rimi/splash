@@ -91,7 +91,7 @@ public class Config {
             LANGUAGE = prop.getProperty("LANGUAGE", DEFAULT_LANGUAGE);
 
         } catch (IOException | NumberFormatException e) {
-            System.out.println("No existing configuration file found or invalid format. Using default configuration.");
+            System.out.println("No existing configuration file found. Using default configuration.");
         }
     }
 }
