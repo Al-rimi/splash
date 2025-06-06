@@ -29,6 +29,7 @@ public class Config {
     public static boolean FULLSCREEN = true;
     public static boolean SHOW_FPS = false;
     public static String USER_DIFFICULTY = "Normal"; // Renamed to clearly indicate user preference
+    public static String LANGUAGE = "en"; // New: User's preferred language
 
     // Resource Configuration (these are typically fixed and don't change at runtime via settings)
     public static final String DEFAULT_LANGUAGE = "en";
@@ -62,6 +63,7 @@ public class Config {
             prop.setProperty("FULLSCREEN", String.valueOf(FULLSCREEN));
             prop.setProperty("SHOW_FPS", String.valueOf(SHOW_FPS));
             prop.setProperty("USER_DIFFICULTY", USER_DIFFICULTY);
+            prop.setProperty("LANGUAGE", LANGUAGE); // New: Save language
 
             prop.store(output, null);
         } catch (IOException io) {
@@ -94,6 +96,7 @@ public class Config {
             FULLSCREEN = Boolean.parseBoolean(prop.getProperty("FULLSCREEN", String.valueOf(FULLSCREEN)));
             SHOW_FPS = Boolean.parseBoolean(prop.getProperty("SHOW_FPS", String.valueOf(SHOW_FPS)));
             USER_DIFFICULTY = prop.getProperty("USER_DIFFICULTY", USER_DIFFICULTY);
+            LANGUAGE = prop.getProperty("LANGUAGE", DEFAULT_LANGUAGE); // New: Load language
 
         } catch (IOException | NumberFormatException e) {
             System.out.println("No existing configuration file found or invalid format. Using default configuration.");

@@ -27,6 +27,8 @@ public class BubbleTransitionScreen extends Pane {
 
             delay.setOnFinished(e -> {
                 ImageView bubble = createBubble();
+                // Apply the 'bubble' style class to the ImageView
+                bubble.getStyleClass().add("bubble"); // Added this line
                 getChildren().add(bubble);
 
                 ParallelTransition transition = createBubbleAnimation(bubble);

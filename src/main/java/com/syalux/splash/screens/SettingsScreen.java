@@ -4,14 +4,13 @@ import com.syalux.splash.core.Manager;
 import com.syalux.splash.data.Config;
 import com.syalux.splash.data.Resource;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 public class SettingsScreen {
@@ -19,273 +18,315 @@ public class SettingsScreen {
     private Slider musicVolumeSlider;
     private Slider sfxVolumeSlider;
     private CheckBox fullscreenToggle;
-    private ComboBox<String> userDifficultyCombo; // Renamed for clarity
+    private ComboBox<String> userDifficultyCombo;
     private ComboBox<String> resolutionCombo;
     private CheckBox showFpsToggle;
     private Slider cameraSensitivitySlider;
+    private ComboBox<String> languageCombo; // New: Language ComboBox
 
-    // Game Configuration Controls (directly map to Config class)
     private Slider spawnRadiusSlider;
     private Slider despawnRadiusSlider;
-    private Slider gameDifficultyFactorSlider; // Renamed to avoid confusion with user preference difficulty
+    private Slider gameDifficultyFactorSlider;
     private Slider spawnDurationSlider;
     private Slider depthDivisorSlider;
     private Slider maxDepthAlphaSlider;
 
-    /**
-     * Creates and returns the root Parent node for the settings screen.
-     * @return The BorderPane representing the settings screen.
-     */
+    // References to labels that need dynamic updates
+    private Text settingsTitle;
+    private Tab audioTab;
+    private Tab videoTab;
+    private Tab gameplayTab;
+    private Tab configTab;
+    private Tab languageTab;
+    private Button resetButton;
+    private Button saveButton;
+
+    // Use SimpleStringProperty for labels whose text needs to be dynamically
+    // updated
+    // This allows you to bind the label's text property to these properties
+    private SimpleStringProperty masterVolumeLabelText = new SimpleStringProperty();
+    private SimpleStringProperty musicVolumeLabelText = new SimpleStringProperty();
+    private SimpleStringProperty sfxVolumeLabelText = new SimpleStringProperty();
+    private SimpleStringProperty resolutionLabelText = new SimpleStringProperty();
+    private SimpleStringProperty fullscreenLabelText = new SimpleStringProperty();
+    private SimpleStringProperty showFpsLabelText = new SimpleStringProperty();
+    private SimpleStringProperty difficultyLabelText = new SimpleStringProperty();
+    private SimpleStringProperty cameraSensitivityLabelText = new SimpleStringProperty();
+    private SimpleStringProperty languageLabelText = new SimpleStringProperty();
+    private SimpleStringProperty spawnRadiusLabelText = new SimpleStringProperty();
+    private SimpleStringProperty despawnRadiusLabelText = new SimpleStringProperty();
+    private SimpleStringProperty gameDifficultyFactorLabelText = new SimpleStringProperty();
+    private SimpleStringProperty spawnDurationLabelText = new SimpleStringProperty();
+    private SimpleStringProperty depthDivisorLabelText = new SimpleStringProperty();
+    private SimpleStringProperty maxDepthAlphaLabelText = new SimpleStringProperty();
+
     public Parent createRoot() {
-        // Main container
         BorderPane mainLayout = new BorderPane();
         mainLayout.getStyleClass().add("settings-container");
         mainLayout.setPrefSize(Manager.getPrimaryStage().getWidth(), Manager.getPrimaryStage().getHeight());
 
-        // Top section with title and back button
-        HBox topBar = createTopBar();
-        mainLayout.setTop(topBar);
+        VBox topSection = createTopSection(); // Combine top bar and title
+        mainLayout.setTop(topSection);
 
-        // Center content with tabs for different setting categories
         TabPane tabPane = createTabPane();
         mainLayout.setCenter(tabPane);
 
-        // Bottom section with save and reset buttons
         HBox bottomBar = createBottomBar();
         mainLayout.setBottom(bottomBar);
+
+        // Initialize all localized text properties for the first time
+        updateLocalizedText();
+
+        // Bind UI elements to language changes
+        Resource.currentLocaleProperty().addListener((obs, oldLocale, newLocale) -> updateLocalizedText());
 
         return mainLayout;
     }
 
-    /**
-     * Creates the top bar containing the back button and screen title.
-     * @return HBox for the top bar.
-     */
-    private HBox createTopBar() {
-        HBox topBar = new HBox(20);
-        topBar.setPadding(new Insets(15));
-        topBar.setAlignment(Pos.CENTER_LEFT);
-        topBar.getStyleClass().add("settings-top-bar");
+    private VBox createTopSection() {
+        VBox topSection = new VBox();
+        topSection.getStyleClass().add("settings-top-section");
+        topSection.setAlignment(Pos.CENTER);
+        topSection.setPadding(new Insets(30, 0, 20, 0)); // Increased top padding
+
+        HBox topBarContent = new HBox(20);
+        topBarContent.setAlignment(Pos.CENTER_LEFT);
+        topBarContent.setPadding(new Insets(0, 50, 0, 50)); // Horizontal padding for alignment
 
         Button backButton = new Button("←");
         backButton.getStyleClass().add("back-button");
         backButton.setOnAction(e -> Manager.goBack());
 
-        Text title = new Text(Resource.getString("settings"));
-        title.setFont(Font.font("Arial", FontWeight.BOLD, 28));
-        title.getStyleClass().add("settings-title");
+        settingsTitle = new Text(); // Initialize as a Text node
+        settingsTitle.getStyleClass().add("settings-title");
+        settingsTitle.textProperty().bind(
+                Bindings.createStringBinding(() -> Resource.getString("settings"), Resource.currentLocaleProperty()));
 
         Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS); // Push content to left/right
+        HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        topBar.getChildren().addAll(backButton, title, spacer);
-        return topBar;
+        topBarContent.getChildren().addAll(backButton, spacer, settingsTitle); // Center the title
+
+        topSection.getChildren().add(topBarContent);
+        return topSection;
     }
 
-    /**
-     * Creates the tab pane to categorize settings (Audio, Video, Gameplay, Game Config).
-     * @return TabPane with various setting tabs.
-     */
     private TabPane createTabPane() {
         TabPane tabPane = new TabPane();
         tabPane.getStyleClass().add("settings-tab-pane");
 
-        Tab audioTab = new Tab(Resource.getString("volume_title"));
+        audioTab = new Tab();
+        audioTab.textProperty().bind(Bindings.createStringBinding(() -> Resource.getString("volume_title"),
+                Resource.currentLocaleProperty()));
         audioTab.setContent(createAudioTab());
         audioTab.setClosable(false);
 
-        Tab videoTab = new Tab(Resource.getString("video_settings"));
+        videoTab = new Tab();
+        videoTab.textProperty().bind(Bindings.createStringBinding(() -> Resource.getString("video_settings"),
+                Resource.currentLocaleProperty()));
         videoTab.setContent(createVideoTab());
         videoTab.setClosable(false);
 
-        Tab gameplayTab = new Tab(Resource.getString("gameplay_settings"));
+        gameplayTab = new Tab();
+        gameplayTab.textProperty().bind(Bindings.createStringBinding(() -> Resource.getString("gameplay_settings"),
+                Resource.currentLocaleProperty()));
         gameplayTab.setContent(createGameplayTab());
         gameplayTab.setClosable(false);
 
-        Tab configTab = new Tab(Resource.getString("game_config"));
+        configTab = new Tab();
+        configTab.textProperty().bind(Bindings.createStringBinding(() -> Resource.getString("game_config"),
+                Resource.currentLocaleProperty()));
         configTab.setContent(createConfigTab());
         configTab.setClosable(false);
 
-        tabPane.getTabs().addAll(audioTab, videoTab, gameplayTab, configTab);
+        languageTab = new Tab(); // New Language Tab
+        languageTab.textProperty().bind(Bindings.createStringBinding(() -> Resource.getString("language_title"),
+                Resource.currentLocaleProperty()));
+        languageTab.setContent(createLanguageTab());
+        languageTab.setClosable(false);
+
+        tabPane.getTabs().addAll(audioTab, videoTab, gameplayTab, configTab, languageTab); // Add language tab
         return tabPane;
     }
 
-    /**
-     * Creates the UI for audio settings, affecting the user Profile.
-     * @return GridPane for audio settings.
-     */
     private GridPane createAudioTab() {
         GridPane grid = createSettingsGrid();
 
-        // Master Volume
         masterVolumeSlider = createVolumeSlider(Config.MASTER_VOLUME);
-        grid.add(createSettingLabel("master_volume"), 0, 0);
+        grid.add(createSettingLabel(masterVolumeLabelText, "master_volume"), 0, 0);
         grid.add(masterVolumeSlider, 1, 0);
         grid.add(createVolumeValueLabel(masterVolumeSlider), 2, 0);
 
-        // Music Volume
         musicVolumeSlider = createVolumeSlider(Config.MUSIC_VOLUME);
-        grid.add(createSettingLabel("music_volume"), 0, 1);
+        grid.add(createSettingLabel(musicVolumeLabelText, "music_volume"), 0, 1);
         grid.add(musicVolumeSlider, 1, 1);
         grid.add(createVolumeValueLabel(musicVolumeSlider), 2, 1);
 
-        // SFX Volume
         sfxVolumeSlider = createVolumeSlider(Config.SFX_VOLUME);
-        grid.add(createSettingLabel("sfx_volume"), 0, 2);
+        grid.add(createSettingLabel(sfxVolumeLabelText, "sfx_volume"), 0, 2);
         grid.add(sfxVolumeSlider, 1, 2);
         grid.add(createVolumeValueLabel(sfxVolumeSlider), 2, 2);
 
         return grid;
     }
 
-    /**
-     * Creates the UI for video settings, affecting the user Profile.
-     * @return GridPane for video settings.
-     */
     private GridPane createVideoTab() {
         GridPane grid = createSettingsGrid();
 
-        // Resolution
         resolutionCombo = new ComboBox<>(FXCollections.observableArrayList(
-                "1920x1080", "1600x900", "1366x768", "1280x720", "1024x768"
-        ));
+                "1920x1080", "1600x900", "1366x768", "1280x720", "1024x768"));
         resolutionCombo.setValue(Config.RESOLUTION);
-        resolutionCombo.setMinWidth(200);
-        grid.add(createSettingLabel("resolution"), 0, 0);
+        resolutionCombo.setMinWidth(250); // Made combobox wider
+        resolutionCombo.getStyleClass().add("combo-box");
+        grid.add(createSettingLabel(resolutionLabelText, "resolution"), 0, 0);
         grid.add(resolutionCombo, 1, 0);
 
-        // Fullscreen
         fullscreenToggle = new CheckBox();
         fullscreenToggle.setSelected(Config.FULLSCREEN);
-        grid.add(createSettingLabel("fullscreen"), 0, 1);
+        fullscreenToggle.getStyleClass().add("check-box");
+        grid.add(createSettingLabel(fullscreenLabelText, "fullscreen"), 0, 1);
         grid.add(fullscreenToggle, 1, 1);
 
-        // Show FPS
         showFpsToggle = new CheckBox();
         showFpsToggle.setSelected(Config.SHOW_FPS);
-        grid.add(createSettingLabel("show_fps"), 0, 2);
+        showFpsToggle.getStyleClass().add("check-box");
+        grid.add(createSettingLabel(showFpsLabelText, "show_fps"), 0, 2);
         grid.add(showFpsToggle, 1, 2);
 
         return grid;
     }
 
-    /**
-     * Creates the UI for gameplay settings, affecting the user Profile.
-     * @return GridPane for gameplay settings.
-     */
     private GridPane createGameplayTab() {
         GridPane grid = createSettingsGrid();
 
-        // Difficulty (User preference, not game mechanics difficulty)
-        userDifficultyCombo = new ComboBox<>(FXCollections.observableArrayList(
-                Resource.getString("easy"),
-                Resource.getString("normal"),
-                Resource.getString("hard")
-        ));
-        userDifficultyCombo.setValue(Config.USER_DIFFICULTY);
-        grid.add(createSettingLabel("difficulty"), 0, 0);
+        userDifficultyCombo = new ComboBox<>(); // Initialize empty, items will be set in updateLocalizedText()
+        userDifficultyCombo.setMinWidth(250); // Made combobox wider
+        userDifficultyCombo.getStyleClass().add("combo-box");
+        grid.add(createSettingLabel(difficultyLabelText, "difficulty"), 0, 0);
         grid.add(userDifficultyCombo, 1, 0);
 
-        // Camera Sensitivity
         cameraSensitivitySlider = new Slider(0.1, 2.0, Config.CAMERA_SENSITIVITY);
         cameraSensitivitySlider.setShowTickMarks(true);
         cameraSensitivitySlider.setShowTickLabels(true);
         cameraSensitivitySlider.setMajorTickUnit(0.5);
         cameraSensitivitySlider.setBlockIncrement(0.1);
         cameraSensitivitySlider.setSnapToTicks(true);
-        grid.add(createSettingLabel("camera_sensitivity"), 0, 1);
+        cameraSensitivitySlider.getStyleClass().add("styled-slider");
+        grid.add(createSettingLabel(cameraSensitivityLabelText, "camera_sensitivity"), 0, 1);
         grid.add(cameraSensitivitySlider, 1, 1);
         grid.add(createValueLabel(cameraSensitivitySlider, "%.1f"), 2, 1);
 
         return grid;
     }
 
-    /**
-     * Creates the UI for game configuration settings, directly modifying the Config class.
-     * @return GridPane for game configuration settings.
-     */
     private GridPane createConfigTab() {
         GridPane grid = createSettingsGrid();
 
-        // Spawn Radius
         spawnRadiusSlider = new Slider(500, 5000, Config.SPAWN_RADIUS);
         spawnRadiusSlider.setShowTickMarks(true);
         spawnRadiusSlider.setShowTickLabels(true);
         spawnRadiusSlider.setMajorTickUnit(1000);
         spawnRadiusSlider.setBlockIncrement(100);
-        grid.add(createSettingLabel("spawn_radius"), 0, 0);
+        spawnRadiusSlider.getStyleClass().add("styled-slider");
+        grid.add(createSettingLabel(spawnRadiusLabelText, "spawn_radius"), 0, 0);
         grid.add(spawnRadiusSlider, 1, 0);
         grid.add(createValueLabel(spawnRadiusSlider, "%.0f"), 2, 0);
 
-        // Despawn Radius
         despawnRadiusSlider = new Slider(1000, 10000, Config.DESPAWN_RADIUS);
         despawnRadiusSlider.setShowTickMarks(true);
         despawnRadiusSlider.setShowTickLabels(true);
         despawnRadiusSlider.setMajorTickUnit(2000);
         despawnRadiusSlider.setBlockIncrement(500);
-        grid.add(createSettingLabel("despawn_radius"), 0, 1);
+        despawnRadiusSlider.getStyleClass().add("styled-slider");
+        grid.add(createSettingLabel(despawnRadiusLabelText, "despawn_radius"), 0, 1);
         grid.add(despawnRadiusSlider, 1, 1);
         grid.add(createValueLabel(despawnRadiusSlider, "%.0f"), 2, 1);
 
-        // Difficulty Factor (affects game mechanics, not user preference)
         gameDifficultyFactorSlider = new Slider(0.1, 3.0, Config.GAME_DIFFICULTY_FACTOR);
         gameDifficultyFactorSlider.setShowTickMarks(true);
         gameDifficultyFactorSlider.setShowTickLabels(true);
         gameDifficultyFactorSlider.setMajorTickUnit(0.5);
         gameDifficultyFactorSlider.setBlockIncrement(0.1);
-        grid.add(createSettingLabel("difficulty_factor"), 0, 2);
+        gameDifficultyFactorSlider.getStyleClass().add("styled-slider");
+        grid.add(createSettingLabel(gameDifficultyFactorLabelText, "difficulty_factor"), 0, 2);
         grid.add(gameDifficultyFactorSlider, 1, 2);
         grid.add(createValueLabel(gameDifficultyFactorSlider, "%.1f"), 2, 2);
 
-        // Spawn Duration
         spawnDurationSlider = new Slider(0.01, 1.0, Config.SPAWN_DURATION_SECONDS);
         spawnDurationSlider.setShowTickMarks(true);
         spawnDurationSlider.setShowTickLabels(true);
         spawnDurationSlider.setMajorTickUnit(0.2);
         spawnDurationSlider.setBlockIncrement(0.05);
-        grid.add(createSettingLabel("spawn_duration"), 0, 3);
+        spawnDurationSlider.getStyleClass().add("styled-slider");
+        grid.add(createSettingLabel(spawnDurationLabelText, "spawn_duration"), 0, 3);
         grid.add(spawnDurationSlider, 1, 3);
         grid.add(createValueLabel(spawnDurationSlider, "%.2f"), 2, 3);
 
-        // Depth Divisor
         depthDivisorSlider = new Slider(1000, 20000, Config.DEPTH_DIVISOR);
         depthDivisorSlider.setShowTickMarks(true);
         depthDivisorSlider.setShowTickLabels(true);
         depthDivisorSlider.setMajorTickUnit(5000);
         depthDivisorSlider.setBlockIncrement(1000);
-        grid.add(createSettingLabel("depth_divisor"), 0, 4);
+        depthDivisorSlider.getStyleClass().add("styled-slider");
+        grid.add(createSettingLabel(depthDivisorLabelText, "depth_divisor"), 0, 4);
         grid.add(depthDivisorSlider, 1, 4);
         grid.add(createValueLabel(depthDivisorSlider, "%.0f"), 2, 4);
 
-        // Max Depth Alpha
         maxDepthAlphaSlider = new Slider(0.1, 1.0, Config.MAX_DEPTH_ALPHA);
         maxDepthAlphaSlider.setShowTickMarks(true);
         maxDepthAlphaSlider.setShowTickLabels(true);
         maxDepthAlphaSlider.setMajorTickUnit(0.2);
         maxDepthAlphaSlider.setBlockIncrement(0.05);
-        grid.add(createSettingLabel("max_depth_alpha"), 0, 5);
+        maxDepthAlphaSlider.getStyleClass().add("styled-slider");
+        grid.add(createSettingLabel(maxDepthAlphaLabelText, "max_depth_alpha"), 0, 5);
         grid.add(maxDepthAlphaSlider, 1, 5);
         grid.add(createValueLabel(maxDepthAlphaSlider, "%.2f"), 2, 5);
 
         return grid;
     }
 
-    /**
-     * Creates the bottom bar with reset and save buttons.
-     * @return HBox for the bottom bar.
-     */
+    private GridPane createLanguageTab() {
+        GridPane grid = createSettingsGrid();
+
+        languageCombo = new ComboBox<>(FXCollections.observableArrayList(
+                "English", "简体中文", "العربية" // Display names for languages
+        ));
+
+        // Set the initial selection based on Config.LANGUAGE
+        if (Config.LANGUAGE.equals("en")) {
+            languageCombo.setValue("English");
+        } else if (Config.LANGUAGE.equals("zh")) {
+            languageCombo.setValue("简体中文");
+        } else if (Config.LANGUAGE.equals("ar")) {
+            languageCombo.setValue("العربية");
+        } else {
+            languageCombo.setValue("English"); // Default to English if unknown
+        }
+
+        languageCombo.setMinWidth(250);
+        languageCombo.getStyleClass().add("combo-box");
+        grid.add(createSettingLabel(languageLabelText, "language_title"), 0, 0);
+        grid.add(languageCombo, 1, 0);
+
+        return grid;
+    }
+
     private HBox createBottomBar() {
-        HBox bottomBar = new HBox(20);
-        bottomBar.setPadding(new Insets(15));
+        HBox bottomBar = new HBox(30); // Increased spacing
+        bottomBar.setPadding(new Insets(20, 50, 20, 50)); // Increased padding
         bottomBar.setAlignment(Pos.CENTER_RIGHT);
         bottomBar.getStyleClass().add("settings-bottom-bar");
 
-        Button resetButton = new Button(Resource.getString("reset_defaults"));
+        resetButton = new Button();
         resetButton.getStyleClass().add("settings-button");
+        resetButton.textProperty().bind(Bindings.createStringBinding(() -> Resource.getString("reset_defaults"),
+                Resource.currentLocaleProperty()));
         resetButton.setOnAction(e -> resetToDefaults());
 
-        Button saveButton = new Button(Resource.getString("save_settings"));
+        saveButton = new Button();
         saveButton.getStyleClass().add("settings-button");
+        saveButton.textProperty().bind(Bindings.createStringBinding(() -> Resource.getString("save_settings"),
+                Resource.currentLocaleProperty()));
         saveButton.setDefaultButton(true);
         saveButton.setOnAction(e -> saveSettings());
 
@@ -293,23 +334,15 @@ public class SettingsScreen {
         return bottomBar;
     }
 
-    /**
-     * Helper method to create a standard GridPane for settings.
-     * @return A pre-configured GridPane.
-     */
     private GridPane createSettingsGrid() {
         GridPane grid = new GridPane();
-        grid.setHgap(20);
-        grid.setVgap(15);
-        grid.setPadding(new Insets(25));
+        grid.getStyleClass().add("settings-grid");
+        grid.setHgap(30); // Increased horizontal gap
+        grid.setVgap(20); // Increased vertical gap
+        grid.setPadding(new Insets(40)); // Increased padding for the grid
         return grid;
     }
 
-    /**
-     * Helper method to create a volume slider with common properties.
-     * @param value The initial value of the slider.
-     * @return Configured Slider.
-     */
     private Slider createVolumeSlider(double value) {
         Slider slider = new Slider(0, 100, value);
         slider.setShowTickLabels(true);
@@ -321,108 +354,91 @@ public class SettingsScreen {
         return slider;
     }
 
-    /**
-     * Helper method to create a label for volume values (e.g., "80%").
-     * @param slider The slider whose value the label will display.
-     * @return Label displaying the volume percentage.
-     */
     private Label createVolumeValueLabel(Slider slider) {
         return createValueLabel(slider, "%.0f%%");
     }
 
-    /**
-     * Helper method to create a label that dynamically displays a slider's value.
-     * @param slider The slider whose value the label will display.
-     * @param format The format string for the displayed value (e.g., "%.1f").
-     * @return Label displaying the formatted slider value.
-     */
     private Label createValueLabel(Slider slider, String format) {
         Label label = new Label();
-        label.textProperty().bind(Bindings.createStringBinding(() ->
-                String.format(format, slider.getValue()),
-                slider.valueProperty()
-        ));
-        label.getStyleClass().add("value-label"); // Consistent style class
-        label.setMinWidth(80);
+        label.textProperty().bind(Bindings.createStringBinding(() -> String.format(format, slider.getValue()),
+                slider.valueProperty()));
+        label.getStyleClass().add("value-label");
+        label.setMinWidth(100); // Made value label wider
         return label;
     }
 
     /**
-     * Helper method to create a setting label with a consistent style.
-     * @param resourceKey The key to retrieve the label text from Resource bundle.
-     * @return Label for a setting.
+     * Creates a setting label whose text dynamically updates with the current
+     * locale.
+     *
+     * @param labelTextProperty The SimpleStringProperty to bind the label's text
+     *                          to.
+     * @param resourceKey       The key to retrieve the localized string from
+     *                          Resource bundle.
+     * @return The Label with bound text.
      */
-    private Label createSettingLabel(String resourceKey) {
-        Label label = new Label(Resource.getString(resourceKey) + ":");
+    private Label createSettingLabel(SimpleStringProperty labelTextProperty, String resourceKey) {
+        Label label = new Label();
+        labelTextProperty.bind(Bindings.createStringBinding(() -> Resource.getString(resourceKey) + ":",
+                Resource.currentLocaleProperty()));
+        label.textProperty().bind(labelTextProperty);
         label.getStyleClass().add("setting-label");
-        label.setMinWidth(200);
+        label.setMinWidth(250); // Made setting label wider
         return label;
     }
 
-    /**
-     * Saves the current settings from the UI controls to both the Profile and Config classes,
-     * then applies immediate display settings and persists them to disk.
-     */
     private void saveSettings() {
-        // Save user preferences to Config (static fields)
         Config.MASTER_VOLUME = masterVolumeSlider.getValue();
         Config.MUSIC_VOLUME = musicVolumeSlider.getValue();
         Config.SFX_VOLUME = sfxVolumeSlider.getValue();
         Config.RESOLUTION = resolutionCombo.getValue();
         Config.FULLSCREEN = fullscreenToggle.isSelected();
         Config.SHOW_FPS = showFpsToggle.isSelected();
-        Config.USER_DIFFICULTY = userDifficultyCombo.getValue();
+
+        String selectedDifficultyDisplay = userDifficultyCombo.getValue();
+        if (selectedDifficultyDisplay != null) {
+            if (selectedDifficultyDisplay.equals(Resource.getString("easy"))) {
+                Config.USER_DIFFICULTY = "easy";
+            } else if (selectedDifficultyDisplay.equals(Resource.getString("normal"))) {
+                Config.USER_DIFFICULTY = "normal";
+            } else if (selectedDifficultyDisplay.equals(Resource.getString("hard"))) {
+                Config.USER_DIFFICULTY = "hard";
+            }
+        }
+
         Config.CAMERA_SENSITIVITY = cameraSensitivitySlider.getValue();
 
-        // Save game configuration to Config (static fields)
+        String selectedLanguageDisplay = languageCombo.getValue();
+        if ("English".equals(selectedLanguageDisplay)) {
+            Config.LANGUAGE = "en";
+        } else if ("简体中文".equals(selectedLanguageDisplay)) {
+            Config.LANGUAGE = "zh";
+        } else if ("العربية".equals(selectedLanguageDisplay)) {
+            Config.LANGUAGE = "ar";
+        }
+
         Config.SPAWN_RADIUS = spawnRadiusSlider.getValue();
         Config.DESPAWN_RADIUS = despawnRadiusSlider.getValue();
-        Config.GAME_DIFFICULTY_FACTOR = gameDifficultyFactorSlider.getValue(); // Use renamed slider
+        Config.GAME_DIFFICULTY_FACTOR = gameDifficultyFactorSlider.getValue();
         Config.SPAWN_DURATION_SECONDS = spawnDurationSlider.getValue();
         Config.DEPTH_DIVISOR = depthDivisorSlider.getValue();
         Config.MAX_DEPTH_ALPHA = maxDepthAlphaSlider.getValue();
 
-        // Apply display-related settings immediately
         applyDisplaySettings();
-
-        // Persist settings to disk
-        // Manager.setProfile(profile); // Profile no longer holds these settings, so no need to save profile for this
-        Config.saveConfig();         // Saves the Config to file
-
-        // Show confirmation to the user
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(Resource.getString("settings_saved"));
-        alert.setHeaderText(null);
-        alert.setContentText(Resource.getString("settings_saved_message"));
-        alert.showAndWait();
+        Config.saveConfig();
+        Resource.loadLanguage(Config.LANGUAGE); // Reload language after saving
     }
 
-    /**
-     * Resets all settings controls in the UI to their default values.
-     * Note: This does NOT save or apply the settings automatically.
-     */
     private void resetToDefaults() {
-        // Reset user preferences sliders/toggles/combos (now updating Config's static fields)
         Config.MASTER_VOLUME = 80.0;
         Config.MUSIC_VOLUME = 70.0;
         Config.SFX_VOLUME = 90.0;
         Config.RESOLUTION = "1920x1080";
         Config.FULLSCREEN = true;
         Config.SHOW_FPS = false;
-        Config.USER_DIFFICULTY = Resource.getString("normal");
+        Config.LANGUAGE = "en"; // Reset language to default English
         Config.CAMERA_SENSITIVITY = 1.0;
 
-        // Apply reset values to UI controls immediately
-        masterVolumeSlider.setValue(Config.MASTER_VOLUME);
-        musicVolumeSlider.setValue(Config.MUSIC_VOLUME);
-        sfxVolumeSlider.setValue(Config.SFX_VOLUME);
-        resolutionCombo.setValue(Config.RESOLUTION);
-        fullscreenToggle.setSelected(Config.FULLSCREEN);
-        showFpsToggle.setSelected(Config.SHOW_FPS);
-        userDifficultyCombo.setValue(Config.USER_DIFFICULTY);
-        cameraSensitivitySlider.setValue(Config.CAMERA_SENSITIVITY);
-
-        // Reset game configuration sliders (now updating Config's static fields)
         Config.SPAWN_RADIUS = 2000.0;
         Config.DESPAWN_RADIUS = 4000.0;
         Config.GAME_DIFFICULTY_FACTOR = 1.0;
@@ -430,7 +446,24 @@ public class SettingsScreen {
         Config.DEPTH_DIVISOR = 10000.0;
         Config.MAX_DEPTH_ALPHA = 0.95;
 
-        // Apply reset values to UI controls immediately
+        // Apply changes to UI elements
+        masterVolumeSlider.setValue(Config.MASTER_VOLUME);
+        musicVolumeSlider.setValue(Config.MUSIC_VOLUME);
+        sfxVolumeSlider.setValue(Config.SFX_VOLUME);
+        resolutionCombo.setValue(Config.RESOLUTION);
+        fullscreenToggle.setSelected(Config.FULLSCREEN);
+        showFpsToggle.setSelected(Config.SHOW_FPS);
+        cameraSensitivitySlider.setValue(Config.CAMERA_SENSITIVITY);
+
+        // Reload language to ensure "normal" is correctly translated before setting the
+        // combo box
+        Resource.loadLanguage(Config.LANGUAGE);
+        Config.USER_DIFFICULTY = "normal"; // Set internal config value first
+        userDifficultyCombo.setValue(Resource.getString(Config.USER_DIFFICULTY)); // Then update UI with translated
+                                                                                  // value
+
+        languageCombo.setValue("English"); // Set language combo to English
+
         spawnRadiusSlider.setValue(Config.SPAWN_RADIUS);
         despawnRadiusSlider.setValue(Config.DESPAWN_RADIUS);
         gameDifficultyFactorSlider.setValue(Config.GAME_DIFFICULTY_FACTOR);
@@ -439,17 +472,12 @@ public class SettingsScreen {
         maxDepthAlphaSlider.setValue(Config.MAX_DEPTH_ALPHA);
     }
 
-    /**
-     * Applies display-specific settings (resolution, fullscreen) to the primary stage.
-     */
     private void applyDisplaySettings() {
-        // Apply resolution
         String[] res = Config.RESOLUTION.split("x");
         if (res.length == 2) {
             try {
                 int width = Integer.parseInt(res[0]);
                 int height = Integer.parseInt(res[1]);
-                // Only set width/height if not in fullscreen to avoid conflicts
                 if (!Config.FULLSCREEN) {
                     Manager.getPrimaryStage().setWidth(width);
                     Manager.getPrimaryStage().setHeight(height);
@@ -459,7 +487,33 @@ public class SettingsScreen {
             }
         }
 
-        // Apply fullscreen
         Manager.getPrimaryStage().setFullScreen(Config.FULLSCREEN);
+    }
+
+    /**
+     * Updates all localized text elements in the settings screen.
+     * This method is called when the locale changes.
+     */
+    private void updateLocalizedText() {
+        if (userDifficultyCombo != null) {
+            userDifficultyCombo.setItems(FXCollections.observableArrayList(
+                    Resource.getString("easy"),
+                    Resource.getString("normal"),
+                    Resource.getString("hard")));
+            userDifficultyCombo.setValue(Resource.getString(Config.USER_DIFFICULTY));
+        }
+
+        // Update language combo box display value based on current Config.LANGUAGE
+        if (languageCombo != null) {
+            if (Config.LANGUAGE.equals("en")) {
+                languageCombo.setValue("English");
+            } else if (Config.LANGUAGE.equals("zh")) {
+                languageCombo.setValue("简体中文");
+            } else if (Config.LANGUAGE.equals("ar")) {
+                languageCombo.setValue("العربية");
+            } else {
+                languageCombo.setValue("English"); // Default to English if unknown
+            }
+        }
     }
 }

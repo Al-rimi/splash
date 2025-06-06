@@ -9,11 +9,10 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
-
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
-
-import java.util.stream.Stream;
+import javafx.scene.layout.Region;
 
 import com.syalux.splash.core.Engine;
 import com.syalux.splash.core.Manager;
@@ -36,14 +35,13 @@ public class GameScreen {
 
     public GameScreen(Profile profile) {
         player = new PlayerEntity(profile);
-
         this.gameCanvas = new Canvas(Config.GAME_WIDTH, Config.GAME_HEIGHT);
         this.engine = new Engine(player, gameCanvas, this::togglePause);
     }
 
     private void createHUD() {
-        hud = new HBox(20);
-        hud.setPadding(new Insets(10));
+        hud = new HBox(25);
+        hud.setPadding(new Insets(15, 25, 15, 25));
         hud.setAlignment(Pos.TOP_LEFT);
         hud.getStyleClass().add("hud");
 
@@ -51,11 +49,12 @@ public class GameScreen {
         Label scoreLabel = createBoundLabel("score", player.scoreProperty());
         Label coinsLabel = createBoundLabel("coins", player.coinsProperty());
 
-        Stream.of(healthLabel, scoreLabel, coinsLabel)
-                .forEach(label -> label.getStyleClass().add("hud-label"));
-
         Button pauseButton = createPauseButton();
-        hud.getChildren().addAll(healthLabel, scoreLabel, coinsLabel, pauseButton);
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        hud.getChildren().addAll(healthLabel, scoreLabel, coinsLabel, spacer, pauseButton);
     }
 
     private Label createBoundLabel(String key, IntegerProperty property) {
@@ -65,6 +64,7 @@ public class GameScreen {
                         () -> Resource.getString(key) + ": " + property.get(),
                         property,
                         Resource.currentLocaleProperty()));
+        label.getStyleClass().add("hud-label");
         return label;
     }
 
@@ -73,7 +73,7 @@ public class GameScreen {
         pauseButton.textProperty().bind(
                 Bindings.createStringBinding(() -> Resource.getString("pause"), Resource.currentLocaleProperty()));
         pauseButton.setOnAction(e -> togglePause());
-        pauseButton.getStyleClass().add("nav-button");
+        pauseButton.getStyleClass().add("hud-pause-button");
         return pauseButton;
     }
 
@@ -101,13 +101,8 @@ public class GameScreen {
 
     private void applyBlurEffect(boolean apply) {
         GaussianBlur blur = new GaussianBlur(10);
-        if (apply) {
-            gameCanvas.setEffect(blur);
-            backgroundCanvas.setEffect(blur);
-        } else {
-            gameCanvas.setEffect(null);
-            backgroundCanvas.setEffect(null);
-        }
+        if (gameCanvas != null) gameCanvas.setEffect(apply ? blur : null);
+        if (backgroundCanvas != null) backgroundCanvas.setEffect(apply ? blur : null);
     }
 
     private void showPauseScreen() {
@@ -123,22 +118,22 @@ public class GameScreen {
         root = new StackPane();
         root.getStyleClass().add("game-container");
 
+        backgroundCanvas = new Canvas(Config.GAME_WIDTH, Config.GAME_HEIGHT);
+        backgroundCanvas.getStyleClass().add("background-canvas");
+        backgroundCanvas.widthProperty().bind(root.widthProperty());
+        backgroundCanvas.heightProperty().bind(root.heightProperty());
+
         gameCanvas.getStyleClass().add("game-canvas");
         gameCanvas.widthProperty().bind(root.widthProperty());
         gameCanvas.heightProperty().bind(root.heightProperty());
 
         createHUD();
-        root.getChildren().addAll(gameCanvas, hud);
+        root.getChildren().addAll(backgroundCanvas, gameCanvas, hud);
         root.getStylesheets().add(Resource.getStyleSheet());
 
         engine.setRootContainer(root);
         root.requestFocus();
         engine.start();
-
-        backgroundCanvas = new Canvas();
-        backgroundCanvas.widthProperty().bind(root.widthProperty());
-        backgroundCanvas.heightProperty().bind(root.heightProperty());
-        backgroundCanvas.getStyleClass().add("background-canvas");
 
         player.healthProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.intValue() <= 0 && !isDead) {
@@ -150,19 +145,14 @@ public class GameScreen {
         root.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene == null) {
                 engine.pause(true);
-            } else if (!isPaused) {
-                engine.pause(false);
-            }
-        });
-
-        root.sceneProperty().addListener((obs, oldScene, newScene) -> {
-            if (newScene == null) {
                 Profile currentProfile = Manager.getProfile();
                 currentProfile.setCoins(player.getCoins());
                 if (player.getScore() > currentProfile.getHighScore()) {
                     currentProfile.setHighScore(player.getScore());
                 }
                 Manager.setProfile(currentProfile);
+            } else if (!isPaused) {
+                engine.pause(false);
             }
         });
 

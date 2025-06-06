@@ -33,8 +33,8 @@ public class MainMenuScreen {
             () -> Resource.getString(resourceKey),
             Resource.currentLocaleProperty()
         ));
-        button.getStyleClass().add("menu-button");
-        button.setMaxWidth(Double.MAX_VALUE);
+        button.getStyleClass().add("menu-button"); // Uses the specific menu-button style
+        button.setMaxWidth(Double.MAX_VALUE); // Let the VBox manage width
         button.setOnAction(e -> action.run());
         return button;
     }

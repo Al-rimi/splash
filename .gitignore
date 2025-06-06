@@ -3,3 +3,4 @@ dependency-reduced-pom.xml
 /target
 **.jar
 **.ser
+game_config.properties

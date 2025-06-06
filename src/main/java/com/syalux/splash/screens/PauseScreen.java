@@ -13,12 +13,15 @@ import javafx.beans.binding.Bindings;
 public class PauseScreen extends StackPane {
 
     public PauseScreen(Runnable onResume) {
-        this.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        // Apply the 'pause-menu' style to the StackPane itself, which includes background color
+        this.getStyleClass().add("pause-menu");
+        // Removed setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);"); as it's now in CSS
         this.setAlignment(Pos.CENTER);
 
         VBox menu = new VBox(20);
         menu.setAlignment(Pos.CENTER);
-        menu.getStyleClass().add("pause-menu");
+        // No need for menu.getStyleClass().add("pause-menu"); if the StackPane handles the background
+        // If you need a specific inner styling for the VBox, give it a new class like "pause-menu-content"
 
         Button resumeButton = createPauseButton("resume", onResume);
         Button settingsButton = createPauseButton("settings", Manager::showSettingsScreen);
@@ -36,7 +39,7 @@ public class PauseScreen extends StackPane {
                 Resource.currentLocaleProperty()
             )
         );
-        button.getStyleClass().add("pause-button");
+        button.getStyleClass().add("pause-button"); // Uses the specific pause-button style
         button.setOnAction(e -> action.run());
         return button;
     }

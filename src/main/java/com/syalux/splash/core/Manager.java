@@ -36,9 +36,9 @@ public final class Manager {
      * @param stage The primary stage of the application.
      */
     public static void init(Stage stage) {
+        Config.loadConfig();
+        loadProfile(); 
         Resource.loadAll();
-        Config.loadConfig(); // Load global game configurations
-        loadProfile();      // Load user-specific profile data
 
         primaryStage = stage;
         primaryStage.setOnCloseRequest(event -> Manager.saveProfile());
