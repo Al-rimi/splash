@@ -21,7 +21,7 @@ public class Profile implements Serializable {
     public Profile() {
         this.playerName = "Player";
         this.highScore = 0;
-        this.coins = 10000;
+        this.coins = 100;
         this.fishType = 1;
 
         Character initialFish = CharacterManager.getCharacter(this.fishType);

@@ -31,7 +31,7 @@ public class CharacterManager {
     }
 
     private static int generatePrice(int id, Random rand) {
-        return 100 + (id-1)*250 + rand.nextInt(200);
+        return 100 + (id-1)*50 + rand.nextInt(200);
     }
 
     private static int generateHealth(int id, Random rand) {
@@ -43,7 +43,7 @@ public class CharacterManager {
     }
 
     private static int generateSize(int id, Random rand) {
-        return 40 + (int)(id * 3 + rand.nextDouble() * 5);
+        return 50 + (int)(id * 3 + rand.nextDouble() * 5);
     }
 
     public static List<Character> getAllCharacters() {

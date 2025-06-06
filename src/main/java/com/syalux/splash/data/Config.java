@@ -12,7 +12,7 @@ public class Config {
     public static double GAME_HEIGHT = 1080;
     public static double SPAWN_RADIUS = 2000;
     public static double DESPAWN_RADIUS = 4000;
-    public static double GAME_DIFFICULTY_FACTOR = 0.3;
+    public static double GAME_DIFFICULTY_FACTOR = 0.5;
     public static double SPAWN_DURATION_SECONDS = 0.1;
 
     public static double DEPTH_DIVISOR = 10000.0;

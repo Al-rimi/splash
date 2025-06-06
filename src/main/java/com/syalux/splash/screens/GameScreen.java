@@ -48,9 +48,11 @@ public class GameScreen {
      */
     private HBox createTopLeftHud() {
         HBox container = new HBox(40);
-        container.setPadding(new Insets(20, 20, 0, 20));
+        container.setPadding(new Insets(30, 30, 0, 30));
+        container.setAlignment(Pos.TOP_LEFT);
 
-        HBox healthBar = createHealthBar(player.healthProperty(), player.getInitialMaxHealth(), 200);
+        HBox healthBar = createHealthBar(player.healthProperty(), player.getInitialMaxHealth(),
+                player.getInitialMaxHealth() + 100);
         HBox coinDisplay = createCoinDisplay(player.coinsProperty());
 
         container.getChildren().addAll(healthBar, coinDisplay);
@@ -61,19 +63,23 @@ public class GameScreen {
 
     /**
      * Creates a custom health bar with a background representing max health
-     * and a foreground representing current health. The bar has a fixed visual width.
+     * and a foreground representing current health. The bar has a fixed visual
+     * width.
      *
-     * @param currentHealthProperty The IntegerProperty for the player's current health.
-     * @param maxHealth The maximum health value for the player.
-     * @param barVisualWidth The fixed visual width (in pixels) for the health bar.
+     * @param currentHealthProperty The IntegerProperty for the player's current
+     *                              health.
+     * @param maxHealth             The maximum health value for the player.
+     * @param barVisualWidth        The fixed visual width (in pixels) for the
+     *                              health bar.
      * @return An HBox containing the health bar.
      */
     private HBox createHealthBar(IntegerProperty currentHealthProperty, int maxHealth, double barVisualWidth) {
         HBox healthBarContainer = new HBox(10);
-        healthBarContainer.getStyleClass().add("health-bar-container");
+        healthBarContainer.setAlignment(Pos.TOP_LEFT); // Ensures alignment of this box within the top-left HUD
 
         StackPane barStack = new StackPane();
-        barStack.setPrefHeight(25);
+        barStack.setAlignment(Pos.TOP_LEFT);
+        barStack.setPrefHeight(10);
         barStack.setPrefWidth(barVisualWidth);
         barStack.getStyleClass().add("health-bar-stack");
 
@@ -95,17 +101,17 @@ public class GameScreen {
         currentHealthRect.widthProperty().bind(
                 Bindings.createDoubleBinding(
                         () -> ((double) currentHealthProperty.get() / maxHealth) * barVisualWidth,
-                        currentHealthProperty
-                )
-        );
+                        currentHealthProperty));
 
         barStack.getChildren().addAll(backgroundRect, currentHealthRect);
         healthBarContainer.getChildren().addAll(barStack);
+
         return healthBarContainer;
     }
 
     /**
-     * Creates a display for the player's coins, including a coin image and the coin count.
+     * Creates a display for the player's coins, including a coin image and the coin
+     * count.
      *
      * @param coinsProperty The IntegerProperty for the player's current coins.
      * @return An HBox containing the coin image and coin count label.
@@ -172,8 +178,10 @@ public class GameScreen {
 
     private void applyBlurEffect(boolean apply) {
         GaussianBlur blur = new GaussianBlur(10);
-        if (gameCanvas != null) gameCanvas.setEffect(apply ? blur : null);
-        if (backgroundCanvas != null) backgroundCanvas.setEffect(apply ? blur : null);
+        if (gameCanvas != null)
+            gameCanvas.setEffect(apply ? blur : null);
+        if (backgroundCanvas != null)
+            backgroundCanvas.setEffect(apply ? blur : null);
     }
 
     private void showPauseScreen() {
@@ -219,7 +227,6 @@ public class GameScreen {
         StackPane.setAlignment(pauseButton, Pos.TOP_RIGHT);
         StackPane.setMargin(pauseButton, new Insets(20, 20, 0, 0));
 
-
         engine.setRootContainer(root);
         root.requestFocus();
         engine.start();
@@ -259,8 +266,7 @@ public class GameScreen {
         applyBlurEffect(true);
         DeathScreen deathScreen = new DeathScreen(
                 player.getKiller(),
-                player.scoreProperty().get()
-        );
+                player.scoreProperty().get());
         root.getChildren().add(deathScreen);
     }
 }

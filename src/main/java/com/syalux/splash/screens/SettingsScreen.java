@@ -437,7 +437,7 @@ public class SettingsScreen {
         Config.FULLSCREEN = true;
         Config.SHOW_FPS = false;
         Config.LANGUAGE = "en";
-        Config.CAMERA_SENSITIVITY = 0.3;
+        Config.CAMERA_SENSITIVITY = 0.5;
 
         Config.SPAWN_RADIUS = 2000.0;
         Config.DESPAWN_RADIUS = 4000.0;
