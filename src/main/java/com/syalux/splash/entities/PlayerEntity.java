@@ -55,6 +55,10 @@ public class PlayerEntity extends FishEntity {
         this.coins.set(this.coins.get() + coins);
     }
 
+    public int getCoins() {
+        return coins.get();
+    }
+
     public IntegerProperty scoreProperty() {
         return score;
     }

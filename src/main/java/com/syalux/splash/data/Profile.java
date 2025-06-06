@@ -1,6 +1,12 @@
 package com.syalux.splash.data;
 
-public class Profile {
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+public class Profile implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String playerName;
     private int highScore;
     private int coins;
@@ -8,7 +14,11 @@ public class Profile {
     private int fishSize;
     private int fishHealth;
     private int fishSpeed;
+    private Set<Integer> unlockedCharacters = new HashSet<>();
 
+    /**
+     * Default constructor for a new profile.
+     */
     public Profile() {
         this.playerName = "Player";
         this.highScore = 0;
@@ -18,8 +28,12 @@ public class Profile {
         this.fishHealth = 1;
         this.fishSpeed = 600;
     }
-    
+
+    /**
+     * Constructor to initialize a profile with specific game stats.
+     */
     public Profile(String playerName, int highScore, int coins, int fishType, int fishSize, int fishHealth, int fishSpeed) {
+        this(); // Call default constructor to set other defaults
         this.playerName = playerName;
         this.highScore = highScore;
         this.coins = coins;
@@ -28,7 +42,11 @@ public class Profile {
         this.fishHealth = fishHealth;
         this.fishSpeed = fishSpeed;
     }
-    
+
+    public void unlockCharacter(int characterId) {
+        this.unlockedCharacters.add(characterId);
+    }
+
     public String getPlayerName() {
         return playerName;
     }
@@ -83,5 +101,21 @@ public class Profile {
 
     public void setFishSpeed(int fishSpeed) {
         this.fishSpeed = fishSpeed;
+    }
+
+    public Set<Integer> getUnlockedCharacters() {
+        return unlockedCharacters;
+    }
+
+    public void addUnlockedCharacter(int characterId) {
+        this.unlockedCharacters.add(characterId);
+    }
+
+    public void removeUnlockedCharacter(int characterId) {
+        this.unlockedCharacters.remove(characterId);
+    }
+
+    public boolean isCharacterUnlocked(int characterId) {
+        return this.unlockedCharacters.contains(characterId);
     }
 }

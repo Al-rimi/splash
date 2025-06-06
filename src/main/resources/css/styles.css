@@ -61,9 +61,93 @@
 
 /* Settings Screen */
 .settings-container {
-    -fx-background-color: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
-    -fx-padding: 40px 20px 20px 20px;
-    -fx-spacing: 30px;
+    -fx-background-color: #1e2b47;
+}
+
+.settings-top-bar {
+    -fx-background-color: #0f1a2d;
+    -fx-border-color: #2a3a5a;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.settings-title {
+    -fx-fill: #e0f0ff;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 0, 1);
+}
+
+.settings-tab-pane {
+    -fx-background-color: transparent;
+    -fx-tab-min-width: 120px;
+}
+
+.settings-tab-pane .tab-header-area {
+    -fx-background-color: #0f1a2d;
+}
+
+.settings-tab-pane .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.settings-tab-pane .tab {
+    -fx-background-color: #1a2a4d;
+    -fx-background-radius: 5 5 0 0;
+    -fx-padding: 8 20;
+    -fx-border-color: #2a3a5a;
+    -fx-border-width: 1px;
+}
+
+.settings-tab-pane .tab:selected {
+    -fx-background-color: #2a3a6d;
+    -fx-border-color: #3a4a7d;
+    -fx-border-width: 1px 1px 0 1px;
+}
+
+.settings-tab-pane .tab .tab-label {
+    -fx-text-fill: #c0d0e0;
+    -fx-font-weight: bold;
+}
+
+.settings-tab-pane .tab:selected .tab-label {
+    -fx-text-fill: #ffffff;
+}
+
+.volume-slider .track {
+    -fx-background-color: #3a4a6d;
+}
+
+.volume-slider .thumb {
+    -fx-background-color: #4ca0ff;
+    -fx-background-radius: 10;
+}
+
+.setting-label {
+    -fx-text-fill: #c0d0e0;
+    -fx-font-size: 16px;
+    -fx-alignment: center-right;
+}
+
+.volume-value {
+    -fx-text-fill: #4ca0ff;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.settings-bottom-bar {
+    -fx-background-color: #0f1a2d;
+    -fx-border-color: #2a3a5a;
+    -fx-border-width: 1px 0 0 0;
+}
+
+.settings-button {
+    -fx-font-size: 16px;
+    -fx-padding: 8 20;
+    -fx-background-color: #2a5caa;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+}
+
+.settings-button:hover {
+    -fx-background-color: #3a6cba;
 }
 
 /* Game Screen */
@@ -172,4 +256,62 @@
 
 .death-button:hover {
     -fx-background-color: #ff6666;
+}
+
+/* Add to your main CSS file */
+.store-container {
+    -fx-background-color: radial-gradient(center 50% 50%, radius 150%, #1a237e, #0d47a1);
+}
+
+.coins-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: gold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+.fish-name {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.fish-price {
+    -fx-font-size: 24px;
+    -fx-text-fill: gold;
+}
+
+.fish-stats {
+    -fx-font-size: 20px;
+    -fx-text-fill: white;
+}
+
+.action-button {
+    -fx-font-size: 20px;
+    -fx-padding: 10 20;
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+.action-button:disabled {
+    -fx-background-color: #616161;
+}
+
+.disabled-buy {
+    -fx-background-color: #f44336 !important;
+}
+
+.nav-button {
+    -fx-font-size: 40px;
+    -fx-min-width: 60px;
+    -fx-min-height: 60px;
+    -fx-background-color: rgba(255,255,255,0.3);
+    -fx-text-fill: white;
+}
+
+.back-button {
+    -fx-font-size: 20px;
+    -fx-padding: 10 30;
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
 }

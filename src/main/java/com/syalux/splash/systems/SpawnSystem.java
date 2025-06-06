@@ -71,10 +71,8 @@ public class SpawnSystem {
         double spawnX = camX + Math.cos(angle) * distance + Math.random() * 800 - 200;
         double spawnY = camY + Math.sin(angle) * distance + Math.random() * 800 - 200;
 
-        double difficultyFactor = Math.log(playerScore + 2) / (5 + (25.0 * (1 - Config.DIFFICULTY)));
+        double difficultyFactor = Math.log(playerScore + 2) / (5 + (25.0 * (1 - Config.GAME_DIFFICULTY_FACTOR)));
         difficultyFactor = Math.min(1.0, Math.max(0.05, difficultyFactor));
-        System.out.println("difficulty factor: " + difficultyFactor);
-        System.out.println("score: " + playerScore);
 
         int fishType = random.nextInt(Config.FISH_IMAGE_COUNT) + 1;
         if (fishType == playerFishType) {

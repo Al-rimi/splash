@@ -16,6 +16,7 @@ import javafx.scene.layout.StackPane;
 import java.util.stream.Stream;
 
 import com.syalux.splash.core.Engine;
+import com.syalux.splash.core.Manager;
 import com.syalux.splash.data.Profile;
 import com.syalux.splash.data.Config;
 import com.syalux.splash.data.Resource;
@@ -154,10 +155,28 @@ public class GameScreen {
             }
         });
 
+        root.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene == null) {
+                Profile currentProfile = Manager.getProfile();
+                currentProfile.setCoins(player.getCoins());
+                if (player.getScore() > currentProfile.getHighScore()) {
+                    currentProfile.setHighScore(player.getScore());
+                }
+                Manager.setProfile(currentProfile);
+            }
+        });
+
         return root;
     }
 
     private void showDeathScreen() {
+        Profile currentProfile = Manager.getProfile();
+        currentProfile.setCoins(player.getCoins());
+        if (player.getScore() > currentProfile.getHighScore()) {
+            currentProfile.setHighScore(player.getScore());
+        }
+        Manager.setProfile(currentProfile);
+
         applyBlurEffect(true);
         DeathScreen deathScreen = new DeathScreen(
             player.getKiller(),
