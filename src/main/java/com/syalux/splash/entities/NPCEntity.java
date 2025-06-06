@@ -23,8 +23,8 @@ public class NPCEntity extends FishEntity {
 
     @Override
     public void update(double deltaTime) {
-        super.update(deltaTime); // Call super.update() to handle death and moving animations
-        if (isDead) return; // Stop updating if dead
+        super.update(deltaTime);
+        if (isDead) return;
 
         switch (intelligenceLevel) {
             case 3:
@@ -96,6 +96,11 @@ public class NPCEntity extends FishEntity {
         }
     }
 
+    /**
+     * Finds the most valuable food source (smaller fish) within detection radius.
+     * Value is determined by size divided by distance, prioritizing larger, closer food.
+     * @return The most valuable FishEntity to pursue, or null if none found.
+     */
     private FishEntity findBestFood() {
         FishEntity bestFood = null;
         double bestValue = Double.MIN_VALUE;

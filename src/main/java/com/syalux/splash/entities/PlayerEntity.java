@@ -24,8 +24,8 @@ public class PlayerEntity extends FishEntity {
 
     @Override
     public void update(double deltaTime) {
-        super.update(deltaTime); // Call super.update() to handle death and moving animations
-        if (isDead) return; // Stop updating if dead
+        super.update(deltaTime);
+        if (isDead) return;
 
         updateVelocity();
         updatePosition(deltaTime);

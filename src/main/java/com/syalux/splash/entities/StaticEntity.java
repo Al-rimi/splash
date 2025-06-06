@@ -12,10 +12,10 @@ public class StaticEntity {
     private final int size;
     private final double parallaxFactor;
 
-    public StaticEntity(Resource.Environment type, 
-                        double x, 
-                        double y, 
-                        int imageNumber, 
+    public StaticEntity(Resource.Environment type,
+                        double x,
+                        double y,
+                        int imageNumber,
                         int size) {
         this.type = type;
         this.x = x;
@@ -31,21 +31,32 @@ public class StaticEntity {
         }
     }
 
-    public void render(GraphicsContext gc, 
-                       double camX, 
-                       double camY, 
-                       double baseWidth, 
-                       double baseHeight,
-                       double offsetX, 
-                       double offsetY) {
+    /**
+     * Renders the static entity on the given GraphicsContext, accounting for camera position and parallax.
+     *
+     * @param gc The GraphicsContext to draw on.
+     * @param camX The x-coordinate of the camera.
+     * @param camY The y-coordinate of the camera.
+     * @param baseWidth The base width of the rendering area.
+     * @param baseHeight The base height of the rendering area.
+     * @param offsetX An additional x-offset for rendering.
+     * @param offsetY An additional y-offset for rendering.
+     */
+    public void render(GraphicsContext gc,
+                        double camX,
+                        double camY,
+                        double baseWidth,
+                        double baseHeight,
+                        double offsetX,
+                        double offsetY) {
 
         double screenX = (x - camX * parallaxFactor) + baseWidth/2 + offsetX;
         double screenY = (y - camY * parallaxFactor) + baseHeight/2 + offsetY;
-        
-        gc.drawImage(Resource.getEnvironmentImage(type, imageNumber), 
-            screenX - size, 
-            screenY - size, 
-            size, 
+
+        gc.drawImage(Resource.getEnvironmentImage(type, imageNumber),
+            screenX - size,
+            screenY - size,
+            size,
             size
         );
     }

@@ -16,9 +16,6 @@ public class Profile implements Serializable {
     private int fishSpeed;
     private Set<Integer> unlockedCharacters = new HashSet<>();
 
-    /**
-     * Default constructor for a new profile.
-     */
     public Profile() {
         this.playerName = "Player";
         this.highScore = 0;
@@ -29,11 +26,8 @@ public class Profile implements Serializable {
         this.fishSpeed = 600;
     }
 
-    /**
-     * Constructor to initialize a profile with specific game stats.
-     */
     public Profile(String playerName, int highScore, int coins, int fishType, int fishSize, int fishHealth, int fishSpeed) {
-        this(); // Call default constructor to set other defaults
+        this();
         this.playerName = playerName;
         this.highScore = highScore;
         this.coins = coins;

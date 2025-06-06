@@ -25,6 +25,12 @@ public class WelcomeScreen extends StackPane {
         setupAutoTransition();
     }
 
+    /**
+     * Builds an HBox containing individual Text nodes for each letter of "SPLASH",
+     * applying initial styling and setting up animations for each letter.
+     *
+     * @return An HBox containing the animated "SPLASH" title.
+     */
     private HBox buildTitleBox() {
         HBox box = new HBox(10);
         box.setAlignment(Pos.CENTER);
@@ -133,6 +139,11 @@ public class WelcomeScreen extends StackPane {
         rippleEffect.play();
     }
 
+    /**
+     * Sets up an automatic transition from the welcome screen to the main menu
+     * after a defined animation duration. This involves fading out the welcome screen
+     * and fading in the main menu.
+     */
     private void setupAutoTransition() {
         Timeline delay = new Timeline(new KeyFrame(Duration.seconds(ANIMATION_DURATION - 1), e -> {
             Parent mainMenu = new MainMenuScreen().createRoot();
@@ -152,5 +163,4 @@ public class WelcomeScreen extends StackPane {
         }));
         delay.play();
     }
-
 }

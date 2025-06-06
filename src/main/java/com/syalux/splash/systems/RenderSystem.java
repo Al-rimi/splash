@@ -23,8 +23,21 @@ public class RenderSystem {
         this.baseHeight = baseHeight;
     }
 
-    public void renderFrame(double camX, double camY, double scaleX, double scaleY, 
-                           double depthEffectAlpha, PlayerEntity player) {
+    /**
+     * Renders a single frame of the game world. This method clears the canvas,
+     * applies camera transformations (scaling and translation), draws water tiles,
+     * and renders all entities (static, coins, NPCs, and players) within the view.
+     * Finally, it applies a depth effect.
+     *
+     * @param camX The camera's X-coordinate in world space.
+     * @param camY The camera's Y-coordinate in world space.
+     * @param scaleX The scaling factor for the X-axis.
+     * @param scaleY The scaling factor for the Y-axis.
+     * @param depthEffectAlpha The alpha value for the depth effect, influencing water darkness.
+     * @param player The player entity (currently unused in this method, but passed for consistency).
+     */
+    public void renderFrame(double camX, double camY, double scaleX, double scaleY,
+                            double depthEffectAlpha, PlayerEntity player) {
         gc.save();
         gc.scale(Math.min(scaleX, scaleY), Math.min(scaleX, scaleY));
 

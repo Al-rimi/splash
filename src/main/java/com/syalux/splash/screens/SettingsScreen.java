@@ -22,7 +22,7 @@ public class SettingsScreen {
     private ComboBox<String> resolutionCombo;
     private CheckBox showFpsToggle;
     private Slider cameraSensitivitySlider;
-    private ComboBox<String> languageCombo; // New: Language ComboBox
+    private ComboBox<String> languageCombo;
 
     private Slider spawnRadiusSlider;
     private Slider despawnRadiusSlider;
@@ -31,7 +31,6 @@ public class SettingsScreen {
     private Slider depthDivisorSlider;
     private Slider maxDepthAlphaSlider;
 
-    // References to labels that need dynamic updates
     private Text settingsTitle;
     private Tab audioTab;
     private Tab videoTab;
@@ -41,9 +40,6 @@ public class SettingsScreen {
     private Button resetButton;
     private Button saveButton;
 
-    // Use SimpleStringProperty for labels whose text needs to be dynamically
-    // updated
-    // This allows you to bind the label's text property to these properties
     private SimpleStringProperty masterVolumeLabelText = new SimpleStringProperty();
     private SimpleStringProperty musicVolumeLabelText = new SimpleStringProperty();
     private SimpleStringProperty sfxVolumeLabelText = new SimpleStringProperty();
@@ -65,7 +61,7 @@ public class SettingsScreen {
         mainLayout.getStyleClass().add("settings-container");
         mainLayout.setPrefSize(Manager.getPrimaryStage().getWidth(), Manager.getPrimaryStage().getHeight());
 
-        VBox topSection = createTopSection(); // Combine top bar and title
+        VBox topSection = createTopSection();
         mainLayout.setTop(topSection);
 
         TabPane tabPane = createTabPane();
@@ -74,10 +70,8 @@ public class SettingsScreen {
         HBox bottomBar = createBottomBar();
         mainLayout.setBottom(bottomBar);
 
-        // Initialize all localized text properties for the first time
         updateLocalizedText();
 
-        // Bind UI elements to language changes
         Resource.currentLocaleProperty().addListener((obs, oldLocale, newLocale) -> updateLocalizedText());
 
         return mainLayout;
@@ -87,17 +81,17 @@ public class SettingsScreen {
         VBox topSection = new VBox();
         topSection.getStyleClass().add("settings-top-section");
         topSection.setAlignment(Pos.CENTER);
-        topSection.setPadding(new Insets(30, 0, 20, 0)); // Increased top padding
+        topSection.setPadding(new Insets(30, 0, 20, 0));
 
         HBox topBarContent = new HBox(20);
         topBarContent.setAlignment(Pos.CENTER_LEFT);
-        topBarContent.setPadding(new Insets(0, 50, 0, 50)); // Horizontal padding for alignment
+        topBarContent.setPadding(new Insets(0, 50, 0, 50));
 
         Button backButton = new Button("←");
         backButton.getStyleClass().add("back-button");
         backButton.setOnAction(e -> Manager.goBack());
 
-        settingsTitle = new Text(); // Initialize as a Text node
+        settingsTitle = new Text();
         settingsTitle.getStyleClass().add("settings-title");
         settingsTitle.textProperty().bind(
                 Bindings.createStringBinding(() -> Resource.getString("settings"), Resource.currentLocaleProperty()));
@@ -105,7 +99,7 @@ public class SettingsScreen {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        topBarContent.getChildren().addAll(backButton, spacer, settingsTitle); // Center the title
+        topBarContent.getChildren().addAll(backButton, spacer, settingsTitle);
 
         topSection.getChildren().add(topBarContent);
         return topSection;
@@ -139,13 +133,13 @@ public class SettingsScreen {
         configTab.setContent(createConfigTab());
         configTab.setClosable(false);
 
-        languageTab = new Tab(); // New Language Tab
+        languageTab = new Tab();
         languageTab.textProperty().bind(Bindings.createStringBinding(() -> Resource.getString("language_title"),
                 Resource.currentLocaleProperty()));
         languageTab.setContent(createLanguageTab());
         languageTab.setClosable(false);
 
-        tabPane.getTabs().addAll(audioTab, videoTab, gameplayTab, configTab, languageTab); // Add language tab
+        tabPane.getTabs().addAll(audioTab, videoTab, gameplayTab, configTab, languageTab);
         return tabPane;
     }
 
@@ -176,7 +170,7 @@ public class SettingsScreen {
         resolutionCombo = new ComboBox<>(FXCollections.observableArrayList(
                 "1920x1080", "1600x900", "1366x768", "1280x720", "1024x768"));
         resolutionCombo.setValue(Config.RESOLUTION);
-        resolutionCombo.setMinWidth(250); // Made combobox wider
+        resolutionCombo.setMinWidth(250);
         resolutionCombo.getStyleClass().add("combo-box");
         grid.add(createSettingLabel(resolutionLabelText, "resolution"), 0, 0);
         grid.add(resolutionCombo, 1, 0);
@@ -199,8 +193,8 @@ public class SettingsScreen {
     private GridPane createGameplayTab() {
         GridPane grid = createSettingsGrid();
 
-        userDifficultyCombo = new ComboBox<>(); // Initialize empty, items will be set in updateLocalizedText()
-        userDifficultyCombo.setMinWidth(250); // Made combobox wider
+        userDifficultyCombo = new ComboBox<>();
+        userDifficultyCombo.setMinWidth(250);
         userDifficultyCombo.getStyleClass().add("combo-box");
         grid.add(createSettingLabel(difficultyLabelText, "difficulty"), 0, 0);
         grid.add(userDifficultyCombo, 1, 0);
@@ -289,10 +283,9 @@ public class SettingsScreen {
         GridPane grid = createSettingsGrid();
 
         languageCombo = new ComboBox<>(FXCollections.observableArrayList(
-                "English", "简体中文", "العربية" // Display names for languages
+                "English", "简体中文", "العربية"
         ));
 
-        // Set the initial selection based on Config.LANGUAGE
         if (Config.LANGUAGE.equals("en")) {
             languageCombo.setValue("English");
         } else if (Config.LANGUAGE.equals("zh")) {
@@ -300,7 +293,7 @@ public class SettingsScreen {
         } else if (Config.LANGUAGE.equals("ar")) {
             languageCombo.setValue("العربية");
         } else {
-            languageCombo.setValue("English"); // Default to English if unknown
+            languageCombo.setValue("English");
         }
 
         languageCombo.setMinWidth(250);
@@ -312,8 +305,8 @@ public class SettingsScreen {
     }
 
     private HBox createBottomBar() {
-        HBox bottomBar = new HBox(30); // Increased spacing
-        bottomBar.setPadding(new Insets(20, 50, 20, 50)); // Increased padding
+        HBox bottomBar = new HBox(30);
+        bottomBar.setPadding(new Insets(20, 50, 20, 50));
         bottomBar.setAlignment(Pos.CENTER_RIGHT);
         bottomBar.getStyleClass().add("settings-bottom-bar");
 
@@ -337,9 +330,9 @@ public class SettingsScreen {
     private GridPane createSettingsGrid() {
         GridPane grid = new GridPane();
         grid.getStyleClass().add("settings-grid");
-        grid.setHgap(30); // Increased horizontal gap
-        grid.setVgap(20); // Increased vertical gap
-        grid.setPadding(new Insets(40)); // Increased padding for the grid
+        grid.setHgap(30);
+        grid.setVgap(20);
+        grid.setPadding(new Insets(40));
         return grid;
     }
 
@@ -363,18 +356,15 @@ public class SettingsScreen {
         label.textProperty().bind(Bindings.createStringBinding(() -> String.format(format, slider.getValue()),
                 slider.valueProperty()));
         label.getStyleClass().add("value-label");
-        label.setMinWidth(100); // Made value label wider
+        label.setMinWidth(100);
         return label;
     }
 
     /**
-     * Creates a setting label whose text dynamically updates with the current
-     * locale.
+     * Creates a setting label whose text dynamically updates with the current locale.
      *
-     * @param labelTextProperty The SimpleStringProperty to bind the label's text
-     *                          to.
-     * @param resourceKey       The key to retrieve the localized string from
-     *                          Resource bundle.
+     * @param labelTextProperty The SimpleStringProperty to bind the label's text to.
+     * @param resourceKey       The key to retrieve the localized string from Resource bundle.
      * @return The Label with bound text.
      */
     private Label createSettingLabel(SimpleStringProperty labelTextProperty, String resourceKey) {
@@ -383,10 +373,15 @@ public class SettingsScreen {
                 Resource.currentLocaleProperty()));
         label.textProperty().bind(labelTextProperty);
         label.getStyleClass().add("setting-label");
-        label.setMinWidth(250); // Made setting label wider
+        label.setMinWidth(250);
         return label;
     }
 
+    /**
+     * Saves the current settings from the UI components to the Config.
+     * This method updates various game configuration parameters and then applies
+     * display settings and saves the configuration to a file.
+     */
     private void saveSettings() {
         Config.MASTER_VOLUME = masterVolumeSlider.getValue();
         Config.MUSIC_VOLUME = musicVolumeSlider.getValue();
@@ -426,9 +421,14 @@ public class SettingsScreen {
 
         applyDisplaySettings();
         Config.saveConfig();
-        Resource.loadLanguage(Config.LANGUAGE); // Reload language after saving
+        Resource.loadLanguage(Config.LANGUAGE);
     }
 
+    /**
+     * Resets all settings to their default values as defined in the Config class.
+     * After resetting the values, it updates the UI elements to reflect these changes
+     * and reloads the language resources.
+     */
     private void resetToDefaults() {
         Config.MASTER_VOLUME = 80.0;
         Config.MUSIC_VOLUME = 70.0;
@@ -436,7 +436,7 @@ public class SettingsScreen {
         Config.RESOLUTION = "1920x1080";
         Config.FULLSCREEN = true;
         Config.SHOW_FPS = false;
-        Config.LANGUAGE = "en"; // Reset language to default English
+        Config.LANGUAGE = "en";
         Config.CAMERA_SENSITIVITY = 0.3;
 
         Config.SPAWN_RADIUS = 2000.0;
@@ -446,7 +446,6 @@ public class SettingsScreen {
         Config.DEPTH_DIVISOR = 10000.0;
         Config.MAX_DEPTH_ALPHA = 0.95;
 
-        // Apply changes to UI elements
         masterVolumeSlider.setValue(Config.MASTER_VOLUME);
         musicVolumeSlider.setValue(Config.MUSIC_VOLUME);
         sfxVolumeSlider.setValue(Config.SFX_VOLUME);
@@ -455,14 +454,11 @@ public class SettingsScreen {
         showFpsToggle.setSelected(Config.SHOW_FPS);
         cameraSensitivitySlider.setValue(Config.CAMERA_SENSITIVITY);
 
-        // Reload language to ensure "normal" is correctly translated before setting the
-        // combo box
         Resource.loadLanguage(Config.LANGUAGE);
-        Config.USER_DIFFICULTY = "normal"; // Set internal config value first
-        userDifficultyCombo.setValue(Resource.getString(Config.USER_DIFFICULTY)); // Then update UI with translated
-                                                                                  // value
+        Config.USER_DIFFICULTY = "normal";
+        userDifficultyCombo.setValue(Resource.getString(Config.USER_DIFFICULTY));
 
-        languageCombo.setValue("English"); // Set language combo to English
+        languageCombo.setValue("English");
 
         spawnRadiusSlider.setValue(Config.SPAWN_RADIUS);
         despawnRadiusSlider.setValue(Config.DESPAWN_RADIUS);
@@ -472,6 +468,10 @@ public class SettingsScreen {
         maxDepthAlphaSlider.setValue(Config.MAX_DEPTH_ALPHA);
     }
 
+    /**
+     * Applies the selected display settings, such as resolution and fullscreen mode,
+     * to the primary stage of the application.
+     */
     private void applyDisplaySettings() {
         String[] res = Config.RESOLUTION.split("x");
         if (res.length == 2) {
@@ -503,7 +503,6 @@ public class SettingsScreen {
             userDifficultyCombo.setValue(Resource.getString(Config.USER_DIFFICULTY));
         }
 
-        // Update language combo box display value based on current Config.LANGUAGE
         if (languageCombo != null) {
             if (Config.LANGUAGE.equals("en")) {
                 languageCombo.setValue("English");
@@ -512,7 +511,7 @@ public class SettingsScreen {
             } else if (Config.LANGUAGE.equals("ar")) {
                 languageCombo.setValue("العربية");
             } else {
-                languageCombo.setValue("English"); // Default to English if unknown
+                languageCombo.setValue("English");
             }
         }
     }

@@ -28,7 +28,7 @@ public class World {
     public void addCoin(CoinEntity coin) {
         coins.add(coin);
     }
-    
+
     public ConcurrentLinkedQueue<PlayerEntity> getPlayers() {
         return players;
     }

@@ -33,7 +33,7 @@ public class Resource {
     }
 
     public static void loadAll() {
-        loadLanguage(Config.LANGUAGE); // Load language based on Config.LANGUAGE
+        loadLanguage(Config.LANGUAGE);
         loadStyles();
         loadFishImages();
         loadMountainImages();

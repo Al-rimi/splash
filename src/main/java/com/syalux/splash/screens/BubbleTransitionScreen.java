@@ -17,6 +17,12 @@ public class BubbleTransitionScreen extends Pane {
         setupAnimation(onFinished);
     }
 
+    /**
+     * Sets up the bubble animation for the transition screen.
+     * Creates and animates multiple bubbles, executing a callback when all are finished.
+     *
+     * @param onFinished The Runnable to execute when all bubble animations are complete.
+     */
     private void setupAnimation(Runnable onFinished) {
         AtomicInteger completedCount = new AtomicInteger(0);
         int bubbleCount = 100;
@@ -27,8 +33,7 @@ public class BubbleTransitionScreen extends Pane {
 
             delay.setOnFinished(e -> {
                 ImageView bubble = createBubble();
-                // Apply the 'bubble' style class to the ImageView
-                bubble.getStyleClass().add("bubble"); // Added this line
+                bubble.getStyleClass().add("bubble");
                 getChildren().add(bubble);
 
                 ParallelTransition transition = createBubbleAnimation(bubble);
@@ -50,13 +55,11 @@ public class BubbleTransitionScreen extends Pane {
         int imageNumber = 1 + random.nextInt(Config.BUBBLE_IMAGE_COUNT);
 
         bubble.setImage(Resource.getEnvironmentImage(Environment.BUBBLE, imageNumber));
-        // Randomize bubble size while maintaining aspect ratio
         double size = 100.0 + random.nextDouble() * (600.0 - 100.0);
         bubble.setFitWidth(size);
         bubble.setFitHeight(size);
         bubble.setPreserveRatio(true);
 
-        // Position bubble just below the screen with random offset
         bubble.setLayoutX(random.nextDouble() * Config.GAME_WIDTH - 150);
         bubble.setLayoutY(Config.GAME_HEIGHT + 50 + random.nextInt(150));
 
@@ -64,20 +67,17 @@ public class BubbleTransitionScreen extends Pane {
     }
 
     private ParallelTransition createBubbleAnimation(ImageView bubble) {
-        double moveDuration = 1 + random.nextDouble() * 1; // 4-7 seconds
+        double moveDuration = 1 + random.nextDouble() * 1;
 
-        // Vertical movement with horizontal drift
         TranslateTransition move = new TranslateTransition(Duration.seconds(moveDuration), bubble);
         move.setByY(-(Config.GAME_HEIGHT * 5));
         move.setByX((random.nextDouble() - 0.5) * 40);
         move.setInterpolator(Interpolator.LINEAR);
 
-        // Fade out effect
         FadeTransition fade = new FadeTransition(Duration.seconds(moveDuration), bubble);
-        fade.setFromValue(0.4 + random.nextDouble() * 0.3); // Start opacity 0.4-0.7
+        fade.setFromValue(0.4 + random.nextDouble() * 0.3);
         fade.setToValue(0.0);
 
-        // Rotation effect
         RotateTransition rotate = new RotateTransition(Duration.seconds(moveDuration), bubble);
         rotate.setByAngle(360 * (random.nextBoolean() ? 1 : -1));
 

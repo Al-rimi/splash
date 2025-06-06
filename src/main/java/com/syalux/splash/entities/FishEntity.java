@@ -40,15 +40,14 @@ public abstract class FishEntity {
     protected boolean isPlayer;
     protected boolean isDead = false;
 
-    // Animation specific fields
     private Timeline damageAnimationTimeline;
     private Timeline movingAnimationTimeline;
     private boolean isMoving = false;
     private double movingScaleOffset = 0;
     private double movingAngleOffset = 0;
     private double deathRotationSpeed = 0;
-    private double deathFadeOutSpeed = 0.5; // Opacity decrease per second
-    private double deathVerticalDrift = 100; // Pixels per second upwards drift
+    private double deathFadeOutSpeed = 0.5;
+    private double deathVerticalDrift = 100;
 
     public FishEntity(double size, int speed, int health, double x, double y, int fishType) {
         this.size = size;
@@ -60,7 +59,6 @@ public abstract class FishEntity {
         this.isPlayer = false;
         setHitboxOffset(0, 0);
 
-        // Initialize moving animation timeline
         setupMovingAnimation();
     }
 
@@ -78,16 +76,16 @@ public abstract class FishEntity {
                     movingAngleOffset = 0;
                 }),
                 new KeyFrame(Duration.seconds(0.2), e -> {
-                    movingScaleOffset = 0.02; // Small scale increase
-                    movingAngleOffset = 2; // Small angle shift
+                    movingScaleOffset = 0.02;
+                    movingAngleOffset = 2;
                 }),
                 new KeyFrame(Duration.seconds(0.4), e -> {
                     movingScaleOffset = 0;
                     movingAngleOffset = 0;
                 }),
                 new KeyFrame(Duration.seconds(0.6), e -> {
-                    movingScaleOffset = -0.02; // Small scale decrease
-                    movingAngleOffset = -2; // Small angle shift
+                    movingScaleOffset = -0.02;
+                    movingAngleOffset = -2;
                 }),
                 new KeyFrame(Duration.seconds(0.8), e -> {
                     movingScaleOffset = 0;
@@ -99,24 +97,19 @@ public abstract class FishEntity {
 
     public void update(double deltaTime) {
         if (isDead) {
-            // Apply death animation effects
-            y -= deathVerticalDrift * deltaTime; // Drift upwards
-            currentAngle += deathRotationSpeed * deltaTime; // Rotate
-            opacity -= deathFadeOutSpeed * deltaTime; // Fade out
+            y -= deathVerticalDrift * deltaTime;
+            currentAngle += deathRotationSpeed * deltaTime;
+            opacity -= deathFadeOutSpeed * deltaTime;
 
-            // Clamp opacity to 0
             if (opacity < 0) {
                 opacity = 0;
             }
-            // Once faded out, stop updating
             if (opacity == 0) {
-                // Consider removing the entity from the world here if not handled elsewhere
                 return;
             }
         }
 
-        // Check if the fish is currently moving
-        boolean currentlyMoving = (Math.abs(velocityX) > 0.1 || Math.abs(velocityY) > 0.1); // Small threshold to avoid micro-movements
+        boolean currentlyMoving = (Math.abs(velocityX) > 0.1 || Math.abs(velocityY) > 0.1);
         if (currentlyMoving && !isMoving) {
             isMoving = true;
             if (movingAnimationTimeline.getStatus() != Animation.Status.RUNNING) {
@@ -125,12 +118,9 @@ public abstract class FishEntity {
         } else if (!currentlyMoving && isMoving) {
             isMoving = false;
             movingAnimationTimeline.stop();
-            // Reset moving offsets when not moving
             movingScaleOffset = 0;
             movingAngleOffset = 0;
         }
-
-        // Call super or specific update logic for subclasses
     }
 
     public void render(GraphicsContext gc) {
@@ -141,7 +131,6 @@ public abstract class FishEntity {
         gc.save();
         gc.translate(x, y);
 
-        // Apply moving animation angle offset if moving
         if (isMoving) {
             gc.rotate(currentAngle + movingAngleOffset);
         } else {
@@ -161,7 +150,6 @@ public abstract class FishEntity {
             drawX = -drawX - renderSize;
         }
 
-        // Apply moving animation scale offset if moving
         double finalRenderSize = renderSize * (1 + movingScaleOffset);
         gc.drawImage(Resource.getFishImage(fishType), drawX - (finalRenderSize - renderSize) / 2, drawY - (finalRenderSize - renderSize) / 2, finalRenderSize, finalRenderSize);
 
@@ -184,26 +172,24 @@ public abstract class FishEntity {
      * @param source The entity that dealt the damage.
      */
     public void takeDamage(double damage, FishEntity source) {
-        if (invulnerable || isDead) // Ensure invulnerability and death status prevent further damage
+        if (invulnerable || isDead)
             return;
 
         health.set(health.get() - (int) damage);
         invulnerable = true;
 
-        // Stop any previous damage animation
         if (damageAnimationTimeline != null) {
             damageAnimationTimeline.stop();
         }
 
-        // Damage flicker animation: fish quickly changes opacity and size
         damageAnimationTimeline = new Timeline(
                 new KeyFrame(Duration.seconds(0.1), e -> {
-                    opacity = 0.5; // Flicker effect
-                    scale = 0.95; // Slightly shrink
+                    opacity = 0.5;
+                    scale = 0.95;
                 }),
                 new KeyFrame(Duration.seconds(0.2), e -> {
                     opacity = 1.0;
-                    scale = 1.05; // Slightly grow
+                    scale = 1.05;
                 }),
                 new KeyFrame(Duration.seconds(0.3), e -> {
                     opacity = 0.5;
@@ -211,19 +197,18 @@ public abstract class FishEntity {
                 }),
                 new KeyFrame(Duration.seconds(0.4), e -> {
                     opacity = 1.0;
-                    scale = 1.0; // Return to normal size
+                    scale = 1.0;
                 })
         );
-        damageAnimationTimeline.setCycleCount(2); // Flicker twice
+        damageAnimationTimeline.setCycleCount(2);
         damageAnimationTimeline.play();
 
-        // PauseTransition for invulnerability duration
-        PauseTransition delay = new PauseTransition(Duration.seconds(1.0)); // Reduced invulnerability time for better gameplay
+        PauseTransition delay = new PauseTransition(Duration.seconds(1.0));
         delay.setOnFinished(e -> {
             invulnerable = false;
-            opacity = 1.0; // Ensure opacity is reset to normal
-            scale = 1.0; // Ensure scale is reset to normal
-            damageAnimationTimeline.stop(); // Ensure timeline is stopped
+            opacity = 1.0;
+            scale = 1.0;
+            damageAnimationTimeline.stop();
         });
         delay.play();
 
@@ -239,23 +224,18 @@ public abstract class FishEntity {
      * @param killer The entity that killed this fish.
      */
     protected void die(FishEntity killer) {
-        if (isDead) return; // Prevent multiple death calls
+        if (isDead) return;
 
         health.set(0);
         isDead = true;
         this.killer = killer;
 
-        // Stop any ongoing animations
         if (damageAnimationTimeline != null) damageAnimationTimeline.stop();
         if (movingAnimationTimeline != null) movingAnimationTimeline.stop();
 
-        // Death animation properties
-        deathRotationSpeed = (Math.random() > 0.5 ? 1 : -1) * 360; // Full rotation during death
-        deathFadeOutSpeed = 0.8; // Faster fade out for death
-        deathVerticalDrift = 150; // Faster upwards drift
-
-        // No need for a separate timeline here, the update method will handle the continuous animation
-        // until opacity reaches 0, at which point the entity should be removed from the game world.
+        deathRotationSpeed = (Math.random() > 0.5 ? 1 : -1) * 360;
+        deathFadeOutSpeed = 0.8;
+        deathVerticalDrift = 150;
     }
 
     public FishEntity getKiller() {

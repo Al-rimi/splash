@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class CharacterData implements Serializable {
     private static final long serialVersionUID = 2L;
-    
+
     private final int id;
     private final String name;
     private final int price;
@@ -13,9 +13,9 @@ public class CharacterData implements Serializable {
     private final int baseSize;
     private boolean unlocked;
 
-    public CharacterData(int id, String name, int price, 
-                        int baseHealth, int baseSpeed, int baseSize, 
-                        boolean unlocked) {
+    public CharacterData(int id, String name, int price,
+                         int baseHealth, int baseSpeed, int baseSize,
+                         boolean unlocked) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -25,7 +25,6 @@ public class CharacterData implements Serializable {
         this.unlocked = unlocked;
     }
 
-    // Getters
     public int getId() { return id; }
     public String getName() { return name; }
     public int getPrice() { return price; }
@@ -33,8 +32,8 @@ public class CharacterData implements Serializable {
     public int getBaseSpeed() { return baseSpeed; }
     public int getBaseSize() { return baseSize; }
     public boolean isUnlocked() { return unlocked; }
-    
-    public void setUnlocked(boolean unlocked) { 
-        this.unlocked = unlocked; 
+
+    public void setUnlocked(boolean unlocked) {
+        this.unlocked = unlocked;
     }
 }

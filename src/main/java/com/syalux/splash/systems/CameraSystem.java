@@ -21,6 +21,13 @@ public class CameraSystem {
         this.targetOverride = target;
     }
 
+    /**
+     * Updates the camera's position to follow the target (player or overridden target)
+     * and calculates the depth effect alpha based on the camera's vertical position.
+     *
+     * @param deltaTime The time elapsed since the last frame, in seconds.
+     * @param player The player entity, used as the default target if no override is set.
+     */
     public void update(double deltaTime, PlayerEntity player) {
         FishEntity target = (targetOverride != null && !targetOverride.isDead()) ? targetOverride : player;
         camX += (target.getX() - camX) * deltaTime;

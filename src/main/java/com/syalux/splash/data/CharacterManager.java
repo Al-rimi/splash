@@ -1,4 +1,3 @@
-// com/syalux/splash/data/CharacterManager.java
 package com.syalux.splash.data;
 
 import java.util.*;
@@ -21,11 +20,11 @@ public class CharacterManager {
         return new CharacterData(
             id,
             "Fish " + id,
-            generatePrice(id),       // $500-$5000
-            generateHealth(id),      // 100-500
-            generateSpeed(id),      // 300-800
-            generateSize(id),       // 40-100
-            id == 1                 // Unlock first character by default
+            generatePrice(id),
+            generateHealth(id),
+            generateSpeed(id),
+            generateSize(id),
+            id == 1
         );
     }
 

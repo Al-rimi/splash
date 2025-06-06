@@ -87,7 +87,7 @@ public class Engine extends AnimationTimer {
         cameraSystem.update(deltaTime, player);
         collisionSystem.checkCollisions();
         renderSystem.renderFrame(
-            cameraSystem.getCamX(), 
+            cameraSystem.getCamX(),
             cameraSystem.getCamY(),
             scaleX, scaleY,
             cameraSystem.getDepthEffectAlpha(),
@@ -104,7 +104,7 @@ public class Engine extends AnimationTimer {
 
         rootContainer.setOnKeyPressed(e -> {
             switch (e.getCode()) {
-                case W : 
+                case W :
                     player.moveUp(true);
                     break;
                 case S:
@@ -126,7 +126,7 @@ public class Engine extends AnimationTimer {
 
         rootContainer.setOnKeyReleased(e -> {
             switch (e.getCode()) {
-                case W: 
+                case W:
                     player.moveUp(false);
                     break;
                 case S:

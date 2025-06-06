@@ -16,11 +16,17 @@ public class CollisionSystem {
         this.world = world;
     }
 
+    /**
+     * Checks for and handles collisions between all active entities in the world.
+     * This includes collisions between players and NPCs, NPCs and other NPCs,
+     * and players with coins.
+     */
     public void checkCollisions() {
         List<PlayerEntity> players = new ArrayList<>(world.getPlayers());
         List<NPCEntity> npcs = new ArrayList<>(world.getNpcs());
         List<CoinEntity> coins = new ArrayList<>(world.getCoins());
 
+        // Player collisions
         for (int i = 0; i < players.size(); i++) {
             PlayerEntity a = players.get(i);
             for (int j = i + 1; j < players.size(); j++) {
@@ -44,6 +50,7 @@ public class CollisionSystem {
             }
         }
 
+        // NPC-NPC collisions
         for (int i = 0; i < npcs.size(); i++) {
             NPCEntity a = npcs.get(i);
             for (int j = i + 1; j < npcs.size(); j++) {
@@ -53,7 +60,6 @@ public class CollisionSystem {
                 }
             }
         }
-
     }
 
     private boolean checkCollision(FishEntity a, CoinEntity b) {
@@ -80,8 +86,15 @@ public class CollisionSystem {
         }
     }
 
+    /**
+     * Executes the collision logic between two fish entities.
+     * The larger fish "eats" the smaller fish, leading to changes in score, size, and health.
+     * Dead fish cannot be consumed.
+     *
+     * @param large The larger fish entity.
+     * @param small The smaller fish entity.
+     */
     private void executeCollision(FishEntity large, FishEntity small) {
-        // If the small fish is already dead, it cannot take further damage or contribute to size/score.
         if (small.isDead()) {
             return;
         }
@@ -95,13 +108,13 @@ public class CollisionSystem {
             PlayerEntity player = (PlayerEntity) large;
             player.addScore((int) (small.getSize() * 0.1));
             player.addSize(small.getSize() * 0.001);
-            small.takeDamage(small.getHealth(), large); // Small fish takes full health damage if eaten by player
+            small.takeDamage(small.getHealth(), large);
         } else if (small instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) small;
             player.takeDamage(large.getSize() * 0.1, large);
         } else {
             large.addSize(small.getSize() * 0.001);
-            small.takeDamage(small.getHealth(), large); // Small fish takes full health damage if eaten by another NPC
+            small.takeDamage(small.getHealth(), large);
         }
     }
 }

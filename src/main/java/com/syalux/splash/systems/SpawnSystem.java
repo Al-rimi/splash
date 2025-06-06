@@ -47,6 +47,11 @@ public class SpawnSystem {
         this.world.addPlayer(player);
     }
 
+    /**
+     * Spawns new entities (NPCs, static environment objects, and coins)
+     * into the game world based on the current camera position and player stats.
+     * This method also cleans up entities that are too far from the camera.
+     */
     private void spawn() {
         double camX = cameraSystem.getViewCenterX();
         double camY = cameraSystem.getViewCenterY();

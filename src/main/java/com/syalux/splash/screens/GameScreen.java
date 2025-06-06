@@ -114,6 +114,14 @@ public class GameScreen {
         root.getChildren().removeIf(node -> node instanceof PauseScreen);
     }
 
+    /**
+     * Creates and initializes the root UI element for the game screen,
+     * setting up the game canvas, background, HUD, and game engine.
+     * It also sets up listeners for player health and scene changes
+     * to manage game state like death and saving profile data.
+     *
+     * @return The initialized StackPane representing the root of the game screen.
+     */
     public Parent createRoot() {
         root = new StackPane();
         root.getStyleClass().add("game-container");
@@ -135,6 +143,7 @@ public class GameScreen {
         root.requestFocus();
         engine.start();
 
+        // Listen for player health changes to trigger game over.
         player.healthProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.intValue() <= 0 && !isDead) {
                 isDead = true;
@@ -142,6 +151,7 @@ public class GameScreen {
             }
         });
 
+        // Listen for scene changes to pause the engine and save player data.
         root.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene == null) {
                 engine.pause(true);
@@ -169,8 +179,8 @@ public class GameScreen {
 
         applyBlurEffect(true);
         DeathScreen deathScreen = new DeathScreen(
-            player.getKiller(),
-            player.scoreProperty().get()
+                player.getKiller(),
+                player.scoreProperty().get()
         );
         root.getChildren().add(deathScreen);
     }
