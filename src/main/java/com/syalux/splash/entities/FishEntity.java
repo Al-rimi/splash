@@ -264,7 +264,7 @@ public abstract class FishEntity {
     protected void fleeFrom(double targetX, double targetY, double speed, double smoothFactor) {
         Vector2D dir = new Vector2D(targetX - x, targetY - y);
         if (normalizeVector(dir))
-            applyVelocity(-dir.x * speed, -dir.y * speed, smoothFactor);
+            applyVelocity(-dir.x * speed * 2, -dir.y * speed * 2, smoothFactor);
     }
 
     protected void pursue(double targetX, double targetY, double speed, double smoothFactor) {
@@ -369,6 +369,14 @@ public abstract class FishEntity {
 
     public void addhealth(int health) {
         this.health.set(this.health.get() + health);
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+    
+    public int getSpeed() {
+        return speed;
     }
 
     public boolean isDead() {

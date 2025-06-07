@@ -24,12 +24,11 @@ public class DeathScreen extends StackPane {
         title.getStyleClass().add("title");
 
         Label killerLabel = new Label();
-        if (killer != null) {
-            String killerText = killer.isPlayer() ?
-                Resource.getString("killed_by_player") :
-                Resource.getString("killed_by_npc");
-            killerLabel.setText(killerText);
-        }
+        String killerText = killer != null ? killer.isPlayer() ?
+            Resource.getString("killed_by_player") :
+            Resource.getString("killed_by_npc") :
+            Resource.getString("killed_by_npc");
+        killerLabel.setText(killerText);
         killerLabel.getStyleClass().add("killer-label");
 
         Label scoreLabel = new Label(Resource.getString("final_score") + ": " + score);

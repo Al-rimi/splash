@@ -56,8 +56,8 @@ public class SpawnSystem {
         double camX = cameraSystem.getViewCenterX();
         double camY = cameraSystem.getViewCenterY();
 
-        List <PlayerEntity> players = new ArrayList<>(world.getPlayers());
-        
+        List<PlayerEntity> players = new ArrayList<>(world.getPlayers());
+
         cleanupDistantEntities(camX, camY);
 
         if (players.isEmpty()) {
@@ -72,7 +72,7 @@ public class SpawnSystem {
     private void spawnEntities(int playerSize, int playerFishType, int playerScore, double camX, double camY) {
         double distance = 2000 + Math.random() * Config.SPAWN_RADIUS;
         double angle = Math.random() * 2 * Math.PI;
-        
+
         double spawnX = camX + Math.cos(angle) * distance + Math.random() * 800 - 200;
         double spawnY = camY + Math.sin(angle) * distance + Math.random() * 800 - 200;
 
@@ -90,38 +90,37 @@ public class SpawnSystem {
             world.addNpc(enemy);
         }
 
-        if (random.nextDouble() < (1.0 - difficultyFactor)) {
+        if (random.nextDouble() < (1.5 - difficultyFactor)) {
             NPCEntity food = new NPCEntity(world, spawnX, spawnY, fishType,
                     (int) (random.nextDouble() * (playerSize - 10) * 0.8 + (playerSize - 10) * 0.2), difficultyFactor);
             world.addNpc(food);
         }
 
-        if (random.nextDouble() < 0.8) {
+        for (int i = 1; i < 10; i++) {
             world.addStaticEntity(new StaticEntity(
                     Resource.Environment.MOUNTAIN,
-                    spawnX * 4,
-                    spawnY * 4,
+                    spawnX * 16 + random.nextDouble() * 100 + i,
+                    spawnY * 16 + random.nextDouble() * 100 + i,
                     random.nextInt(Config.MOUNTAIN_IMAGE_COUNT) + 1,
                     random.nextInt(2000) + 2000));
-        }
 
-        if (random.nextDouble() < 0.5) {
             world.addStaticEntity(new StaticEntity(
                     Resource.Environment.ROCK,
-                    spawnX,
-                    spawnY,
+                    spawnX * 3 + random.nextDouble() * 100 + i,
+                    spawnY * 3 + random.nextDouble() * 100 + i,
                     random.nextInt(Config.ROCK_IMAGE_COUNT) + 1,
                     random.nextInt(100) + 50));
-        }
 
-        if (random.nextDouble() < 1.0) {
-            world.addStaticEntity(new StaticEntity(Resource.Environment.SEAWEED, spawnX, spawnY,
+            world.addStaticEntity(new StaticEntity(
+                    Resource.Environment.SEAWEED,
+                    spawnX * 2 + random.nextDouble() * 100 + i,
+                    spawnY * 2 + random.nextDouble() * 100 + i,
                     random.nextInt(Config.SEAWEED_IMAGE_COUNT) + 1,
                     random.nextInt(200) + 50));
         }
 
         if (random.nextDouble() < difficultyFactor) {
-            world.addCoin(new CoinEntity( spawnX, spawnY));
+            world.addCoin(new CoinEntity(spawnX, spawnY));
         }
     }
 

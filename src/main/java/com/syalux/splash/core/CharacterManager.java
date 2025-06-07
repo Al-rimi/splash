@@ -21,7 +21,7 @@ public class CharacterManager {
 
         return new Character(
             id,
-            "Fish " + id,
+            "Fish_" + id,
             generatePrice(id, deterministicRand),
             generateHealth(id, deterministicRand),
             generateSpeed(id, deterministicRand),

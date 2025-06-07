@@ -1,5 +1,7 @@
 package com.syalux.splash.screens;
 
+import com.syalux.splash.data.Resource;
+
 import javafx.animation.*;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -15,7 +17,7 @@ import javafx.util.Duration;
 
 public class WelcomeScreen extends StackPane {
     private static final int ANIMATION_DURATION = 3;
-    private static final String SPLASH_TEXT = "SPLASH";
+    private static final String SPLASH_TEXT = Resource.getString("title");
 
     public WelcomeScreen() {
         setStyle("-fx-background-color:rgb(0, 0, 0);");
@@ -26,13 +28,13 @@ public class WelcomeScreen extends StackPane {
     }
 
     /**
-     * Builds an HBox containing individual Text nodes for each letter of "SPLASH",
+     * Builds an HBox containing individual Text nodes for each letter of,
      * applying initial styling and setting up animations for each letter.
      *
-     * @return An HBox containing the animated "SPLASH" title.
+     * @return An HBox containing the animated title.
      */
     private HBox buildTitleBox() {
-        HBox box = new HBox(10);
+        HBox box = new HBox(100);
         box.setAlignment(Pos.CENTER);
 
         int total = SPLASH_TEXT.length();
@@ -48,7 +50,7 @@ public class WelcomeScreen extends StackPane {
 
     private Text createLetter(char c) {
         Text letter = new Text(String.valueOf(c));
-        letter.setFont(Font.font("Arial", FontWeight.BOLD, 64));
+        letter.setFont(Font.font("Arial", FontWeight.BOLD, 124));
         letter.setFill(Color.WHITE);
         letter.setOpacity(0);
 
@@ -60,17 +62,18 @@ public class WelcomeScreen extends StackPane {
     }
 
     private void setupLetterAnimation(Text letter, int index, int total, HBox titleBox) {
-        Duration delay = Duration.seconds(index * 0.15);
+        playGlowEffect((DropShadow) letter.getEffect());
+        Duration delay = Duration.seconds(index * 0.18);
 
-        FadeTransition fade = new FadeTransition(Duration.seconds(0.5), letter);
+        FadeTransition fade = new FadeTransition(Duration.seconds(0.8), letter);
         fade.setFromValue(0);
         fade.setToValue(1);
 
-        ScaleTransition scaleUp = new ScaleTransition(Duration.seconds(0.3), letter);
+        ScaleTransition scaleUp = new ScaleTransition(Duration.seconds(0.5), letter);
         scaleUp.setFromX(0);
         scaleUp.setFromY(0);
-        scaleUp.setToX(1.2);
-        scaleUp.setToY(1.2);
+        scaleUp.setToX(2);
+        scaleUp.setToY(2);
         scaleUp.setInterpolator(Interpolator.EASE_OUT);
 
         ScaleTransition scaleDown = new ScaleTransition(Duration.seconds(0.2), letter);
@@ -84,7 +87,6 @@ public class WelcomeScreen extends StackPane {
 
         entrance.setOnFinished(e -> {
             playFloatingEffect(letter);
-            playGlowEffect((DropShadow) letter.getEffect());
 
             if (index == total - 1) {
                 createRippleEffect(titleBox);
@@ -95,11 +97,10 @@ public class WelcomeScreen extends StackPane {
     }
 
     private void playFloatingEffect(Text letter) {
-        TranslateTransition floatEffect = new TranslateTransition(Duration.seconds(2), letter);
+        TranslateTransition floatEffect = new TranslateTransition(Duration.seconds(1.8), letter);
         floatEffect.setFromY(0);
-        floatEffect.setToY(-10);
-        floatEffect.setAutoReverse(true);
-        floatEffect.setCycleCount(Animation.INDEFINITE);
+        floatEffect.setToY(-10000);
+        floatEffect.setAutoReverse(false);
         floatEffect.play();
     }
 
@@ -108,9 +109,9 @@ public class WelcomeScreen extends StackPane {
                 new KeyFrame(Duration.ZERO,
                         new KeyValue(glow.radiusProperty(), 0),
                         new KeyValue(glow.spreadProperty(), 0)),
-                new KeyFrame(Duration.seconds(1.5),
-                        new KeyValue(glow.radiusProperty(), 25),
-                        new KeyValue(glow.spreadProperty(), 0.4)));
+                new KeyFrame(Duration.seconds(2.0),
+                        new KeyValue(glow.radiusProperty(), 65),
+                        new KeyValue(glow.spreadProperty(), 0.7)));
         glowTimeline.setAutoReverse(true);
         glowTimeline.setCycleCount(Animation.INDEFINITE);
         glowTimeline.play();

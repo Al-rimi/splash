@@ -26,7 +26,9 @@ public class Character implements Serializable {
     }
 
     public int getId() { return id; }
-    public String getName() { return name; }
+    public String getName() { 
+        return Resource.getString(name);
+    }
     public int getPrice() { return price; }
     public int getBaseHealth() { return baseHealth; }
     public int getBaseSpeed() { return baseSpeed; }

@@ -79,6 +79,7 @@
     -fx-background-color: -fx-primary-color;
     -fx-text-fill: white;
     -fx-padding: 15px 40px;
+    -fx-max-width: 400px;
     -fx-font-size: 1.3em;
     -fx-background-radius: 30px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);
@@ -98,7 +99,7 @@
 .nav-button {
     -fx-background-color: rgba(255,255,255,0.1);
     -fx-text-fill: white;
-    -fx-font-size: 32px;
+    -fx-font-size: 2.0em;
     -fx-padding: 15px 25px;
     -fx-min-width: 60px;
     -fx-min-height: 60px;
@@ -119,7 +120,9 @@
     -fx-background-color: -fx-primary-color;
     -fx-text-fill: white;
     -fx-padding: 15px 40px;
-    -fx-font-size: 1.3em;
+    -fx-max-width: 400px;
+    -fx-min-width: 400px;
+    -fx-font-size: 2.2em;
     -fx-background-radius: 30px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0, 0, 2);
 }
@@ -146,6 +149,7 @@
 
 .menu-container {
     -fx-background-color: linear-gradient(to bottom, #1a237e, #0d47a1);
+    -fx-font-size: 2.2em;
     -fx-padding: 60px;
     -fx-spacing: 25px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 20, 0, 0, 0);
@@ -235,7 +239,7 @@
 
 .setting-label {
     -fx-text-fill: #E0E0E0;
-    -fx-font-size: 1.4em;
+    -fx-font-size: 1.8em;
     -fx-font-weight: 500;
 }
 
@@ -243,6 +247,8 @@
     -fx-background-color: #4A5B78;
     -fx-background-radius: 6px;
     -fx-pref-height: 10px;
+    -fx-pref-width: 300px;
+    -fx-min-width: 300px;
 }
 
 .volume-slider .thumb {
@@ -366,6 +372,7 @@
 }
 
 .styled-slider {
+    -fx-min-width: 300px;
     -fx-pref-width: 80%;
 }
 
@@ -487,15 +494,20 @@
 
 .death-screen .title {
     -fx-fill: -fx-accent-color;
-    -fx-font-size: 72px;
+    -fx-font-size: 7.5em;
     -fx-font-weight: bold;
     -fx-effect: dropshadow(gaussian, rgba(255,0,0,0.6), 15, 0, 0, 0);
 }
 
 .death-screen .killer-label, .death-screen .score-label, .death-screen .message-label {
     -fx-text-fill: white;
-    -fx-font-size: 24px;
+    -fx-font-size: 2.5em;
     -fx-font-weight: 500;
+}
+
+.death-screen .score-label {
+    -fx-text-fill: #00FF00;
+    -fx-font-size: 3.5em;
 }
 
 .death-screen .message-label {
@@ -505,7 +517,7 @@
 }
 
 .death-button {
-    -fx-font-size: 1.2em;
+    -fx-font-size: 2.2em;
     -fx-padding: 12px 30px;
     -fx-background-color: -fx-accent-color;
     -fx-text-fill: white;

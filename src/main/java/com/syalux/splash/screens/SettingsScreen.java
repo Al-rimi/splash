@@ -441,7 +441,7 @@ public class SettingsScreen {
 
         Config.SPAWN_RADIUS = 2000.0;
         Config.DESPAWN_RADIUS = 4000.0;
-        Config.GAME_DIFFICULTY_FACTOR = 1.0;
+        Config.GAME_DIFFICULTY_FACTOR = 0.1;
         Config.SPAWN_DURATION_SECONDS = 0.1;
         Config.DEPTH_DIVISOR = 10000.0;
         Config.MAX_DEPTH_ALPHA = 0.95;
