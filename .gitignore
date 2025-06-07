@@ -1,7 +1,7 @@
-dependency-reduced-pom.xml
-/.vscode
+.vscode
 /target
 /out
 **.jar
 **.ser
-game_config.properties
+**.puml
+**.properties

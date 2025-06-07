@@ -1,10 +1,12 @@
 package com.syalux.splash.data;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 public class Config {
@@ -35,9 +37,14 @@ public class Config {
     public static final int ROCK_IMAGE_COUNT = 2;
     public static final int BUBBLE_IMAGE_COUNT = 2;
 
-    private static final String CONFIG_FILE = "game_config.properties";
+    private static final String CONFIG_FILE = Paths.get(
+            System.getProperty("user.home"),
+            ".splash_game",
+            "game_config.properties").toString();
 
     public static void saveConfig() {
+        new File(System.getProperty("user.home"), ".splash_game").mkdirs();
+
         Properties prop = new Properties();
         try (OutputStream output = new FileOutputStream(CONFIG_FILE)) {
             prop.setProperty("GAME_WIDTH", String.valueOf(GAME_WIDTH));
@@ -67,6 +74,12 @@ public class Config {
     }
 
     public static void loadConfig() {
+        File configFile = new File(CONFIG_FILE);
+        if (!configFile.exists()) {
+            System.out.println("Config file not found, using defaults");
+            return;
+        }
+        
         Properties prop = new Properties();
         try (InputStream input = new FileInputStream(CONFIG_FILE)) {
             prop.load(input);
@@ -75,11 +88,14 @@ public class Config {
             GAME_HEIGHT = Double.parseDouble(prop.getProperty("GAME_HEIGHT", String.valueOf(GAME_HEIGHT)));
             SPAWN_RADIUS = Double.parseDouble(prop.getProperty("SPAWN_RADIUS", String.valueOf(SPAWN_RADIUS)));
             DESPAWN_RADIUS = Double.parseDouble(prop.getProperty("DESPAWN_RADIUS", String.valueOf(DESPAWN_RADIUS)));
-            GAME_DIFFICULTY_FACTOR = Double.parseDouble(prop.getProperty("GAME_DIFFICULTY_FACTOR", String.valueOf(GAME_DIFFICULTY_FACTOR)));
-            SPAWN_DURATION_SECONDS = Double.parseDouble(prop.getProperty("SPAWN_DURATION_SECONDS", String.valueOf(SPAWN_DURATION_SECONDS)));
+            GAME_DIFFICULTY_FACTOR = Double
+                    .parseDouble(prop.getProperty("GAME_DIFFICULTY_FACTOR", String.valueOf(GAME_DIFFICULTY_FACTOR)));
+            SPAWN_DURATION_SECONDS = Double
+                    .parseDouble(prop.getProperty("SPAWN_DURATION_SECONDS", String.valueOf(SPAWN_DURATION_SECONDS)));
             DEPTH_DIVISOR = Double.parseDouble(prop.getProperty("DEPTH_DIVISOR", String.valueOf(DEPTH_DIVISOR)));
             MAX_DEPTH_ALPHA = Double.parseDouble(prop.getProperty("MAX_DEPTH_ALPHA", String.valueOf(MAX_DEPTH_ALPHA)));
-            CAMERA_SENSITIVITY = Double.parseDouble(prop.getProperty("CAMERA_SENSITIVITY", String.valueOf(CAMERA_SENSITIVITY)));
+            CAMERA_SENSITIVITY = Double
+                    .parseDouble(prop.getProperty("CAMERA_SENSITIVITY", String.valueOf(CAMERA_SENSITIVITY)));
 
             MASTER_VOLUME = Double.parseDouble(prop.getProperty("MASTER_VOLUME", String.valueOf(MASTER_VOLUME)));
             MUSIC_VOLUME = Double.parseDouble(prop.getProperty("MUSIC_VOLUME", String.valueOf(MUSIC_VOLUME)));

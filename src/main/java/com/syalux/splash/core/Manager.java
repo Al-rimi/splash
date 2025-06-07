@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import javafx.util.Duration;
@@ -27,8 +28,12 @@ public final class Manager {
     private static Scene mainScene;
     private static final StackPane container = new StackPane();
     private static final Deque<Parent> screenStack = new ArrayDeque<>();
-    private static final String PROFILE_FILE = "user_profile.ser";
     private static Profile profile;
+
+    private static final String PROFILE_FILE = Paths.get(
+            System.getProperty("user.home"),
+            ".splash_game",
+            "user_profile.ser").toString();
 
     public static void init(Stage stage) {
         CharacterManager.init();
@@ -77,7 +82,8 @@ public final class Manager {
         ft.setToValue(0);
         ft.setOnFinished(e -> {
             container.getChildren().remove(root);
-            if (postAction != null) postAction.run();
+            if (postAction != null)
+                postAction.run();
         });
         ft.play();
     }
@@ -93,6 +99,8 @@ public final class Manager {
     }
 
     private static void loadProfile() {
+        new File(System.getProperty("user.home"), ".splash_game").mkdirs();
+
         File file = new File(PROFILE_FILE);
         if (file.exists()) {
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
@@ -108,6 +116,8 @@ public final class Manager {
     }
 
     public static void saveProfile() {
+        new File(System.getProperty("user.home"), ".splash_game").mkdirs();
+
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(PROFILE_FILE))) {
             oos.writeObject(profile);
         } catch (IOException e) {
