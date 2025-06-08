@@ -1,5 +1,3 @@
-# Splash
-
 ![Gameplay Cover Page](./resources/screenshots/GameplayCoverPage.png)
 
 ## Content
@@ -12,10 +10,22 @@
 - [Game Systems](#game-systems)
 - [Future Enhancements](#future-enhancements)
 - [License](#license)
-- [Change Log](CHANGELOG.md)
+- [Changelog](CHANGELOG.md)
 
 ## Overview
 Splash is a JavaFX-based Feeding Frenzy-style game where players control a fish navigating an underwater environment. The game features size-based progression mechanics, intelligent NPC behavior, parallax scrolling, and multilingual support. Developed as part of the Comprehensive Java Practice course at Zhejiang Normal University.
+
+## Release Summary
+**Initial Release v1.0.0.0** - June 8, 2025  
+Splash 1.0 introduces core gameplay with size progression, intelligent NPC behaviors, and multilingual support. Highlights include:
+
+- Size-based progression system
+- Three-tier NPC intelligence
+- Localization (EN/AR/ZH)
+- Profile saving/loading
+- 6 interactive game screens
+
+[View detailed change log](CHANGELOG.md)
 
 ## Key Features
 - **Size-based progression system** - Grow by consuming smaller fish
@@ -43,19 +53,18 @@ Splash is a JavaFX-based Feeding Frenzy-style game where players control a fish 
 
 ### Build & Run
 ```bash
-# Clone repository
 git clone https://github.com/Al-rimi/splash.git
 
-# Build project
+cd splash
+
 mvn clean package
 
-# Run game
 java -jar target/splash-1.0.0.0.jar
 ```
 
 ### Windows Installer
 Download the pre-built installer for Windows:  
-[`Splash_1.0.0.0.exe`](https://github.com/Al-rimi/splash/releases)
+[`Splash_Setup.exe`](https://github.com/Al-rimi/splash/releases)
 
 ## Game Architecture
 Splash follows a modular, component-based architecture with clear separation of concerns:
