@@ -5,7 +5,7 @@
 
     <groupId>com.syalux</groupId>
     <artifactId>splash</artifactId>
-    <version>1.0.0.0</version>
+    <version>1.0.0.1</version>
     <packaging>jar</packaging>
 
     <name>Splash</name>
@@ -68,7 +68,7 @@
                             <arch>x64</arch>
 
                             <winConfig>
-                                <icoFile>src\main\resources\images\logo.ico</icoFile>
+                                <icoFile>src\main\resources\images\splash-logo.ico</icoFile>
 
                                 <generateSetup>true</generateSetup>
                                 <generateMsi>false</generateMsi>
@@ -97,7 +97,7 @@
                             </winConfig>
 
                             <vmArgs>
-                                <vmArg>--module-path ${project.basedir}/target/Splash/libs</vmArg>
+                                <vmArg>--module-path libs</vmArg>
                                 <vmArg>--add-modules javafx.controls,javafx.media,javafx.graphics,javafx.base</vmArg>
                             </vmArgs>
 

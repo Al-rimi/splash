@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0.1] - 2025-06-08
+### Fixed
+- **vmArgs** mager bug in Windows setup module path.
+
+### Changed
+- **logo** changed to **splash-logo**.
+
 ## [1.0.0.0] - 2025-06-08
 ### Added
 - **Core Gameplay**: Implemented size-based progression system and fish hierarchy

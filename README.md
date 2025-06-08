@@ -16,7 +16,7 @@
 Splash is a JavaFX-based Feeding Frenzy-style game where players control a fish navigating an underwater environment. The game features size-based progression mechanics, intelligent NPC behavior, parallax scrolling, and multilingual support. Developed as part of the Comprehensive Java Practice course at Zhejiang Normal University.
 
 ## Release Summary
-**Initial Release v1.0.0.0** - June 8, 2025  
+**v1.0.0.1** - June 8, 2025  
 Splash 1.0 introduces core gameplay with size progression, intelligent NPC behaviors, and multilingual support. Highlights include:
 
 - Size-based progression system

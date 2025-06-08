@@ -57,7 +57,7 @@ public class Resource {
     }
 
     public static Image getLogo(){
-        return loadImage("/images/logo.icon");
+        return loadImage("/images/splash-logo.ico");
     }
 
     public static Image getFishImage(int fishNumber) {
